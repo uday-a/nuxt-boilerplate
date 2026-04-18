@@ -1,0 +1,10 @@
+/* Bootstrap-only entry. Token assignments and the base layer ship via the
+ * cssVars and css fields in the registry manifest so the shadcn-vue CLI
+ * merges them into the consumer's CSS instead of overwriting. Only entries
+ * the CLI cannot merge (font imports, framework imports, @custom-variant)
+ * live here. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Anybody:wght@600;700;800&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
