@@ -7,6 +7,7 @@ import Bento01 from '@/components/blocks/Bento01.vue'
 import Pricing01 from '@/components/blocks/Pricing01.vue'
 import Testimonials01 from '@/components/blocks/Testimonials01.vue'
 import Faq01 from '@/components/blocks/Faq01.vue'
+import Contact01 from '@/components/blocks/Contact01.vue'
 import Cta01 from '@/components/blocks/Cta01.vue'
 import Footer01 from '@/components/blocks/Footer01.vue'
 
@@ -19,15 +20,16 @@ useHead({
 <template>
   <div class="min-h-screen bg-background text-foreground">
     <Header01 />
-    <main>
-      <Hero01 />
-      <Logos01 />
-      <Features01 />
-      <Bento01 />
-      <Pricing01 />
-      <Testimonials01 />
-      <Faq01 />
-      <Cta01 />
+    <main class="[&>section]:scroll-mt-20">
+      <section id="top"><Hero01 /></section>
+      <section id="logos"><Logos01 /></section>
+      <section id="features"><Features01 /></section>
+      <section id="bento"><Bento01 /></section>
+      <section id="pricing"><Pricing01 /></section>
+      <section id="customers"><Testimonials01 /></section>
+      <section id="faq"><Faq01 /></section>
+      <section id="contact"><Contact01 /></section>
+      <section id="cta"><Cta01 /></section>
     </main>
     <Footer01 />
   </div>

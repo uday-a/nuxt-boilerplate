@@ -24,8 +24,8 @@ const mobileOpen = ref(false)
         <a href="#features" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a>
         <a href="#pricing" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
         <a href="#customers" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Customers</a>
-        <a href="#docs" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Docs</a>
-        <a href="#blog" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Blog</a>
+        <a href="#faq" class="text-sm text-muted-foreground transition-colors hover:text-foreground">FAQ</a>
+        <a href="#contact" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Contact</a>
       </nav>
 
       <div class="hidden items-center gap-2 md:flex">
@@ -63,8 +63,8 @@ const mobileOpen = ref(false)
               <a href="#features" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Features</a>
               <a href="#pricing" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Pricing</a>
               <a href="#customers" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Customers</a>
-              <a href="#docs" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Docs</a>
-              <a href="#blog" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Blog</a>
+              <a href="#faq" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">FAQ</a>
+              <a href="#contact" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Contact</a>
             </nav>
             <div class="flex flex-col gap-2 border-t p-4">
               <div class="flex items-center justify-between">
