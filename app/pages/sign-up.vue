@@ -1,12 +1,12 @@
 <script setup lang="ts">
 definePageMeta({ auth: false, layout: false })
-useHead({ title: 'Sign in' })
+useHead({ title: 'Create an account' })
 
 const { loggedIn } = useUserSession()
 if (loggedIn.value) await navigateTo('/dashboard')
 
-function onSubmit(_payload: { email: string; password: string; remember: boolean }) {
-  alert('Email/password not implemented. Use the GitHub button.')
+function onSubmit(_payload: { name: string; email: string; password: string }) {
+  alert('Email signup is not wired. Use the GitHub button to continue.')
 }
 
 function onOAuth(provider: 'github' | 'google') {
@@ -19,9 +19,8 @@ function onOAuth(provider: 'github' | 'google') {
 </script>
 
 <template>
-  <AuthSignIn
-    sign-up-href="/sign-up"
-    forgot-password-href="/forgot-password"
+  <AuthSignUp
+    sign-in-href="/login"
     :oauth-providers="['github']"
     @submit="onSubmit"
     @oauth="onOAuth"
