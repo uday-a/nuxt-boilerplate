@@ -28,3 +28,6 @@ logs
 
 # Vercel
 .vercel/
+
+# Pilot scratch (moved pages awaiting registry-driven rebuild)
+.pilot-backup/
