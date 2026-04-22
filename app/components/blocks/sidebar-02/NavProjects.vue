@@ -36,7 +36,13 @@ const { isMobile } = useSidebar()
 </script>
 
 <template>
-  <SidebarGroup class="group-data-[collapsible=icon]:hidden">
+  <!-- Upstream shadcn-vue hides this entire group on icon-mode collapse
+       with `group-data-[collapsible=icon]:hidden`. We keep it visible so
+       the project icons stay reachable in the narrow column; the
+       SidebarGroupLabel below and the `<span>` children of each
+       SidebarMenuButton already self-hide on collapse, leaving an
+       icon-only column that lines up with NavMain. -->
+  <SidebarGroup>
     <SidebarGroupLabel>Projects</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="item in projects" :key="item.name">
