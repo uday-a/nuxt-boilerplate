@@ -77,7 +77,7 @@ const { theme, setTheme } = useTheme()
         <div class="flex items-center gap-1 px-2 sm:gap-3">
           <CommandPalette @select="(item) => emit('command-select', item)" />
           <div class="flex items-center gap-0.5">
-            <ThemeSwitch :model-value="theme" variant="dropdown" @update:model-value="setTheme" />
+            <ThemeSwitch :model-value="theme" variant="icon-only" @update:model-value="setTheme" />
             <NotificationsPopover>
               <template #default="{ unreadCount }">
                 <Button
