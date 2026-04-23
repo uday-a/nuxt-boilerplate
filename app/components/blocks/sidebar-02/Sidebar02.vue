@@ -33,118 +33,56 @@ const data = {
   navMain: [
     {
       title: "Playground",
-      url: "#",
+      url: "/playground",
       icon: SquareTerminal,
       isActive: true,
       items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
+        { title: "History", url: "/playground/history" },
+        { title: "Starred", url: "/playground/starred" },
+        { title: "Settings", url: "/playground/settings" },
       ],
     },
     {
       title: "Models",
-      url: "#",
+      url: "/models",
       icon: Bot,
       items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
+        { title: "Genesis", url: "/models/genesis" },
+        { title: "Explorer", url: "/models/explorer" },
+        { title: "Quantum", url: "/models/quantum" },
       ],
     },
     {
       title: "Documentation",
-      url: "#",
+      url: "/documentation",
       icon: BookOpen,
       items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
+        { title: "Introduction", url: "/documentation/introduction" },
+        { title: "Get Started", url: "/documentation/get-started" },
+        { title: "Tutorials", url: "/documentation/tutorials" },
+        { title: "Changelog", url: "/documentation/changelog" },
       ],
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: Settings2,
       items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
+        { title: "General", url: "/settings/general" },
+        { title: "Team", url: "/settings/team" },
+        { title: "Billing", url: "/settings/billing" },
+        { title: "Limits", url: "/settings/limits" },
       ],
     },
   ],
   navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
+    { title: "Support", url: "/support", icon: LifeBuoy },
+    { title: "Feedback", url: "/feedback", icon: Send },
   ],
   projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
+    { name: "Design Engineering", url: "/projects/design-engineering", icon: Frame },
+    { name: "Sales & Marketing", url: "/projects/sales-marketing", icon: PieChart },
+    { name: "Travel", url: "/projects/travel", icon: Map },
   ],
 }
 </script>
