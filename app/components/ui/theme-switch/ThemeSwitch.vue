@@ -125,26 +125,29 @@ function cycle() {
     </button>
   </div>
 
-  <!-- Icon-only: single button cycling 2 states with rotate+fade animation -->
+  <!-- Icon-only: header-grade icon button. No border, ghost background,
+       rounded-lg to match adjacent header affordances (notification
+       bell, profile avatar). The previous `rounded-full border bg-card`
+       coin-shape stood out from typical icon-button row layouts; if you
+       need that look, pass `class="rounded-full border border-border bg-card"`
+       and it'll override.
+
+       Dropped the rotate+fade Transition that the previous version
+       wrapped the icon in. `mode="out-in"` with opacity-0 on both the
+       enter-from and leave-to states left a frame where the button was
+       empty -- visible as a flicker that occasionally rendered as "no
+       icon at all" on slower devices. A direct swap reads cleaner. -->
   <button
     v-else-if="variant === 'icon-only'"
     type="button"
     :aria-label="LABELS[modelValue]"
     :class="[
-      'relative size-9 grid place-items-center rounded-full border border-border bg-card overflow-hidden transition-colors hover:bg-muted',
+      'text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-lg transition-colors',
       $props.class,
     ]"
     @click="cycle"
   >
-    <Transition
-      mode="out-in"
-      enter-active-class="transition duration-300 ease-out"
-      leave-active-class="transition duration-200 ease-in absolute"
-      enter-from-class="rotate-90 opacity-0 scale-75"
-      leave-to-class="-rotate-90 opacity-0 scale-75"
-    >
-      <component :is="ICONS[modelValue]" :key="modelValue" class="size-4" />
-    </Transition>
+    <component :is="ICONS[modelValue]" class="size-4" />
   </button>
 
   <!-- Dropdown: trigger button → menu of states -->
