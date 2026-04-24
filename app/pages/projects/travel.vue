@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { Hash, Plane, Hotel, Receipt, MapPin, Calendar, DollarSign } from 'lucide-vue-next'
+import { computed } from 'vue'
+import { Hash, Plane, Receipt, MapPin, Calendar, DollarSign, Globe } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import TripMap from '@/components/blocks/TripMap.vue'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 useHead({ title: 'Travel · Projects' })
@@ -15,14 +17,23 @@ const kpis = [
 ]
 
 const trips = [
-  { traveler: 'Marcus Rivera', dest: 'Berlin', purpose: 'Customer onsite — Sentinel Labs', depart: '2026-05-20', return: '2026-05-23', status: 'confirmed', cost: 2840 },
-  { traveler: 'Alice Chen', dest: 'San Francisco', purpose: 'Vue Conf 2026', depart: '2026-05-28', return: '2026-06-01', status: 'confirmed', cost: 3120 },
-  { traveler: 'Sarah Connor', dest: 'London', purpose: 'Board meeting Q2', depart: '2026-06-03', return: '2026-06-05', status: 'confirmed', cost: 4210 },
-  { traveler: 'David Kim', dest: 'Tokyo', purpose: 'Apex Logistics kickoff', depart: '2026-06-10', return: '2026-06-15', status: 'pending', cost: 5680 },
-  { traveler: 'Eva Johnson', dest: 'Toronto', purpose: 'Workshop — Acme Education', depart: '2026-06-18', return: '2026-06-20', status: 'pending', cost: 1240 },
-  { traveler: 'Frank Lee', dest: 'Singapore', purpose: 'Olympus Robotics review', depart: '2026-06-22', return: '2026-06-28', status: 'confirmed', cost: 6420 },
-  { traveler: 'Olive Park', dest: 'New York', purpose: 'Recruiting fair (UX)', depart: '2026-07-01', return: '2026-07-03', status: 'confirmed', cost: 1820 },
+  { traveler: 'Marcus Rivera', dest: 'Berlin', lat: 52.5200, lng: 13.4050, purpose: 'Customer onsite — Sentinel Labs', depart: '2026-05-20', return: '2026-05-23', status: 'confirmed', cost: 2840 },
+  { traveler: 'Alice Chen', dest: 'San Francisco', lat: 37.7749, lng: -122.4194, purpose: 'Vue Conf 2026', depart: '2026-05-28', return: '2026-06-01', status: 'confirmed', cost: 3120 },
+  { traveler: 'Sarah Connor', dest: 'London', lat: 51.5074, lng: -0.1278, purpose: 'Board meeting Q2', depart: '2026-06-03', return: '2026-06-05', status: 'confirmed', cost: 4210 },
+  { traveler: 'David Kim', dest: 'Tokyo', lat: 35.6762, lng: 139.6503, purpose: 'Apex Logistics kickoff', depart: '2026-06-10', return: '2026-06-15', status: 'pending', cost: 5680 },
+  { traveler: 'Eva Johnson', dest: 'Toronto', lat: 43.6532, lng: -79.3832, purpose: 'Workshop — Acme Education', depart: '2026-06-18', return: '2026-06-20', status: 'pending', cost: 1240 },
+  { traveler: 'Frank Lee', dest: 'Singapore', lat: 1.3521, lng: 103.8198, purpose: 'Olympus Robotics review', depart: '2026-06-22', return: '2026-06-28', status: 'confirmed', cost: 6420 },
+  { traveler: 'Olive Park', dest: 'New York', lat: 40.7128, lng: -74.0060, purpose: 'Recruiting fair (UX)', depart: '2026-07-01', return: '2026-07-03', status: 'confirmed', cost: 1820 },
 ]
+
+const mapMarkers = computed(() =>
+  trips.map((t) => ({
+    lat: t.lat,
+    lng: t.lng,
+    label: `${t.dest} · ${t.traveler}`,
+    detail: `${t.depart} → ${t.return} · ${t.purpose}`,
+  })),
+)
 
 const expenses = [
   { trip: 'Berlin · Marcus', category: 'Flights', amount: 1240, status: 'approved' },
@@ -61,6 +72,16 @@ const statusVariant: Record<string, 'default' | 'secondary' | 'destructive' | 'o
         </CardContent>
       </Card>
     </div>
+
+    <Card>
+      <CardHeader>
+        <CardTitle class="text-base flex items-center gap-2"><Globe class="size-4" /> Where everyone is</CardTitle>
+        <CardDescription>OpenStreetMap pins for the {{ trips.length }} upcoming trips. Click a marker for trip detail.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <TripMap :markers="mapMarkers" height="420px" />
+      </CardContent>
+    </Card>
 
     <Card>
       <CardHeader>
