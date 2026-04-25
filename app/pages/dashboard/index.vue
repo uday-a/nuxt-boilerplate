@@ -13,11 +13,13 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { LineChart } from '@/components/ui/charts/line-chart'
 import { BarChart } from '@/components/ui/charts/bar-chart'
+import { AreaChart } from '@/components/ui/charts/area-chart'
 import { FunnelChart } from '@/components/ui/charts/funnel-chart'
 import { GaugeChart } from '@/components/ui/charts/gauge-chart'
 import { TreemapChart } from '@/components/ui/charts/treemap-chart'
 import { CalendarHeatmap } from '@/components/ui/charts/calendar-heatmap'
 import { Sparkline } from '@/components/ui/charts/sparkline'
+import { PieChart } from '@/components/ui/charts/pie-chart'
 import { SectionCard } from '@/components/ui/section-card'
 import { DataList, DataListItem } from '@/components/ui/data-list'
 import { IconBox } from '@/components/ui/icon-box'
@@ -50,28 +52,25 @@ const funnel = [
   { name: 'Retained 30d', value: 248 },
 ]
 
+// Flat single-level layout. The previous nested {name, children} shape
+// rendered division headers (upperLabel) over each block, eating ~22px
+// per level at a 200px tile and squeezing the leaf labels invisible.
+// Flat shape lets every team get its proportional area + a readable
+// label at this size.
 const segments = [
-  { name: 'Engineering', children: [
-    { name: 'Frontend', value: 18 },
-    { name: 'Backend', value: 22 },
-    { name: 'Infra', value: 8 },
-    { name: 'Mobile', value: 8 },
-  ] },
-  { name: 'Sales', children: [
-    { name: 'Inside sales', value: 14 },
-    { name: 'Field sales', value: 12 },
-    { name: 'Sales ops', value: 6 },
-  ] },
-  { name: 'Operations', children: [
-    { name: 'Customer success', value: 10 },
-    { name: 'Support', value: 8 },
-    { name: 'Finance', value: 4 },
-  ] },
-  { name: 'Other', children: [
-    { name: 'Marketing', value: 8 },
-    { name: 'People', value: 4 },
-    { name: 'Design', value: 2 },
-  ] },
+  { name: 'Backend', value: 22 },
+  { name: 'Frontend', value: 18 },
+  { name: 'Inside sales', value: 14 },
+  { name: 'Field sales', value: 12 },
+  { name: 'Customer success', value: 10 },
+  { name: 'Marketing', value: 8 },
+  { name: 'Support', value: 8 },
+  { name: 'Mobile', value: 8 },
+  { name: 'Infra', value: 8 },
+  { name: 'Sales ops', value: 6 },
+  { name: 'People', value: 4 },
+  { name: 'Finance', value: 4 },
+  { name: 'Design', value: 2 },
 ]
 
 // Anchor to a fixed date so SSR + client produce identical strings and
@@ -122,6 +121,46 @@ const topCustomers = [
   { name: 'Polaris Software', plan: 'Pro', mrr: 980, status: 'healthy', avatar: 'PS' },
 ]
 
+// Strip every bit of chrome (axes, grid, tooltip, legend) so a chart
+// fits inside a ~32-40px tall KPI tile without competing with the big
+// number above it. Each chart type needs the same overrides but the
+// type-specific bits go on the corresponding option preset below.
+const miniBase = {
+  grid: { left: 0, right: 0, top: 2, bottom: 2, containLabel: false },
+  xAxis: { show: false, type: 'category' },
+  yAxis: { show: false, type: 'value' },
+  tooltip: { show: false },
+  legend: { show: false },
+}
+const miniBarOpt = {
+  ...miniBase,
+  series: [{ type: 'bar', barCategoryGap: '20%', itemStyle: { borderRadius: 2 } }],
+}
+const miniAreaOpt = {
+  ...miniBase,
+  series: [{ type: 'line', smooth: true, symbol: 'none', areaStyle: { opacity: 0.25 }, lineStyle: { width: 2 } }],
+}
+const miniPieOpt = {
+  tooltip: { show: false },
+  legend: { show: false },
+  series: [{
+    type: 'pie',
+    radius: ['58%', '88%'],
+    label: { show: false },
+    labelLine: { show: false },
+    center: ['50%', '50%'],
+  }],
+}
+
+const activeUsersDaily = [8400, 9200, 9800, 10400, 11200, 11800, 12847]
+const requestsTrend = [1800, 2100, 2300, 2200, 2400, 2350, 2484]
+const conversionTrend = [5.8, 6.1, 6.4, 6.8, 7.0, 7.2, 7.4]
+const latencyTrend = [380, 395, 410, 402, 418, 405, 412]
+const churnRetentionPie = [
+  { name: 'Retained', value: 98.2 },
+  { name: 'Churned', value: 1.8 },
+]
+
 const totalMrr = computed(() => topProducts.reduce((s, p) => s + p.mrr, 0))
 const formatK = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
 
@@ -154,48 +193,71 @@ const statusTone: Record<string, string> = {
       </div>
     </header>
 
-    <!-- KPI strip: 6 tiles with sparkline mini-charts -->
+    <!-- KPI strip: 6 tiles, each with a different mini-chart shape so the
+         row reads as variety instead of "six identical sparklines". -->
     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <!-- MRR: smooth line sparkline (revenue trend) -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">MRR <DollarSign class="size-3 text-emerald-600" /></CardDescription></CardHeader>
         <CardContent class="pb-3">
           <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">${{ formatK(totalMrr) }}</span><span class="text-emerald-600 text-[11px] font-medium">+12.4%</span></div>
-          <Sparkline :data="revenueSeries.map(d => d.revenue)" :height="32" class="mt-1.5" />
+          <Sparkline :data="revenueSeries.map(d => d.revenue)" :height="36" class="mt-1.5" />
         </CardContent>
       </Card>
+
+      <!-- Active users: mini bar chart (count over time) -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Active users <Users class="size-3 text-blue-600" /></CardDescription></CardHeader>
         <CardContent class="pb-3">
           <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">12,847</span><span class="text-emerald-600 text-[11px] font-medium">+8.1%</span></div>
-          <Sparkline :data="[8400, 9200, 9800, 10400, 11200, 11800, 12847]" :height="32" class="mt-1.5" />
+          <BarChart :data="activeUsersDaily.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniBarOpt" class="mt-1.5" />
         </CardContent>
       </Card>
+
+      <!-- Requests / min: filled area (volume) -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Requests / min <Zap class="size-3 text-amber-600" /></CardDescription></CardHeader>
         <CardContent class="pb-3">
           <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">2,484</span><span class="text-emerald-600 text-[11px] font-medium">+4.2%</span></div>
-          <Sparkline :data="[1800, 2100, 2300, 2200, 2400, 2350, 2484]" :height="32" class="mt-1.5" />
+          <AreaChart :data="requestsTrend.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniAreaOpt" class="mt-1.5" />
         </CardContent>
       </Card>
+
+      <!-- Conversion: tiny donut (retained vs churned this week as %) -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Conversion <TrendingUp class="size-3 text-violet-600" /></CardDescription></CardHeader>
-        <CardContent class="pb-3">
-          <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">7.4%</span><span class="text-emerald-600 text-[11px] font-medium">+0.6pp</span></div>
-          <Sparkline :data="[5.8, 6.1, 6.4, 6.8, 7.0, 7.2, 7.4]" :height="32" class="mt-1.5" />
+        <CardContent class="pb-3 flex items-center justify-between gap-2">
+          <div>
+            <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">7.4%</span></div>
+            <span class="text-emerald-600 text-[11px] font-medium">+0.6pp</span>
+          </div>
+          <PieChart
+            :data="[{ name: 'Converted', value: 7.4 }, { name: 'Lost', value: 92.6 }]"
+            :height="44"
+            :option="miniPieOpt"
+            class="w-12 shrink-0"
+          />
         </CardContent>
       </Card>
+
+      <!-- Avg latency: bar chart with rising-then-flat profile -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Avg latency <Zap class="size-3 text-rose-600" /></CardDescription></CardHeader>
         <CardContent class="pb-3">
           <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">412ms</span><span class="text-rose-600 text-[11px] font-medium">+18ms</span></div>
-          <Sparkline :data="[380, 395, 410, 402, 418, 405, 412]" :height="32" class="mt-1.5" />
+          <BarChart :data="latencyTrend.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniBarOpt" class="mt-1.5" />
         </CardContent>
       </Card>
+
+      <!-- Churn: tiny donut retained vs churned -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Churn <TrendingDown class="size-3 text-emerald-600" /></CardDescription></CardHeader>
-        <CardContent class="pb-3">
-          <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">1.8%</span><span class="text-emerald-600 text-[11px] font-medium">-0.3pp</span></div>
-          <Sparkline :data="[2.4, 2.3, 2.2, 2.1, 2.0, 1.9, 1.8]" :height="32" class="mt-1.5" />
+        <CardContent class="pb-3 flex items-center justify-between gap-2">
+          <div>
+            <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">1.8%</span></div>
+            <span class="text-emerald-600 text-[11px] font-medium">-0.3pp</span>
+          </div>
+          <PieChart :data="churnRetentionPie" :height="44" :option="miniPieOpt" class="w-12 shrink-0" />
         </CardContent>
       </Card>
     </div>
