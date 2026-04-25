@@ -23,7 +23,7 @@ const props = defineProps<Props>()
         props.class
       )
     "
-    :data-uipkge data-slot="'tabs-content'"
+    data-uipkge data-slot="tabs-content"
   >
     <slot v-bind="slotProps" />
   </TabsContent>

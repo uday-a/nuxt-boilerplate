@@ -36,7 +36,7 @@ const effectiveOrientation = computed(() => {
     v-slot="slotProps"
     :value="props.value"
     :disabled="props.disabled"
-    :data-uipkge data-slot="'tabs-trigger'"
+    data-uipkge data-slot="tabs-trigger"
     :class="
       cn(
         tabsTriggerVariants({
