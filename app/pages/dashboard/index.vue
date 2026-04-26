@@ -122,34 +122,18 @@ const topCustomers = [
 ]
 
 // Strip every bit of chrome (axes, grid, tooltip, legend) so a chart
-// fits inside a ~32-40px tall KPI tile without competing with the big
-// number above it. Each chart type needs the same overrides but the
-// type-specific bits go on the corresponding option preset below.
-const miniBase = {
+// fits inside a ~36-44px tall KPI tile without competing with the big
+// number above it. CAREFUL: never include a `series` key here -- the
+// chart wrappers spread the option prop at the END of their computed
+// option object, so a stub series would clobber the data-bound series
+// and you'd see an empty chart. Series-shape tweaks would belong in
+// the chart components themselves, not in consumer options.
+const miniChrome = {
   grid: { left: 0, right: 0, top: 2, bottom: 2, containLabel: false },
-  xAxis: { show: false, type: 'category' },
-  yAxis: { show: false, type: 'value' },
+  xAxis: { show: false, axisLine: { show: false }, axisLabel: { show: false }, axisTick: { show: false }, splitLine: { show: false } },
+  yAxis: { show: false, axisLine: { show: false }, axisLabel: { show: false }, axisTick: { show: false }, splitLine: { show: false } },
   tooltip: { show: false },
   legend: { show: false },
-}
-const miniBarOpt = {
-  ...miniBase,
-  series: [{ type: 'bar', barCategoryGap: '20%', itemStyle: { borderRadius: 2 } }],
-}
-const miniAreaOpt = {
-  ...miniBase,
-  series: [{ type: 'line', smooth: true, symbol: 'none', areaStyle: { opacity: 0.25 }, lineStyle: { width: 2 } }],
-}
-const miniPieOpt = {
-  tooltip: { show: false },
-  legend: { show: false },
-  series: [{
-    type: 'pie',
-    radius: ['58%', '88%'],
-    label: { show: false },
-    labelLine: { show: false },
-    center: ['50%', '50%'],
-  }],
 }
 
 const activeUsersDaily = [8400, 9200, 9800, 10400, 11200, 11800, 12847]
@@ -210,7 +194,7 @@ const statusTone: Record<string, string> = {
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Active users <Users class="size-3 text-blue-600" /></CardDescription></CardHeader>
         <CardContent class="pb-3">
           <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">12,847</span><span class="text-emerald-600 text-[11px] font-medium">+8.1%</span></div>
-          <BarChart :data="activeUsersDaily.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniBarOpt" class="mt-1.5" />
+          <BarChart :data="activeUsersDaily.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniChrome" class="mt-1.5" />
         </CardContent>
       </Card>
 
@@ -219,45 +203,40 @@ const statusTone: Record<string, string> = {
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Requests / min <Zap class="size-3 text-amber-600" /></CardDescription></CardHeader>
         <CardContent class="pb-3">
           <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">2,484</span><span class="text-emerald-600 text-[11px] font-medium">+4.2%</span></div>
-          <AreaChart :data="requestsTrend.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniAreaOpt" class="mt-1.5" />
+          <AreaChart :data="requestsTrend.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniChrome" class="mt-1.5" />
         </CardContent>
       </Card>
 
-      <!-- Conversion: tiny donut (retained vs churned this week as %) -->
+      <!-- Conversion: mini BarChart (weekly conversion %) -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Conversion <TrendingUp class="size-3 text-violet-600" /></CardDescription></CardHeader>
-        <CardContent class="pb-3 flex items-center justify-between gap-2">
-          <div>
-            <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">7.4%</span></div>
-            <span class="text-emerald-600 text-[11px] font-medium">+0.6pp</span>
-          </div>
-          <PieChart
-            :data="[{ name: 'Converted', value: 7.4 }, { name: 'Lost', value: 92.6 }]"
-            :height="44"
-            :option="miniPieOpt"
-            class="w-12 shrink-0"
-          />
+        <CardContent class="pb-3">
+          <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">7.4%</span><span class="text-emerald-600 text-[11px] font-medium">+0.6pp</span></div>
+          <BarChart :data="conversionTrend.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniChrome" class="mt-1.5" />
         </CardContent>
       </Card>
 
-      <!-- Avg latency: bar chart with rising-then-flat profile -->
+      <!-- Avg latency: AreaChart with rose tint (visual cue for "rising is bad") -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Avg latency <Zap class="size-3 text-rose-600" /></CardDescription></CardHeader>
         <CardContent class="pb-3">
           <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">412ms</span><span class="text-rose-600 text-[11px] font-medium">+18ms</span></div>
-          <BarChart :data="latencyTrend.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniBarOpt" class="mt-1.5" />
+          <AreaChart :data="latencyTrend.map((v, i) => ({ x: i, y: v }))" :height="36" :option="miniChrome" class="mt-1.5" />
         </CardContent>
       </Card>
 
-      <!-- Churn: tiny donut retained vs churned -->
+      <!-- Churn: horizontal Progress bar (% of accounts churning this month) -->
       <Card>
         <CardHeader class="pb-2"><CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">Churn <TrendingDown class="size-3 text-emerald-600" /></CardDescription></CardHeader>
-        <CardContent class="pb-3 flex items-center justify-between gap-2">
-          <div>
-            <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">1.8%</span></div>
-            <span class="text-emerald-600 text-[11px] font-medium">-0.3pp</span>
+        <CardContent class="space-y-2 pb-3">
+          <div class="flex items-baseline gap-1.5"><span class="text-xl font-semibold tabular-nums">1.8%</span><span class="text-emerald-600 text-[11px] font-medium">-0.3pp</span></div>
+          <div class="space-y-1 pt-1">
+            <Progress :model-value="98.2" class="h-1.5" />
+            <div class="flex justify-between text-[9px] text-muted-foreground tabular-nums">
+              <span>Retained 98.2%</span>
+              <span>Target 99%</span>
+            </div>
           </div>
-          <PieChart :data="churnRetentionPie" :height="44" :option="miniPieOpt" class="w-12 shrink-0" />
         </CardContent>
       </Card>
     </div>
@@ -310,7 +289,7 @@ const statusTone: Record<string, string> = {
       <Card class="lg:col-span-2">
         <CardHeader class="pb-3">
           <CardTitle class="text-sm">Headcount by team</CardTitle>
-          <CardDescription class="text-xs">{{ segments.reduce((s, d) => s + (d.children?.reduce((s2, c) => s2 + (c.value ?? 0), 0) ?? 0), 0) }} people across {{ segments.length }} divisions</CardDescription>
+          <CardDescription class="text-xs">{{ segments.reduce((s, d) => s + (d.value ?? 0), 0) }} people across {{ segments.length }} teams</CardDescription>
         </CardHeader>
         <CardContent class="pb-3">
           <TreemapChart :data="segments" :height="200" />

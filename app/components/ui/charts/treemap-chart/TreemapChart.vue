@@ -51,27 +51,24 @@ const mergedOption = computed(() => ({
       breadcrumb: { show: props.showBreadcrumb },
       label: {
         show: true,
-        formatter: '{b}',
-        fontSize: 11,
-        fontWeight: 600,
-        color: '#fff',
+        formatter: ({ name, value }: any) => (value ? `{b|${name}}\n{v|${value}}` : name),
+        rich: {
+          b: { color: '#fff', fontSize: 11, fontWeight: 600, lineHeight: 14 },
+          v: { color: 'rgba(255,255,255,0.85)', fontSize: 10, fontWeight: 500, lineHeight: 12 },
+        },
+        overflow: 'truncate',
+        ellipsis: '…',
       },
-      upperLabel: { show: true, height: 22, fontSize: 11, color: '#fff' },
+      labelLayout: { hideOverlap: false },
+      upperLabel: { show: false },
       itemStyle: { borderColor: '#fff', borderWidth: 2, gapWidth: 2 },
-      levels: [
-        {
-          itemStyle: { borderColor: '#fff', borderWidth: 3, gapWidth: 3 },
-          upperLabel: { show: false },
-        },
-        {
-          itemStyle: { borderColor: '#fff', borderWidth: 2, gapWidth: 2 },
-          colorSaturation: [0.4, 0.7],
-        },
-        {
-          itemStyle: { borderColor: '#fff', borderWidth: 1, gapWidth: 1 },
-          colorSaturation: [0.3, 0.55],
-        },
-      ],
+      // The earlier `levels` config carried `colorSaturation` per depth
+      // for nested trees, but it also implicitly cleared the series
+      // `label` config at each level -- which meant flat data (the
+      // common case) rendered as untitled coloured rectangles. Apply
+      // saturation directly on the series so a single level config
+      // doesn't blow away the labels.
+      colorSaturation: [0.45, 0.7],
       data: props.data,
     },
   ],

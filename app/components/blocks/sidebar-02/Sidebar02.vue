@@ -3,6 +3,8 @@ import {
   BookOpen,
   Bot,
   Frame,
+  KanbanSquare,
+  LayoutDashboard,
   LifeBuoy,
   Map,
   PieChart,
@@ -32,10 +34,20 @@ const data = {
   },
   navMain: [
     {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+      isActive: true,
+    },
+    {
+      title: "Kanban",
+      url: "/dashboard/kanban",
+      icon: KanbanSquare,
+    },
+    {
       title: "Playground",
       url: "/playground",
       icon: SquareTerminal,
-      isActive: true,
       items: [
         { title: "History", url: "/playground/history" },
         { title: "Starred", url: "/playground/starred" },
