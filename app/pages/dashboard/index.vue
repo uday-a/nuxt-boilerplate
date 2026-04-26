@@ -52,12 +52,11 @@ const funnel = [
   { name: 'Retained 30d', value: 248 },
 ]
 
-// Flat single-level layout. The previous nested {name, children} shape
-// rendered division headers (upperLabel) over each block, eating ~22px
-// per level at a 200px tile and squeezing the leaf labels invisible.
-// Flat shape lets every team get its proportional area + a readable
-// label at this size.
-const segments = [
+// Top 8 teams visible, the 5 smallest bundled into "Other" so every
+// rect is wide enough for a readable label. Total headcount is
+// preserved (124 across 13 teams) -- the "Other" bundle's segment
+// count is the truth we want in the chart, not just a count.
+const rawSegments = [
   { name: 'Backend', value: 22 },
   { name: 'Frontend', value: 18 },
   { name: 'Inside sales', value: 14 },
@@ -72,6 +71,17 @@ const segments = [
   { name: 'Finance', value: 4 },
   { name: 'Design', value: 2 },
 ]
+const segmentsVisibleCount = 8
+const segmentsSorted = [...rawSegments].sort((a, b) => b.value - a.value)
+const segments = [
+  ...segmentsSorted.slice(0, segmentsVisibleCount),
+  {
+    name: `Other (${segmentsSorted.length - segmentsVisibleCount})`,
+    value: segmentsSorted.slice(segmentsVisibleCount).reduce((s, x) => s + x.value, 0),
+  },
+]
+const totalHeadcount = rawSegments.reduce((s, d) => s + d.value, 0)
+const totalTeams = rawSegments.length
 
 // Anchor to a fixed date so SSR + client produce identical strings and
 // values (Math.random() / new Date() would diverge between renders and
@@ -289,7 +299,7 @@ const statusTone: Record<string, string> = {
       <Card class="lg:col-span-2">
         <CardHeader class="pb-3">
           <CardTitle class="text-sm">Headcount by team</CardTitle>
-          <CardDescription class="text-xs">{{ segments.reduce((s, d) => s + (d.value ?? 0), 0) }} people across {{ segments.length }} teams</CardDescription>
+          <CardDescription class="text-xs">{{ totalHeadcount }} people across {{ totalTeams }} teams · top {{ segmentsVisibleCount }} shown</CardDescription>
         </CardHeader>
         <CardContent class="pb-3">
           <TreemapChart :data="segments" :height="200" />
