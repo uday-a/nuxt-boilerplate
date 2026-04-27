@@ -253,7 +253,7 @@ const statusTone: Record<string, string> = {
 
     <!-- Charts row 1: revenue line (wide) + funnel + gauge -->
     <div class="grid gap-3 lg:grid-cols-6">
-      <Card class="lg:col-span-3">
+      <Card class="lg:col-span-2">
         <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-3">
           <div>
             <CardTitle class="text-sm">Revenue vs expenses</CardTitle>
@@ -262,16 +262,16 @@ const statusTone: Record<string, string> = {
           <Badge variant="outline" class="text-[10px]">May +12.4%</Badge>
         </CardHeader>
         <CardContent class="pb-3">
-          <LineChart :data="revenueSeries" x-field="month" :y-field="['revenue', 'expenses']" :height="220" />
+          <LineChart :data="revenueSeries" x-field="month" :y-field="['revenue', 'expenses']" :height="300" />
         </CardContent>
       </Card>
-      <Card class="lg:col-span-2">
+      <Card class="lg:col-span-3">
         <CardHeader class="pb-3">
           <CardTitle class="text-sm">Conversion funnel</CardTitle>
           <CardDescription class="text-xs">Last 30 days · 6.6% end-to-end</CardDescription>
         </CardHeader>
         <CardContent class="pb-3">
-          <FunnelChart :data="funnel" :height="220" />
+          <FunnelChart :data="funnel" :height="300" />
         </CardContent>
       </Card>
       <Card class="lg:col-span-1">
@@ -280,7 +280,7 @@ const statusTone: Record<string, string> = {
           <CardDescription class="text-xs">API · monthly</CardDescription>
         </CardHeader>
         <CardContent class="pb-2">
-          <GaugeChart :value="68" unit="%" :height="180" />
+          <GaugeChart :value="68" unit="%" :height="260" />
         </CardContent>
       </Card>
     </div>
