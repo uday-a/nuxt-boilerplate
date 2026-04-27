@@ -271,7 +271,30 @@ const statusTone: Record<string, string> = {
           <CardDescription class="text-xs">Last 30 days · 6.6% end-to-end</CardDescription>
         </CardHeader>
         <CardContent class="pb-3">
-          <FunnelChart :data="funnel" :height="220" />
+          <!-- `funnelAlign: 'left'` swaps the classic centred-taper funnel
+               for a left-aligned stepped cascade. Labels sit outside on
+               the right of each step (`position: 'right'`) so they don't
+               get clipped as the trapezoids narrow stage by stage --
+               'inside' worked for the top step but truncated everything
+               below it. Right padding on the series leaves room. -->
+          <FunnelChart
+            :data="funnel"
+            :height="220"
+            :option="{ series: [{
+              type: 'funnel',
+              funnelAlign: 'left',
+              sort: 'descending',
+              left: '4%',
+              right: '32%',
+              top: 8,
+              bottom: 8,
+              gap: 3,
+              label: { position: 'right', color: '#a3a3a3', fontSize: 11, fontWeight: 500, formatter: '{b}  ·  {c}' },
+              labelLine: { length: 12, lineStyle: { color: '#525252', width: 1 } },
+              itemStyle: { borderColor: 'transparent', borderWidth: 0 },
+              data: funnel,
+            }] }"
+          />
         </CardContent>
       </Card>
       <Card class="lg:col-span-1">
