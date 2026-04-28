@@ -44,12 +44,15 @@ const requestsHourly = Array.from({ length: 24 }, (_, h) => ({
   requests: Math.round(800 + Math.sin((h - 6) / 24 * Math.PI * 2) * 500 + Math.random() * 200),
 }))
 
+// Stepwise conversion rates: Sign-ups retains 60% of Visitors,
+// Activated 40% of Sign-ups, Paid 30% of Activated, Retained 25% of
+// Paid. End-to-end = 0.60 * 0.40 * 0.30 * 0.25 = 1.8% of Visitors.
 const funnel = [
   { name: 'Visitors', value: 24850 },
-  { name: 'Sign-ups', value: 1842 },
-  { name: 'Activated', value: 920 },
-  { name: 'Paid', value: 312 },
-  { name: 'Retained 30d', value: 248 },
+  { name: 'Sign-ups', value: 14910 },     // 60% of Visitors
+  { name: 'Activated', value: 5964 },     // 40% of Sign-ups
+  { name: 'Paid', value: 1789 },          // 30% of Activated
+  { name: 'Retained 30d', value: 447 },   // 25% of Paid
 ]
 
 // Top 8 teams visible, the 5 smallest bundled into "Other" so every
@@ -265,22 +268,22 @@ const statusTone: Record<string, string> = {
           <LineChart :data="revenueSeries" x-field="month" :y-field="['revenue', 'expenses']" :height="300" />
         </CardContent>
       </Card>
-      <Card class="lg:col-span-3">
+      <Card class="lg:col-span-2">
         <CardHeader class="pb-3">
           <CardTitle class="text-sm">Conversion funnel</CardTitle>
-          <CardDescription class="text-xs">Last 30 days · 6.6% end-to-end</CardDescription>
+          <CardDescription class="text-xs">Last 30 days · 1.8% end-to-end (60% → 40% → 30% → 25%)</CardDescription>
         </CardHeader>
         <CardContent class="pb-3">
           <FunnelChart :data="funnel" :height="300" />
         </CardContent>
       </Card>
-      <Card class="lg:col-span-1">
+      <Card class="lg:col-span-2">
         <CardHeader class="pb-3">
           <CardTitle class="text-sm">Quota</CardTitle>
           <CardDescription class="text-xs">API · monthly</CardDescription>
         </CardHeader>
         <CardContent class="pb-2">
-          <GaugeChart :value="68" unit="%" :height="260" />
+          <GaugeChart :value="68" unit="%" :height="300" />
         </CardContent>
       </Card>
     </div>
