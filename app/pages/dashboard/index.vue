@@ -47,13 +47,46 @@ const requestsHourly = Array.from({ length: 24 }, (_, h) => ({
 // Stepwise conversion rates: Sign-ups retains 60% of Visitors,
 // Activated 40% of Sign-ups, Paid 30% of Activated, Retained 25% of
 // Paid. End-to-end = 0.60 * 0.40 * 0.30 * 0.25 = 1.8% of Visitors.
+//
+// The two bottom stages (Paid, Retained 30d) carry the same `value` as
+// Activated so they render at the same trapezoid width -- a deliberate
+// "the funnel reaches a floor" look. `realValue` keeps the actual
+// count for the label formatter (see funnelOption below).
 const funnel = [
-  { name: 'Visitors', value: 24850 },
-  { name: 'Sign-ups', value: 14910 },     // 60% of Visitors
-  { name: 'Activated', value: 5964 },     // 40% of Sign-ups
-  { name: 'Paid', value: 1789 },          // 30% of Activated
-  { name: 'Retained 30d', value: 447 },   // 25% of Paid
+  { name: 'Visitors', value: 24850, realValue: 24850 },
+  { name: 'Sign-ups', value: 14910, realValue: 14910 },     // 60% of Visitors
+  { name: 'Activated', value: 5964, realValue: 5964 },      // 40% of Sign-ups
+  { name: 'Paid', value: 5964, realValue: 1789 },           // 30% of Activated
+  { name: 'Retained 30d', value: 5964, realValue: 447 },    // 25% of Paid
 ]
+
+// Custom funnel series so the bottom-three equal-size effect works
+// AND the inline labels show the real count rather than the inflated
+// visual value. `sort: 'none'` is important -- with three identical
+// values ECharts otherwise reshuffles the order.
+const funnelOption = {
+  series: [{
+    type: 'funnel',
+    sort: 'none',
+    left: '10%',
+    right: '10%',
+    top: 10,
+    bottom: 24,
+    gap: 2,
+    label: {
+      show: true,
+      position: 'inside',
+      color: '#fff',
+      fontSize: 12,
+      fontWeight: 600,
+      formatter: (p: any) => `${p.name}\n${(p.data?.realValue ?? p.value).toLocaleString()}`,
+    },
+    labelLine: { length: 8, lineStyle: { width: 1, type: 'solid' } },
+    itemStyle: { borderColor: '#fff', borderWidth: 1 },
+    emphasis: { label: { fontSize: 13, fontWeight: 700 } },
+    data: funnel,
+  }],
+}
 
 // Top 8 teams visible, the 5 smallest bundled into "Other" so every
 // rect is wide enough for a readable label. Total headcount is
@@ -274,7 +307,7 @@ const statusTone: Record<string, string> = {
           <CardDescription class="text-xs">Last 30 days · 1.8% end-to-end (60% → 40% → 30% → 25%)</CardDescription>
         </CardHeader>
         <CardContent class="pb-3">
-          <FunnelChart :data="funnel" :height="300" />
+          <FunnelChart :data="funnel" :height="300" :option="funnelOption" />
         </CardContent>
       </Card>
       <Card class="lg:col-span-2">

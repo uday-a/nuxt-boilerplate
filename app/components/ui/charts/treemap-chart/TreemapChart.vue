@@ -44,11 +44,19 @@ const mergedOption = computed(() => ({
   series: [
     {
       type: 'treemap',
-      width: '100%',
-      height: '100%',
+      // Explicit left/top/right/bottom anchor the layout at 0,0 of the
+      // container. Without these, ECharts centres the treemap and the
+      // (invisible) breadcrumb still reserves ~22px at the top -- shows
+      // up as a phantom gap above the first rect.
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      width: 'auto',
+      height: 'auto',
       roam: false,
       nodeClick: false,
-      breadcrumb: { show: props.showBreadcrumb },
+      breadcrumb: { show: props.showBreadcrumb, height: 0 },
       label: {
         show: true,
         formatter: ({ name, value }: any) => (value ? `{b|${name}}\n{v|${value}}` : name),
