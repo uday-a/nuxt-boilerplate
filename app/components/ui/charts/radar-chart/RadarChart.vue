@@ -24,12 +24,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const mergedOption = computed(() => {
   return {
-    color: chartColors,
+    color: chartColors.value,
     tooltip: {
       trigger: 'item',
-      backgroundColor: chartTooltipBg,
-      borderColor: chartTooltipBorder,
-      textStyle: { color: chartTooltipText, fontSize: 12 },
+      backgroundColor: chartTooltipBg.value,
+      borderColor: chartTooltipBorder.value,
+      textStyle: { color: chartTooltipText.value, fontSize: 12 },
     },
     legend: {
       bottom: 0,
@@ -50,7 +50,7 @@ const mergedOption = computed(() => {
         type: 'radar',
         data: props.data.map((d, i) => ({
           ...d,
-          itemStyle: { color: chartColors[i % chartColors.length] },
+          itemStyle: { color: chartColors.value[i % chartColors.value.length] },
           areaStyle: { opacity: 0.15 },
           lineStyle: { width: 2 },
         })),

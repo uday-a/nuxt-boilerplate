@@ -3,7 +3,7 @@ import { Search, Filter, ChevronDown, X, LayoutGrid, List } from 'lucide-vue-nex
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Toggle } from '@/components/ui/toggle'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,26 +85,28 @@ defineEmits<{
       <X class="size-3 opacity-50" />
     </Badge>
 
-    <div class="bg-muted ml-auto flex items-center gap-0.5 rounded-md p-0.5">
-      <Toggle
-        size="sm"
-        :pressed="viewMode === 'board'"
+    <ToggleGroup
+      type="single"
+      size="sm"
+      :model-value="viewMode"
+      class="bg-muted ml-auto flex items-center gap-0.5 rounded-md p-0.5"
+      @update:model-value="(v) => v && $emit('update:viewMode', v as 'board' | 'list')"
+    >
+      <ToggleGroupItem
+        value="board"
         class="data-[state=on]:bg-background size-7 rounded-sm p-0 data-[state=on]:shadow-sm"
         title="Board view"
-        @click="$emit('update:viewMode', 'board')"
       >
         <LayoutGrid class="size-3.5" />
-      </Toggle>
-      <Toggle
-        size="sm"
-        :pressed="viewMode === 'list'"
+      </ToggleGroupItem>
+      <ToggleGroupItem
+        value="list"
         class="data-[state=on]:bg-background size-7 rounded-sm p-0 data-[state=on]:shadow-sm"
         title="List view"
-        @click="$emit('update:viewMode', 'list')"
       >
         <List class="size-3.5" />
-      </Toggle>
-    </div>
+      </ToggleGroupItem>
+    </ToggleGroup>
 
     <div class="flex items-center">
       <TooltipProvider :delay-duration="300">
@@ -112,9 +114,11 @@ defineEmits<{
           <TooltipTrigger as-child>
             <button
               :class="[
-                'ring-background relative -ml-1.5 transition-all first:ml-0',
+                // rounded-full so the selected ring + focus ring trace the
+                // Avatar's circular outline instead of the rectangular button.
+                'ring-background relative -ml-1.5 rounded-full outline-none transition-all first:ml-0 focus-visible:ring-1 focus-visible:ring-ring/50',
                 selectedAssignee === a.name
-                  ? 'ring-primary z-20 scale-125 ring-2'
+                  ? 'ring-primary z-20 ring-1'
                   : selectedAssignee && selectedAssignee !== a.name
                     ? 'opacity-40 hover:opacity-70'
                     : 'hover:z-10 hover:scale-110',

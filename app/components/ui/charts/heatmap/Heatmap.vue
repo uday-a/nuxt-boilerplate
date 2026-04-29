@@ -34,9 +34,9 @@ const mergedOption = computed(() => {
     grid: { left: 16, right: 16, top: 16, bottom: 16, containLabel: true },
     tooltip: {
       position: 'top',
-      backgroundColor: chartTooltipBg,
-      borderColor: chartTooltipBorder,
-      textStyle: { color: chartTooltipText, fontSize: 12 },
+      backgroundColor: chartTooltipBg.value,
+      borderColor: chartTooltipBorder.value,
+      textStyle: { color: chartTooltipText.value, fontSize: 12 },
       formatter: (params: any) => `${props.yLabels[params.value[1]]} / ${props.xLabels[params.value[0]]}: ${params.value[2]}`,
     },
     xAxis: {

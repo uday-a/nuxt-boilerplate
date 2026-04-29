@@ -31,15 +31,15 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const mergedOption = computed(() => ({
-  color: chartColors,
+  color: chartColors.value,
   tooltip: {
     formatter: (info: any) => {
       const parts = info.treePathInfo.map((n: any) => n.name).filter(Boolean)
       return `<strong>${parts.join(' / ')}</strong><br>${info.value?.toLocaleString?.() ?? info.value}`
     },
-    backgroundColor: chartTooltipBg,
-    borderColor: chartTooltipBorder,
-    textStyle: { color: chartTooltipText, fontSize: 12 },
+    backgroundColor: chartTooltipBg.value,
+    borderColor: chartTooltipBorder.value,
+    textStyle: { color: chartTooltipText.value, fontSize: 12 },
   },
   series: [
     {

@@ -6,7 +6,7 @@ import { GaugeChart as EChartsGaugeChart } from 'echarts/charts'
 import { TooltipComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { cn } from '@/lib/utils'
-import { chartColors, chartTextColor, chartTooltipBg, chartTooltipBorder, chartTooltipText } from '../useChartTheme'
+import { chartColors, chartTextColor, chartTooltipBg, chartTooltipBorder, chartTooltipText, gaugeThresholds } from '../useChartTheme'
 
 interface Props {
   value: number
@@ -15,7 +15,9 @@ interface Props {
   unit?: string
   label?: string
   height?: number | string
-  /** Colour stops as [percentage, hex] pairs. Default: green→amber→red. */
+  /** Colour stops as [percentage, hex] pairs. Default: teal->amber->red,
+   *  pulled from `gaugeThresholds` in useChartTheme so the safe-zone
+   *  colour ties back to the dashboard palette. Pass your own to override. */
   thresholds?: [number, string][]
   option?: any
   class?: string
@@ -28,19 +30,15 @@ const props = withDefaults(defineProps<Props>(), {
   max: 100,
   unit: '',
   height: 220,
-  thresholds: () => [
-    [0.6, '#16a34a'],
-    [0.85, '#f59e0b'],
-    [1, '#dc2626'],
-  ],
+  thresholds: () => gaugeThresholds,
 })
 
 const mergedOption = computed(() => ({
   tooltip: {
     formatter: '{b}: {c}' + (props.unit ? ` ${props.unit}` : ''),
-    backgroundColor: chartTooltipBg,
-    borderColor: chartTooltipBorder,
-    textStyle: { color: chartTooltipText, fontSize: 12 },
+    backgroundColor: chartTooltipBg.value,
+    borderColor: chartTooltipBorder.value,
+    textStyle: { color: chartTooltipText.value, fontSize: 12 },
   },
   series: [
     {
@@ -59,20 +57,20 @@ const mergedOption = computed(() => ({
           color: props.thresholds.map(([stop, color]) => [stop, color] as [number, string]),
         },
       },
-      axisTick: { distance: -22, length: 4, lineStyle: { color: chartTextColor, width: 1 } },
-      splitLine: { distance: -26, length: 8, lineStyle: { color: chartTextColor, width: 2 } },
-      axisLabel: { color: chartTextColor, fontSize: 10, distance: -34 },
+      axisTick: { distance: -22, length: 4, lineStyle: { color: chartTextColor.value, width: 1 } },
+      splitLine: { distance: -26, length: 8, lineStyle: { color: chartTextColor.value, width: 2 } },
+      axisLabel: { color: chartTextColor.value, fontSize: 10, distance: -34 },
       anchor: { show: false },
       title: {
         offsetCenter: [0, '88%'],
-        color: chartTextColor,
+        color: chartTextColor.value,
         fontSize: 11,
         fontWeight: 500,
       },
       detail: {
         valueAnimation: true,
         formatter: `{value}${props.unit ? ' ' + props.unit : ''}`,
-        color: chartColors[0],
+        color: chartColors.value[0],
         fontSize: 28,
         fontWeight: 700,
         offsetCenter: [0, '40%'],

@@ -45,7 +45,7 @@ defineEmits<{
   >
     <div
       :class="[
-        'kanban-accent absolute top-3 bottom-3 left-0 w-[3px] rounded-full transition-all duration-150',
+        'kanban-accent absolute top-3 bottom-3 left-0 w-[1.5px] rounded-full transition-all duration-150',
         priorityConfig[task.priority].bg,
         task.priority === 'low' ? 'opacity-40' : task.priority === 'medium' ? 'opacity-60' : 'opacity-90',
       ]"
@@ -136,6 +136,6 @@ defineEmits<{
   }
 }
 .kanban-card:hover .kanban-accent {
-  box-shadow: 0 0 6px currentColor;
+  box-shadow: 0 0 3px currentColor;
 }
 </style>

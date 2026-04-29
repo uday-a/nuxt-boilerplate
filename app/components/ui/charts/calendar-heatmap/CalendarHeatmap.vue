@@ -29,13 +29,13 @@ const props = withDefaults(defineProps<Props>(), {
 const maxValue = computed(() => props.data.reduce((m, [, v]) => Math.max(m, v), 0) || 1)
 
 const mergedOption = computed(() => ({
-  color: chartColors,
+  color: chartColors.value,
   tooltip: {
     position: 'top',
     formatter: (p: any) => `<strong>${p.value[0]}</strong><br>${p.value[1]} contributions`,
-    backgroundColor: chartTooltipBg,
-    borderColor: chartTooltipBorder,
-    textStyle: { color: chartTooltipText, fontSize: 12 },
+    backgroundColor: chartTooltipBg.value,
+    borderColor: chartTooltipBorder.value,
+    textStyle: { color: chartTooltipText.value, fontSize: 12 },
   },
   visualMap: {
     show: false,
@@ -49,10 +49,10 @@ const mergedOption = computed(() => ({
     right: 12,
     cellSize: ['auto', 14],
     range: props.range,
-    itemStyle: { color: chartSplitLineColor, borderColor: '#fff', borderWidth: 2 },
+    itemStyle: { color: chartSplitLineColor.value, borderColor: '#fff', borderWidth: 2 },
     splitLine: { show: false },
-    dayLabel: { color: chartTextColor, fontSize: 10, firstDay: 1, nameMap: ['S', 'M', 'T', 'W', 'T', 'F', 'S'] },
-    monthLabel: { color: chartTextColor, fontSize: 10, fontWeight: 600 },
+    dayLabel: { color: chartTextColor.value, fontSize: 10, firstDay: 1, nameMap: ['S', 'M', 'T', 'W', 'T', 'F', 'S'] },
+    monthLabel: { color: chartTextColor.value, fontSize: 10, fontWeight: 600 },
     yearLabel: { show: false },
   },
   series: [

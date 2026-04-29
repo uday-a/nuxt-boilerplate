@@ -2,6 +2,7 @@
 import {
   BookOpen,
   Bot,
+  FileText,
   Frame,
   KanbanSquare,
   LayoutDashboard,
@@ -11,6 +12,7 @@ import {
   Send,
   Settings2,
   SquareTerminal,
+  Table2,
 } from "lucide-vue-next"
 
 import NavMain from './NavMain.vue'
@@ -43,6 +45,16 @@ const data = {
       title: "Kanban",
       url: "/dashboard/kanban",
       icon: KanbanSquare,
+    },
+    {
+      title: "Data table",
+      url: "/dashboard/data-table",
+      icon: Table2,
+    },
+    {
+      title: "Forms",
+      url: "/dashboard/forms",
+      icon: FileText,
     },
     {
       title: "Playground",

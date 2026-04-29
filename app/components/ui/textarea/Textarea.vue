@@ -40,8 +40,9 @@ export interface TextareaProps {
   noResize?: boolean
   autoResize?: boolean
 
-  // Rows
-  rows?: number
+  // Rows -- accept both number and string ("3" vs :rows="3") so unbound
+  // attribute usage doesn't trip the Vue prop-type warning.
+  rows?: number | string
   rowHeight?: number
 
   // Prefix/Suffix
@@ -189,15 +190,17 @@ const measureHeights = () => {
 watch(() => autoSizeConfig.value, measureHeights, { deep: true })
 
 // Auto grow functionality (legacy)
+const rowsNum = computed(() => Number(props.rows) || 3)
+
 const computedRows = computed(() => {
-  if (autoSizeEnabled.value || props.autoResize) return props.rows
-  if (!props.autoGrow) return props.rows
-  if (!textareaRef.value) return props.rows
+  if (autoSizeEnabled.value || props.autoResize) return rowsNum.value
+  if (!props.autoGrow) return rowsNum.value
+  if (!textareaRef.value) return rowsNum.value
 
   const lineHeight = props.rowHeight
   const computedHeight = textareaRef.value.scrollHeight
   const newRows = Math.ceil((computedHeight - lineHeight) / lineHeight) + 1
-  return Math.max(props.rows, newRows)
+  return Math.max(rowsNum.value, newRows)
 })
 
 // Validation

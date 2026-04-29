@@ -19,7 +19,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   height: 40,
-  color: chartColors[1],
+  color: chartColors.value[1],
 })
 
 const mergedOption = computed(() => {

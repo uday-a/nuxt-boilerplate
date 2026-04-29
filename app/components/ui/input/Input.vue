@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
+import type { Component, HTMLAttributes } from 'vue'
 import { computed, ref, useAttrs, useSlots } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { cn } from '@/lib/utils'
@@ -18,6 +18,11 @@ interface Props {
   status?: 'error' | 'warning'
   prefix?: string
   suffix?: string
+  // Convenience props for the very common "icon at the start/end" case.
+  // Pass a lucide-vue-next (or any) component: `:prefix-icon="Mail"`.
+  // If both `prefix` (string) and `prefixIcon` are set, the icon wins.
+  prefixIcon?: Component
+  suffixIcon?: Component
   addonBefore?: string
   addonAfter?: string
   allowClear?: boolean
@@ -56,8 +61,8 @@ const hovered = ref(false)
 const passwordVisible = ref(false)
 
 const isPassword = computed(() => props.type === 'password')
-const hasPrefix = computed(() => !!props.prefix || !!slots.prefix)
-const hasSuffix = computed(() => !!props.suffix || !!slots.suffix)
+const hasPrefix = computed(() => !!props.prefix || !!props.prefixIcon || !!slots.prefix)
+const hasSuffix = computed(() => !!props.suffix || !!props.suffixIcon || !!slots.suffix)
 const hasAddonBefore = computed(() => !!props.addonBefore || !!slots.addonBefore)
 const hasAddonAfter = computed(() => !!props.addonAfter || !!slots.addonAfter)
 
@@ -200,7 +205,10 @@ function togglePassword() {
         class="text-muted-foreground pointer-events-none shrink-0 select-none"
         :class="props.size === 'small' ? 'pl-2' : props.size === 'large' ? 'pl-3' : 'pl-2.5'"
       >
-        <slot name="prefix">{{ prefix }}</slot>
+        <slot name="prefix">
+          <component :is="prefixIcon" v-if="prefixIcon" class="size-4" />
+          <template v-else>{{ prefix }}</template>
+        </slot>
       </span>
 
       <!-- Native input -->
@@ -259,7 +267,10 @@ function togglePassword() {
         </span>
 
         <span v-if="hasSuffix" class="text-muted-foreground pointer-events-none select-none">
-          <slot name="suffix">{{ suffix }}</slot>
+          <slot name="suffix">
+            <component :is="suffixIcon" v-if="suffixIcon" class="size-4" />
+            <template v-else>{{ suffix }}</template>
+          </slot>
         </span>
       </div>
     </div>

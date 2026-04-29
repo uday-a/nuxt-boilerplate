@@ -34,12 +34,12 @@ const mergedOption = computed(() => {
   }))
 
   return {
-    color: chartColors,
+    color: chartColors.value,
     tooltip: {
       trigger: 'item',
-      backgroundColor: chartTooltipBg,
-      borderColor: chartTooltipBorder,
-      textStyle: { color: chartTooltipText, fontSize: 12 },
+      backgroundColor: chartTooltipBg.value,
+      borderColor: chartTooltipBorder.value,
+      textStyle: { color: chartTooltipText.value, fontSize: 12 },
       formatter: '{b}: {c} ({d}%)',
     },
     legend: {

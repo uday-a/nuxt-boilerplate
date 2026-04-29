@@ -9,7 +9,11 @@ import { cva } from 'class-variance-authority'
  */
 
 export const toggleVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] outline-none transition-all duration-200 whitespace-nowrap",
+  // Focus ring intentionally subtle: 1px ring on :focus-visible only, no
+  // border swap. Keyboard users still get a clear focused state; mouse
+  // users don't see a loud 3px halo after click (which lingers because
+  // the button retains focus). Matches the segmented-control density.
+  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium hover:bg-muted hover:text-muted-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 focus-visible:ring-ring/50 focus-visible:ring-1 outline-none transition-all duration-200 whitespace-nowrap",
   {
     variants: {
       variant: {

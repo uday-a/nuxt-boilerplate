@@ -36,7 +36,7 @@ const mergedOption = computed(() => {
     name: cat,
     type: 'scatter',
     symbolSize: (val: any[]) => (props.sizeField ? Math.sqrt(val[2]) * 3 + 4 : 10),
-    itemStyle: { color: chartColors[i % chartColors.length] },
+    itemStyle: { color: chartColors.value[i % chartColors.value.length] },
     data: props.categoryField
       ? props.data
           .filter((d) => d[props.categoryField!] === cat)
@@ -45,28 +45,28 @@ const mergedOption = computed(() => {
   }))
 
   return {
-    color: chartColors,
+    color: chartColors.value,
     grid: { left: 16, right: 16, top: 24, bottom: categories.length > 1 ? 32 : 24, containLabel: true },
     tooltip: {
       trigger: 'item',
-      backgroundColor: chartTooltipBg,
-      borderColor: chartTooltipBorder,
-      textStyle: { color: chartTooltipText, fontSize: 12 },
+      backgroundColor: chartTooltipBg.value,
+      borderColor: chartTooltipBorder.value,
+      textStyle: { color: chartTooltipText.value, fontSize: 12 },
       formatter: (params: any) => `${params.seriesName}<br/>${props.xField}: ${params.value[0]}<br/>${props.yField}: ${params.value[1]}`,
     },
-    legend: categories.length > 1 ? { bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8, textStyle: { fontSize: 11, color: chartTextColor } } : undefined,
+    legend: categories.length > 1 ? { bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8, textStyle: { fontSize: 11, color: chartTextColor.value } } : undefined,
     xAxis: {
       type: 'value',
-      splitLine: { lineStyle: { color: chartSplitLineColor } },
-      axisLabel: { color: chartTextColor, fontSize: 11 },
-      axisLine: { lineStyle: { color: chartAxisColor } },
+      splitLine: { lineStyle: { color: chartSplitLineColor.value } },
+      axisLabel: { color: chartTextColor.value, fontSize: 11 },
+      axisLine: { lineStyle: { color: chartAxisColor.value } },
       axisTick: { show: false },
       scale: true,
     },
     yAxis: {
       type: 'value',
-      splitLine: { lineStyle: { color: chartSplitLineColor } },
-      axisLabel: { color: chartTextColor, fontSize: 11 },
+      splitLine: { lineStyle: { color: chartSplitLineColor.value } },
+      axisLabel: { color: chartTextColor.value, fontSize: 11 },
       axisLine: { show: false },
       axisTick: { show: false },
       scale: true,

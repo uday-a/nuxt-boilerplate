@@ -134,7 +134,14 @@ function normalizeOption(option: RadioOption): { label: string; value: string; d
 </script>
 
 <template>
-  <div class="flex flex-col gap-2" :class="props.class">
+  <!--
+    `props.class` is forwarded ONLY to RadioGroupRoot below (per shadcn
+    convention). Applying it on the outer wrapper as well caused grid-*
+    utilities to fight the wrapper's `flex flex-col`, so consumers had
+    to fall back to column-count hacks. Forwarding to one element keeps
+    layout intent unambiguous.
+  -->
+  <div class="flex flex-col gap-2">
     <label v-if="label" class="text-sm font-medium">
       {{ label }}
     </label>

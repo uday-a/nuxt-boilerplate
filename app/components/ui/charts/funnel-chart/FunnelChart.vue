@@ -27,16 +27,16 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const mergedOption = computed(() => ({
-  color: chartColors,
+  color: chartColors.value,
   tooltip: {
     trigger: 'item',
     formatter: '{b}: {c} ({d}%)',
-    backgroundColor: chartTooltipBg,
-    borderColor: chartTooltipBorder,
-    textStyle: { color: chartTooltipText, fontSize: 12 },
+    backgroundColor: chartTooltipBg.value,
+    borderColor: chartTooltipBorder.value,
+    textStyle: { color: chartTooltipText.value, fontSize: 12 },
   },
   legend: props.showLegend
-    ? { bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8, textStyle: { fontSize: 11, color: chartTextColor } }
+    ? { bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8, textStyle: { fontSize: 11, color: chartTextColor.value } }
     : undefined,
   series: [
     {
