@@ -1,22 +1,30 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import {
+  Activity,
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
+  ArrowUpRight,
+  Building2,
   Check,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
   Columns3,
+  CreditCard,
   Download,
   Filter,
+  Mail,
+  MapPin,
   MoreHorizontal,
   Plus,
   RotateCcw,
   Search,
   SlidersHorizontal,
+  UserPlus,
+  Users,
 } from 'lucide-vue-next'
 import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -29,6 +37,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -312,6 +321,56 @@ const dateRangeLabel: Record<DateRange, string> = {
 
 const cellPad = computed(() => (density.value === 'compact' ? 'py-1.5' : 'py-3'))
 const visibleCount = computed(() => columns.filter((c) => visibleCols.value.has(c.key)).length + 2)
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? '')
+    .join('')
+}
+
+// Deterministic-ish hue from a string -- keeps each customer's avatar
+// stable across renders without storing a seed in the row data.
+function hueFor(s: string) {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0
+  return h % 360
+}
+
+const planChipTone: Record<Plan, string> = {
+  Free: 'bg-muted text-muted-foreground',
+  Pro: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
+  Team: 'bg-violet-500/10 text-violet-700 dark:text-violet-400',
+  Enterprise: 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
+}
+
+interface TimelineEvent {
+  icon: typeof Mail
+  title: string
+  meta: string
+  tone: string
+}
+
+// Synthesised activity -- in production this would come from
+// `/api/customers/:id/events`; the shape is deterministic from the row
+// data so the demo doesn't churn between opens.
+function timelineFor(c: Customer): TimelineEvent[] {
+  const events: TimelineEvent[] = []
+  events.push({ icon: UserPlus, title: 'Account created', meta: c.createdAt, tone: 'text-muted-foreground' })
+  if (c.status === 'invited') {
+    events.push({ icon: Mail, title: 'Invite email sent', meta: c.lastSeen, tone: 'text-amber-600 dark:text-amber-400' })
+  } else if (c.status === 'trial') {
+    events.push({ icon: Activity, title: 'Trial started', meta: c.lastSeen, tone: 'text-blue-600 dark:text-blue-400' })
+  } else if (c.status === 'churned') {
+    events.push({ icon: CreditCard, title: 'Subscription ended', meta: c.lastSeen, tone: 'text-rose-600 dark:text-rose-400' })
+  } else {
+    events.push({ icon: CreditCard, title: `Renewed at ${formatMoney(c.mrr)}/mo`, meta: c.lastSeen, tone: 'text-emerald-600 dark:text-emerald-400' })
+    events.push({ icon: Users, title: `${c.seats} seats provisioned`, meta: c.lastSeen, tone: 'text-muted-foreground' })
+  }
+  return events
+}
 </script>
 
 <template>
@@ -588,51 +647,133 @@ const visibleCount = computed(() => columns.filter((c) => visibleCols.value.has(
     </Card>
 
     <Sheet v-model:open="detailOpen">
-      <SheetContent class="sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>{{ detailCustomer?.name }}</SheetTitle>
-          <SheetDescription>{{ detailCustomer?.email }}</SheetDescription>
-        </SheetHeader>
-        <div v-if="detailCustomer" class="space-y-4 px-4 pb-4 text-sm">
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <div class="text-muted-foreground text-xs">Plan</div>
-              <div class="font-medium">{{ detailCustomer.plan }}</div>
+      <SheetContent class="gap-0 p-0 sm:max-w-md">
+        <template v-if="detailCustomer">
+          <SheetHeader class="space-y-0 border-b p-5">
+            <div class="flex items-start gap-3">
+              <Avatar size="lg" rounded="lg" class="ring-background ring-2 shadow-sm">
+                <AvatarFallback
+                  class="text-sm font-semibold"
+                  :style="{
+                    background: `hsl(${hueFor(detailCustomer.name)} 70% 92%)`,
+                    color: `hsl(${hueFor(detailCustomer.name)} 50% 28%)`,
+                  }"
+                >
+                  {{ initials(detailCustomer.name) }}
+                </AvatarFallback>
+              </Avatar>
+              <div class="min-w-0 flex-1 space-y-1">
+                <SheetTitle class="truncate text-base leading-tight">{{ detailCustomer.name }}</SheetTitle>
+                <SheetDescription class="flex items-center gap-1 text-xs">
+                  <Mail class="size-3" />{{ detailCustomer.email }}
+                </SheetDescription>
+                <div class="flex items-center gap-1.5 pt-1">
+                  <Badge
+                    variant="outline"
+                    :class="['gap-1 px-1.5 py-0 text-[10px] font-medium uppercase tracking-wide', statusTone[detailCustomer.status]]"
+                  >
+                    <span :class="['size-1.5 rounded-full', detailCustomer.status === 'active' ? 'bg-emerald-500' : detailCustomer.status === 'trial' ? 'bg-blue-500' : detailCustomer.status === 'invited' ? 'bg-amber-500' : 'bg-rose-500']" />
+                    {{ detailCustomer.status }}
+                  </Badge>
+                  <span :class="['rounded-full px-2 py-0.5 text-[10px] font-medium', planChipTone[detailCustomer.plan]]">
+                    {{ detailCustomer.plan }}
+                  </span>
+                  <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px]">
+                    <MapPin class="size-3" />{{ detailCustomer.country }}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div>
-              <div class="text-muted-foreground text-xs">Status</div>
-              <Badge variant="outline" :class="['gap-1 px-2 text-[10px] font-medium uppercase tracking-wide', statusTone[detailCustomer.status]]">
-                {{ detailCustomer.status }}
-              </Badge>
+          </SheetHeader>
+
+          <div class="flex-1 overflow-y-auto">
+            <div class="grid grid-cols-3 gap-px border-b bg-border">
+              <div class="bg-background flex flex-col gap-1 px-4 py-3">
+                <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
+                  <CreditCard class="size-3" />MRR
+                </span>
+                <span class="text-base font-semibold tabular-nums">{{ formatMoney(detailCustomer.mrr) }}</span>
+                <span v-if="detailCustomer.mrr > 0" class="text-emerald-600 inline-flex items-center gap-0.5 text-[10px] font-medium dark:text-emerald-400">
+                  <ArrowUpRight class="size-2.5" />{{ Math.round(detailCustomer.mrr * 12 / 1000) }}k ARR
+                </span>
+                <span v-else class="text-muted-foreground text-[10px]">No revenue</span>
+              </div>
+              <div class="bg-background flex flex-col gap-1 px-4 py-3">
+                <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
+                  <Users class="size-3" />Seats
+                </span>
+                <span class="text-base font-semibold tabular-nums">{{ detailCustomer.seats || 0 }}</span>
+                <span v-if="detailCustomer.seats" class="text-muted-foreground tabular-nums text-[10px]">
+                  ${{ Math.round(detailCustomer.mrr / detailCustomer.seats) }}/seat
+                </span>
+                <span v-else class="text-muted-foreground text-[10px]">No seats</span>
+              </div>
+              <div class="bg-background flex flex-col gap-1 px-4 py-3">
+                <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
+                  <Building2 class="size-3" />Tier
+                </span>
+                <span class="text-base font-semibold">{{ detailCustomer.plan }}</span>
+                <span class="text-muted-foreground text-[10px]">{{ detailCustomer.status === 'active' ? 'Renews monthly' : detailCustomer.status === 'trial' ? 'Trial period' : detailCustomer.status === 'invited' ? 'Awaiting accept' : 'Cancelled' }}</span>
+              </div>
             </div>
-            <div>
-              <div class="text-muted-foreground text-xs">MRR</div>
-              <div class="font-medium tabular-nums">{{ formatMoney(detailCustomer.mrr) }}</div>
-            </div>
-            <div>
-              <div class="text-muted-foreground text-xs">Seats</div>
-              <div class="font-medium tabular-nums">{{ detailCustomer.seats || '—' }}</div>
-            </div>
-            <div>
-              <div class="text-muted-foreground text-xs">Country</div>
-              <div class="font-medium">{{ detailCustomer.country }}</div>
-            </div>
-            <div>
-              <div class="text-muted-foreground text-xs">Customer since</div>
-              <div class="font-medium tabular-nums">{{ detailCustomer.createdAt }}</div>
+
+            <dl class="divide-border divide-y px-5 text-sm">
+              <div class="flex items-center justify-between py-2.5">
+                <dt class="text-muted-foreground text-xs">Customer ID</dt>
+                <dd class="font-mono text-xs">cus_{{ detailCustomer.id.padStart(6, '0') }}</dd>
+              </div>
+              <div class="flex items-center justify-between py-2.5">
+                <dt class="text-muted-foreground text-xs">Customer since</dt>
+                <dd class="tabular-nums text-xs">{{ detailCustomer.createdAt }}</dd>
+              </div>
+              <div class="flex items-center justify-between py-2.5">
+                <dt class="text-muted-foreground text-xs">Last seen</dt>
+                <dd class="tabular-nums text-xs">{{ detailCustomer.lastSeen }}</dd>
+              </div>
+              <div class="flex items-center justify-between py-2.5">
+                <dt class="text-muted-foreground text-xs">Country</dt>
+                <dd class="text-xs">{{ detailCustomer.country }}</dd>
+              </div>
+            </dl>
+
+            <div class="border-t px-5 py-4">
+              <div class="text-muted-foreground mb-3 inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
+                <Activity class="size-3" />Recent activity
+              </div>
+              <ol class="relative space-y-3 pl-5">
+                <span class="bg-border absolute top-1 bottom-1 left-[7px] w-px" />
+                <li v-for="(ev, i) in timelineFor(detailCustomer)" :key="i" class="relative">
+                  <span class="bg-background border-border absolute -left-5 top-0.5 inline-flex size-4 items-center justify-center rounded-full border">
+                    <component :is="ev.icon" :class="['size-2.5', ev.tone]" />
+                  </span>
+                  <div class="text-xs font-medium leading-tight">{{ ev.title }}</div>
+                  <div class="text-muted-foreground tabular-nums text-[10px]">{{ ev.meta }}</div>
+                </li>
+              </ol>
             </div>
           </div>
-          <Separator />
-          <div>
-            <div class="text-muted-foreground mb-1 text-xs">Last seen</div>
-            <div class="font-medium tabular-nums">{{ detailCustomer.lastSeen }}</div>
+
+          <div class="bg-background sticky bottom-0 flex items-center gap-2 border-t p-4">
+            <Button size="sm" class="h-8 flex-1 text-xs">Open profile</Button>
+            <Button variant="outline" size="sm" class="h-8 gap-1.5 text-xs">
+              <Mail class="size-3.5" />Email
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child>
+                <Button variant="outline" size="icon" class="size-8">
+                  <MoreHorizontal class="size-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+                <DropdownMenuItem>Change plan</DropdownMenuItem>
+                <DropdownMenuItem>Copy ID</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem class="text-rose-600">Archive</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <div class="flex gap-2 pt-2">
-            <Button size="sm" class="h-8 text-xs">Edit</Button>
-            <Button variant="outline" size="sm" class="h-8 text-xs">Send email</Button>
-            <Button variant="outline" size="sm" class="h-8 text-xs text-rose-600">Archive</Button>
-          </div>
-        </div>
+        </template>
       </SheetContent>
     </Sheet>
   </div>
