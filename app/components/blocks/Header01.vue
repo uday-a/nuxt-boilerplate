@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 const mobileOpen = ref(false)
+const { loggedIn } = useUserSession()
 </script>
 
 <template>
@@ -28,8 +29,19 @@ const mobileOpen = ref(false)
       </nav>
 
       <div class="hidden items-center gap-2 md:flex">
-        <Button variant="ghost" size="sm">Sign in</Button>
-        <Button size="sm">Start free trial</Button>
+        <template v-if="loggedIn">
+          <Button as-child size="sm">
+            <NuxtLink to="/dashboard">Go to dashboard</NuxtLink>
+          </Button>
+        </template>
+        <template v-else>
+          <Button as-child variant="ghost" size="sm">
+            <NuxtLink to="/login">Sign in</NuxtLink>
+          </Button>
+          <Button as-child size="sm">
+            <NuxtLink to="/sign-up">Start free trial</NuxtLink>
+          </Button>
+        </template>
       </div>
 
       <Sheet v-model:open="mobileOpen">
@@ -65,8 +77,19 @@ const mobileOpen = ref(false)
               <a href="#blog" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Blog</a>
             </nav>
             <div class="flex flex-col gap-2 border-t p-4">
-              <Button variant="outline" class="w-full">Sign in</Button>
-              <Button class="w-full">Start free trial</Button>
+              <template v-if="loggedIn">
+                <Button as-child class="w-full" @click="mobileOpen = false">
+                  <NuxtLink to="/dashboard">Go to dashboard</NuxtLink>
+                </Button>
+              </template>
+              <template v-else>
+                <Button as-child variant="outline" class="w-full" @click="mobileOpen = false">
+                  <NuxtLink to="/login">Sign in</NuxtLink>
+                </Button>
+                <Button as-child class="w-full" @click="mobileOpen = false">
+                  <NuxtLink to="/sign-up">Start free trial</NuxtLink>
+                </Button>
+              </template>
             </div>
           </div>
         </SheetContent>

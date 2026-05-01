@@ -10,6 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+
+const { loggedIn } = useUserSession()
 </script>
 
 <template>
@@ -33,9 +35,17 @@ import {
             fast, accessible, easy to customise.
           </p>
           <div class="flex flex-wrap items-center gap-3">
-            <Button size="lg">
-              Start free trial
-              <ArrowRight class="ml-2 size-4" />
+            <Button v-if="loggedIn" as-child size="lg">
+              <NuxtLink to="/dashboard">
+                Go to dashboard
+                <ArrowRight class="ml-2 size-4" />
+              </NuxtLink>
+            </Button>
+            <Button v-else as-child size="lg">
+              <NuxtLink to="/sign-up">
+                Start free trial
+                <ArrowRight class="ml-2 size-4" />
+              </NuxtLink>
             </Button>
             <Button size="lg" variant="outline">
               <PlayCircle class="mr-2 size-4" />

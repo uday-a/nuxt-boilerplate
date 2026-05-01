@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ArrowRight } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
+
+const { loggedIn } = useUserSession()
 </script>
 
 <template>
@@ -20,9 +22,17 @@ import { Button } from '@/components/ui/button'
         Set up takes 12 minutes. Migrate from your current tool with one CSV upload.
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Button size="lg">
-          Start free trial
-          <ArrowRight class="ml-2 size-4" />
+        <Button v-if="loggedIn" as-child size="lg">
+          <NuxtLink to="/dashboard">
+            Go to dashboard
+            <ArrowRight class="ml-2 size-4" />
+          </NuxtLink>
+        </Button>
+        <Button v-else as-child size="lg">
+          <NuxtLink to="/sign-up">
+            Start free trial
+            <ArrowRight class="ml-2 size-4" />
+          </NuxtLink>
         </Button>
         <Button size="lg" variant="outline">Book a demo</Button>
       </div>
