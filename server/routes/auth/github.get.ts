@@ -14,6 +14,16 @@ export default defineOAuthGitHubEventHandler({
     // DATABASE_URL isn't configured yet so the OAuth flow still works in
     // a db-less dev setup.
     let role: Role = 'user'
+
+    // Bootstrap admins: comma-separated list of GitHub logins that should
+    // be created as 'admin' on FIRST sign-in. We deliberately do not touch
+    // role on conflict — once the row exists the DB is the source of truth
+    // (lets you demote without editing env, and prevents env drift across
+    // environments from clobbering production roles).
+    const bootstrapAdmins = (process.env.NUXT_INITIAL_ADMIN_LOGINS ?? '')
+      .split(',').map((s: string) => s.trim()).filter(Boolean)
+    const initialRole: Role = bootstrapAdmins.includes(user.login) ? 'admin' : 'user'
+
     try {
       const db = useDb()
       await db
@@ -24,6 +34,7 @@ export default defineOAuthGitHubEventHandler({
           name: user.name ?? user.login,
           email: user.email,
           avatarUrl: user.avatar_url,
+          role: initialRole,
         })
         .onConflictDoUpdate({
           target: schema.users.githubId,
@@ -33,6 +44,7 @@ export default defineOAuthGitHubEventHandler({
             email: user.email,
             avatarUrl: user.avatar_url,
             updatedAt: new Date(),
+            // role intentionally omitted — see bootstrap comment above.
           },
         })
 
