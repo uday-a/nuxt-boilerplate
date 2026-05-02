@@ -4,8 +4,10 @@
 // should be reachable by anonymous visitors (health checks, marketing
 // page lookups, sitemap data, etc.).
 //
-// Try it:  curl http://localhost:3000/api/ping
-export default defineEventHandler(() => {
+// Try it:
+//   curl http://localhost:3000/api/ping
+//   → 200 { "ok": true, "data": { "status": "ok", "service": "...", "timestamp": "..." } }
+export default apiHandler(() => {
   return {
     status: 'ok',
     service: 'nuxt-boilerplate',
