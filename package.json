@@ -10,8 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@i18now/nuxt": "^0.0.13",
     "@internationalized/date": "^3.12.1",
     "@neondatabase/serverless": "^1.1.0",
+    "@nuxtjs/i18n": "^10.3.0",
     "@tanstack/vue-form": "^1.32.0",
     "@tanstack/vue-table": "^8.21.3",
     "@tiptap/extension-link": "^3.23.4",

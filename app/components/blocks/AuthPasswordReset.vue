@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 
+const { t } = useI18n()
+
 withDefaults(
   defineProps<{
     signInHref?: string
@@ -41,19 +43,20 @@ function submitReset() {
 
 <template>
   <div class="bg-background flex min-h-svh items-center justify-center p-6">
+    <h1 class="sr-only">{{ t('auth.passwordReset.srTitle') }}</h1>
     <Card class="w-full max-w-sm">
       <template v-if="stage === 'request'">
         <CardHeader class="text-center">
-          <CardTitle class="text-2xl">Forgot password?</CardTitle>
-          <CardDescription>Enter your email and we'll send you a reset link.</CardDescription>
+          <CardTitle class="text-2xl">{{ t('auth.passwordReset.request.title') }}</CardTitle>
+          <CardDescription>{{ t('auth.passwordReset.request.description') }}</CardDescription>
         </CardHeader>
         <CardContent>
           <form class="space-y-4" @submit.prevent="submitRequest">
             <div class="grid gap-2">
-              <Label for="reset-email">Email</Label>
-              <Input id="reset-email" v-model="email" type="email" placeholder="you@company.com" required />
+              <Label for="reset-email">{{ t('auth.passwordReset.request.emailLabel') }}</Label>
+              <Input id="reset-email" v-model="email" type="email" :placeholder="t('auth.passwordReset.request.emailPlaceholder')" required />
             </div>
-            <Button type="submit" class="w-full">Send reset link</Button>
+            <Button type="submit" class="w-full">{{ t('auth.passwordReset.request.submit') }}</Button>
           </form>
         </CardContent>
         <CardFooter class="justify-center">
@@ -61,7 +64,7 @@ function submitReset() {
             :href="signInHref"
             class="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm"
           >
-            <ArrowLeft class="size-3" />Back to sign in
+            <ArrowLeft class="size-3" />{{ t('auth.passwordReset.request.back') }}
           </a>
         </CardFooter>
       </template>
@@ -72,34 +75,34 @@ function submitReset() {
             <MailCheck class="size-6" />
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-semibold">Check your inbox</h3>
+            <h3 class="text-lg font-semibold">{{ t('auth.passwordReset.sent.title') }}</h3>
             <p class="text-muted-foreground text-sm">
-              We've sent a reset link to <span class="text-foreground font-medium">{{ email }}</span>.
+              {{ t('auth.passwordReset.sent.descriptionPrefix') }} <span class="text-foreground font-medium">{{ email }}</span>{{ t('auth.passwordReset.sent.descriptionSuffix') }}
             </p>
           </div>
-          <Button variant="outline" class="w-full" @click="stage = 'reset'">Open reset form (demo)</Button>
+          <Button variant="outline" class="w-full" @click="stage = 'reset'">{{ t('auth.passwordReset.sent.openDemo') }}</Button>
           <button
             class="text-muted-foreground hover:text-foreground text-xs underline-offset-4 hover:underline"
             @click="stage = 'request'"
           >
-            Wrong email?
+            {{ t('auth.passwordReset.sent.wrongEmail') }}
           </button>
         </CardContent>
       </template>
 
       <template v-else-if="stage === 'reset'">
         <CardHeader class="text-center">
-          <CardTitle class="text-2xl">Set new password</CardTitle>
-          <CardDescription>Pick a strong password you haven't used before.</CardDescription>
+          <CardTitle class="text-2xl">{{ t('auth.passwordReset.reset.title') }}</CardTitle>
+          <CardDescription>{{ t('auth.passwordReset.reset.description') }}</CardDescription>
         </CardHeader>
         <CardContent>
           <form class="space-y-4" @submit.prevent="submitReset">
             <div class="grid gap-2">
-              <Label for="reset-pw">New password</Label>
+              <Label for="reset-pw">{{ t('auth.passwordReset.reset.passwordLabel') }}</Label>
               <Input id="reset-pw" v-model="password" type="password" autocomplete="new-password" required />
             </div>
             <div class="grid gap-2">
-              <Label for="reset-confirm">Confirm password</Label>
+              <Label for="reset-confirm">{{ t('auth.passwordReset.reset.confirmLabel') }}</Label>
               <Input
                 id="reset-confirm"
                 v-model="confirm"
@@ -108,9 +111,9 @@ function submitReset() {
                 :aria-invalid="!passwordsMatch"
                 required
               />
-              <p v-if="!passwordsMatch" class="text-destructive text-xs">Passwords don't match.</p>
+              <p v-if="!passwordsMatch" class="text-destructive text-xs">{{ t('auth.passwordReset.reset.passwordsMismatch') }}</p>
             </div>
-            <Button type="submit" class="w-full">Reset password</Button>
+            <Button type="submit" class="w-full">{{ t('auth.passwordReset.reset.submit') }}</Button>
           </form>
         </CardContent>
       </template>
@@ -121,12 +124,12 @@ function submitReset() {
             <MailCheck class="size-6" />
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-semibold">All set</h3>
+            <h3 class="text-lg font-semibold">{{ t('auth.passwordReset.done.title') }}</h3>
             <p class="text-muted-foreground text-sm">
-              Your password has been updated. You can now sign in with the new password.
+              {{ t('auth.passwordReset.done.description') }}
             </p>
           </div>
-          <a :href="signInHref"><Button class="w-full">Continue to sign in</Button></a>
+          <a :href="signInHref"><Button class="w-full">{{ t('auth.passwordReset.done.submit') }}</Button></a>
         </CardContent>
       </template>
     </Card>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { ShieldCheck, RotateCw } from 'lucide-vue-next'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { PinInput, PinInputGroup, PinInputSlot } from '@/components/ui/pin-input'
+
+const { t } = useI18n()
 
 const props = withDefaults(
   defineProps<{
@@ -14,8 +16,8 @@ const props = withDefaults(
     demoCode?: string
   }>(),
   {
-    title: 'Two-step verification',
-    description: 'Enter the 6-digit code from your authenticator app.',
+    title: undefined,
+    description: undefined,
     continueHref: '/',
     recoveryHref: '#',
     demoCode: '123456',
@@ -45,7 +47,7 @@ watch(joined, (val) => {
       verifying.value = false
       if (val === props.demoCode) verified.value = true
       else {
-        error.value = `Invalid code. Try ${props.demoCode} for the demo.`
+        error.value = t('auth.mfa.invalidCode', { code: props.demoCode })
         code.value = []
       }
     }, 700)
@@ -70,8 +72,8 @@ function startResendCooldown() {
           <div class="bg-primary/10 text-primary mx-auto mb-2 flex size-12 items-center justify-center rounded-full">
             <ShieldCheck class="size-6" />
           </div>
-          <CardTitle class="text-2xl">{{ title }}</CardTitle>
-          <CardDescription>{{ description }}</CardDescription>
+          <h1 class="text-2xl leading-none font-semibold tracking-tight">{{ title ?? t('auth.mfa.title') }}</h1>
+          <CardDescription>{{ description ?? t('auth.mfa.description') }}</CardDescription>
         </CardHeader>
         <CardContent class="space-y-4">
           <div class="flex justify-center">
@@ -81,7 +83,7 @@ function startResendCooldown() {
               </PinInputGroup>
             </PinInput>
           </div>
-          <p v-if="verifying" class="text-muted-foreground text-center text-sm">Verifying…</p>
+          <p v-if="verifying" class="text-muted-foreground text-center text-sm">{{ t('auth.mfa.verifying') }}</p>
           <p v-if="error" class="text-destructive text-center text-sm">{{ error }}</p>
           <div class="text-center">
             <button
@@ -90,15 +92,15 @@ function startResendCooldown() {
               class="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-xs underline-offset-4 hover:underline"
               @click="startResendCooldown"
             >
-              <RotateCw class="size-3" />Resend code
+              <RotateCw class="size-3" />{{ t('auth.mfa.resend') }}
             </button>
-            <p v-else class="text-muted-foreground text-xs">Resend available in {{ resendIn }}s</p>
+            <p v-else class="text-muted-foreground text-xs">{{ t('auth.mfa.resendCooldown', { seconds: resendIn }) }}</p>
           </div>
         </CardContent>
         <CardFooter class="justify-center">
           <p class="text-muted-foreground text-xs">
-            Lost your device?
-            <a :href="recoveryHref" class="text-foreground underline-offset-4 hover:underline">Use a recovery code</a>
+            {{ t('auth.mfa.lostDevicePrefix') }}
+            <a :href="recoveryHref" class="text-foreground underline-offset-4 hover:underline">{{ t('auth.mfa.recoveryLink') }}</a>
           </p>
         </CardFooter>
       </template>
@@ -109,10 +111,10 @@ function startResendCooldown() {
             <ShieldCheck class="size-6" />
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-semibold">Verified</h3>
-            <p class="text-muted-foreground text-sm">You're all set. Continuing to your dashboard…</p>
+            <h3 class="text-lg font-semibold">{{ t('auth.mfa.verifiedTitle') }}</h3>
+            <p class="text-muted-foreground text-sm">{{ t('auth.mfa.verifiedDescription') }}</p>
           </div>
-          <a :href="continueHref" @click="emit('continue')"><Button class="w-full">Continue</Button></a>
+          <a :href="continueHref" @click="emit('continue')"><Button class="w-full">{{ t('auth.mfa.continue') }}</Button></a>
         </CardContent>
       </template>
     </Card>

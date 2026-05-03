@@ -61,10 +61,10 @@ const { theme, setTheme } = useTheme()
                 <BreadcrumbItem :class="i === 0 ? 'hidden md:block' : ''">
                   <BreadcrumbLink
                     v-if="crumb.href && i < breadcrumbs.length - 1"
-                    :href="crumb.href"
+                    as-child
                     class="text-muted-foreground/70 hover:text-foreground transition-colors"
                   >
-                    {{ crumb.label }}
+                    <NuxtLink :to="crumb.href">{{ crumb.label }}</NuxtLink>
                   </BreadcrumbLink>
                   <BreadcrumbPage v-else class="font-medium">{{ crumb.label }}</BreadcrumbPage>
                 </BreadcrumbItem>

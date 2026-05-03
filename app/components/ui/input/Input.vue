@@ -256,6 +256,8 @@ function togglePassword() {
           v-if="showPasswordToggleBtn"
           type="button"
           class="text-muted-foreground hover:text-foreground shrink-0 rounded p-0.5 transition-colors"
+          :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
+          :aria-pressed="passwordVisible"
           @mousedown.prevent="togglePassword"
         >
           <Eye v-if="passwordVisible" class="size-4" />

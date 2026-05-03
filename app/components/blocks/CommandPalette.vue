@@ -41,15 +41,15 @@ const props = withDefaults(
         heading: 'Navigate',
         items: [
           { label: 'Dashboard', hint: '/dashboard', icon: LayoutDashboard },
-          { label: 'Inbox', hint: '/inbox', icon: Inbox },
-          { label: 'Kanban', hint: '/kanban', icon: KanbanSquare },
-          { label: 'Team', hint: '/team', icon: Users },
+          { label: 'Messages', hint: '/dashboard/messages', icon: Inbox },
+          { label: 'Kanban', hint: '/dashboard/kanban', icon: KanbanSquare },
+          { label: 'Team', hint: '/settings/team', icon: Users },
         ],
       },
       {
         heading: 'Settings',
         items: [
-          { label: 'Profile', hint: '/profile', icon: FileText },
+          { label: 'General', hint: '/settings/general', icon: FileText },
           { label: 'Settings', hint: '/settings', icon: Settings },
         ],
       },

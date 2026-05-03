@@ -62,7 +62,7 @@ const recent = [
         <CardDescription>Five most-recently-edited pages across all sections.</CardDescription>
       </CardHeader>
       <CardContent class="divide-y">
-        <NuxtLink v-for="r in recent" :key="r.slug" :to="`/documentation/${r.slug}`" class="hover:bg-muted/40 -mx-2 flex items-center justify-between gap-4 rounded px-2 py-2.5 transition-colors">
+        <NuxtLink v-for="r in recent" :key="r.slug" :to="`/documentation/${r.slug.split('/')[0]}`" class="hover:bg-muted/40 -mx-2 flex items-center justify-between gap-4 rounded px-2 py-2.5 transition-colors">
           <div class="min-w-0 flex-1">
             <p class="truncate text-sm font-medium">{{ r.title }}</p>
             <p class="text-muted-foreground text-xs">{{ r.section }}</p>

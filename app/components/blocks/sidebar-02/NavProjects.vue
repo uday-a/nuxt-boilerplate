@@ -33,6 +33,7 @@ defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -43,20 +44,20 @@ const { isMobile } = useSidebar()
        SidebarMenuButton already self-hide on collapse, leaving an
        icon-only column that lines up with NavMain. -->
   <SidebarGroup>
-    <SidebarGroupLabel>Projects</SidebarGroupLabel>
+    <SidebarGroupLabel>{{ t('nav.groups.projects') }}</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="item in projects" :key="item.name">
         <SidebarMenuButton as-child>
-          <a :href="item.url">
+          <NuxtLink :to="item.url">
             <component :is="item.icon" />
             <span>{{ item.name }}</span>
-          </a>
+          </NuxtLink>
         </SidebarMenuButton>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <SidebarMenuAction show-on-hover>
               <MoreHorizontal />
-              <span class="sr-only">More</span>
+              <span class="sr-only">{{ t('nav.actions.more') }}</span>
             </SidebarMenuAction>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -66,16 +67,16 @@ const { isMobile } = useSidebar()
           >
             <DropdownMenuItem>
               <Folder class="text-muted-foreground" />
-              <span>View Project</span>
+              <span>{{ t('nav.actions.viewProject') }}</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Forward class="text-muted-foreground" />
-              <span>Share Project</span>
+              <span>{{ t('nav.actions.shareProject') }}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Trash2 class="text-muted-foreground" />
-              <span>Delete Project</span>
+              <span>{{ t('nav.actions.deleteProject') }}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -83,7 +84,7 @@ const { isMobile } = useSidebar()
       <SidebarMenuItem>
         <SidebarMenuButton>
           <MoreHorizontal />
-          <span>More</span>
+          <span>{{ t('nav.actions.more') }}</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>

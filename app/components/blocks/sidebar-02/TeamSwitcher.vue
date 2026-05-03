@@ -27,6 +27,7 @@ const teams = [
 ]
 
 const { isMobile } = useSidebar()
+const { t } = useI18n()
 const activeTeam = ref(teams[0]!)
 function setActive(team: typeof teams[number]) { activeTeam.value = team }
 </script>
@@ -56,7 +57,7 @@ function setActive(team: typeof teams[number]) { activeTeam.value = team }
           align="start"
           :side-offset="4"
         >
-          <DropdownMenuLabel class="text-muted-foreground text-xs">Teams</DropdownMenuLabel>
+          <DropdownMenuLabel class="text-muted-foreground text-xs">{{ t('nav.groups.teams') }}</DropdownMenuLabel>
           <DropdownMenuItem v-for="(team, i) in teams" :key="team.name" class="gap-2 p-2" @select="setActive(team)">
             <div class="flex size-6 items-center justify-center rounded-sm border">
               <component :is="team.logo" class="size-3.5 shrink-0" />
@@ -70,7 +71,7 @@ function setActive(team: typeof teams[number]) { activeTeam.value = team }
             <div class="flex size-6 items-center justify-center rounded-md border bg-background">
               <Plus class="size-4" />
             </div>
-            <div class="text-muted-foreground font-medium">Add team</div>
+            <div class="text-muted-foreground font-medium">{{ t('nav.actions.addTeam') }}</div>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

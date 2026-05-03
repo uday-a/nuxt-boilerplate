@@ -12,6 +12,7 @@ import {
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
 } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -33,10 +34,16 @@ const props = defineProps<{
   user: {
     name: string
     email: string
+    avatar?: string
   }
 }>()
 
+const emit = defineEmits<{
+  (e: 'logout'): void
+}>()
+
 const { isMobile } = useSidebar()
+const { t } = useI18n()
 
 const initials = computed(() => {
   const parts = props.user.name.trim().split(/\s+/).slice(0, 2)
@@ -54,6 +61,7 @@ const initials = computed(() => {
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:!justify-center"
           >
             <Avatar class="h-8 w-8 shrink-0 rounded-lg group-data-[collapsible=icon]:size-6">
+              <AvatarImage v-if="user.avatar" :src="user.avatar" :alt="user.name" />
               <AvatarFallback class="rounded-lg text-xs group-data-[collapsible=icon]:text-[10px]">{{ initials }}</AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
@@ -72,6 +80,7 @@ const initials = computed(() => {
           <DropdownMenuLabel class="p-0 font-normal">
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar class="h-8 w-8 rounded-lg">
+                <AvatarImage v-if="user.avatar" :src="user.avatar" :alt="user.name" />
                 <AvatarFallback class="rounded-lg text-xs">{{ initials }}</AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
@@ -84,28 +93,28 @@ const initials = computed(() => {
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <Sparkles />
-              Upgrade to Pro
+              {{ t('nav.user.upgrade') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <BadgeCheck />
-              Account
+              {{ t('nav.user.account') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <CreditCard />
-              Billing
+              {{ t('nav.user.billing') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Bell />
-              Notifications
+              {{ t('nav.user.notifications') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem @select="emit('logout')">
             <LogOut />
-            Log out
+            {{ t('nav.user.logout') }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

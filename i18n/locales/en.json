@@ -1,0 +1,126 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "Welcome back",
+      "description": "Sign in to your account to continue",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you{'@'}company.com",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "rememberMe": "Remember me for 30 days",
+      "submit": "Sign in",
+      "orContinueWith": "or continue with",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
+    },
+    "signUp": {
+      "title": "Create your account",
+      "description": "Start your 14-day free trial. No credit card required.",
+      "nameLabel": "Full name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you{'@'}company.com",
+      "passwordLabel": "Password",
+      "passwordHint": "8+ characters, mix of letters, numbers and symbols.",
+      "confirmLabel": "Confirm password",
+      "passwordsMismatch": "Passwords don't match.",
+      "agreePrefix": "I agree to the",
+      "termsLink": "Terms of Service",
+      "agreeJoiner": "and",
+      "privacyLink": "Privacy Policy",
+      "submit": "Create account",
+      "orContinueWith": "or continue with",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in"
+    },
+    "passwordReset": {
+      "srTitle": "Reset password",
+      "request": {
+        "title": "Forgot password?",
+        "description": "Enter your email and we'll send you a reset link.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "you{'@'}company.com",
+        "submit": "Send reset link",
+        "back": "Back to sign in"
+      },
+      "sent": {
+        "title": "Check your inbox",
+        "descriptionPrefix": "We've sent a reset link to",
+        "descriptionSuffix": ".",
+        "openDemo": "Open reset form (demo)",
+        "wrongEmail": "Wrong email?"
+      },
+      "reset": {
+        "title": "Set new password",
+        "description": "Pick a strong password you haven't used before.",
+        "passwordLabel": "New password",
+        "confirmLabel": "Confirm password",
+        "passwordsMismatch": "Passwords don't match.",
+        "submit": "Reset password"
+      },
+      "done": {
+        "title": "All set",
+        "description": "Your password has been updated. You can now sign in with the new password.",
+        "submit": "Continue to sign in"
+      }
+    },
+    "mfa": {
+      "title": "Two-step verification",
+      "description": "Enter the 6-digit code from your authenticator app.",
+      "verifying": "Verifying…",
+      "invalidCode": "Invalid code. Try {code} for the demo.",
+      "resend": "Resend code",
+      "resendCooldown": "Resend available in {seconds}s",
+      "lostDevicePrefix": "Lost your device?",
+      "recoveryLink": "Use a recovery code",
+      "verifiedTitle": "Verified",
+      "verifiedDescription": "You're all set. Continuing to your dashboard…",
+      "continue": "Continue"
+    }
+  },
+  "nav": {
+    "groups": {
+      "platform": "Platform",
+      "projects": "Projects",
+      "teams": "Teams"
+    },
+    "actions": {
+      "toggle": "Toggle",
+      "more": "More",
+      "addTeam": "Add team",
+      "viewProject": "View Project",
+      "shareProject": "Share Project",
+      "deleteProject": "Delete Project"
+    },
+    "user": {
+      "upgrade": "Upgrade to Pro",
+      "account": "Account",
+      "billing": "Billing",
+      "notifications": "Notifications",
+      "logout": "Log out"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "kanban": "Kanban",
+      "dataTable": "Data table",
+      "calendar": "Calendar",
+      "uiKit": "UI Kit",
+      "forms": "Forms",
+      "playground": "Playground",
+      "history": "History",
+      "starred": "Starred",
+      "settings": "Settings",
+      "models": "Models",
+      "documentation": "Documentation",
+      "introduction": "Introduction",
+      "getStarted": "Get Started",
+      "tutorials": "Tutorials",
+      "changelog": "Changelog",
+      "general": "General",
+      "team": "Team",
+      "billing": "Billing",
+      "limits": "Limits",
+      "support": "Support",
+      "feedback": "Feedback"
+    }
+  }
+}

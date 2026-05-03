@@ -1,0 +1,126 @@
+{
+  "auth": {
+    "signIn": {
+      "title": "Bienvenido de nuevo",
+      "description": "Inicia sesión en tu cuenta para continuar",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu{'@'}empresa.com",
+      "passwordLabel": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "rememberMe": "Recuérdame durante 30 días",
+      "submit": "Iniciar sesión",
+      "orContinueWith": "o continúa con",
+      "noAccount": "¿No tienes una cuenta?",
+      "signUpLink": "Regístrate"
+    },
+    "signUp": {
+      "title": "Crea tu cuenta",
+      "description": "Empieza tu prueba gratuita de 14 días. No se requiere tarjeta de crédito.",
+      "nameLabel": "Nombre completo",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu{'@'}empresa.com",
+      "passwordLabel": "Contraseña",
+      "passwordHint": "8+ caracteres, mezcla de letras, números y símbolos.",
+      "confirmLabel": "Confirmar contraseña",
+      "passwordsMismatch": "Las contraseñas no coinciden.",
+      "agreePrefix": "Acepto los",
+      "termsLink": "Términos del servicio",
+      "agreeJoiner": "y la",
+      "privacyLink": "Política de privacidad",
+      "submit": "Crear cuenta",
+      "orContinueWith": "o continúa con",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "signInLink": "Inicia sesión"
+    },
+    "passwordReset": {
+      "srTitle": "Restablecer contraseña",
+      "request": {
+        "title": "¿Olvidaste tu contraseña?",
+        "description": "Introduce tu correo y te enviaremos un enlace de restablecimiento.",
+        "emailLabel": "Correo electrónico",
+        "emailPlaceholder": "tu{'@'}empresa.com",
+        "submit": "Enviar enlace",
+        "back": "Volver a iniciar sesión"
+      },
+      "sent": {
+        "title": "Revisa tu bandeja de entrada",
+        "descriptionPrefix": "Hemos enviado un enlace de restablecimiento a",
+        "descriptionSuffix": ".",
+        "openDemo": "Abrir formulario (demo)",
+        "wrongEmail": "¿Correo equivocado?"
+      },
+      "reset": {
+        "title": "Establece una nueva contraseña",
+        "description": "Elige una contraseña fuerte que no hayas usado antes.",
+        "passwordLabel": "Nueva contraseña",
+        "confirmLabel": "Confirmar contraseña",
+        "passwordsMismatch": "Las contraseñas no coinciden.",
+        "submit": "Restablecer contraseña"
+      },
+      "done": {
+        "title": "Todo listo",
+        "description": "Tu contraseña ha sido actualizada. Ya puedes iniciar sesión con la nueva.",
+        "submit": "Continuar a iniciar sesión"
+      }
+    },
+    "mfa": {
+      "title": "Verificación en dos pasos",
+      "description": "Introduce el código de 6 dígitos de tu app de autenticación.",
+      "verifying": "Verificando…",
+      "invalidCode": "Código no válido. Prueba {code} para la demo.",
+      "resend": "Reenviar código",
+      "resendCooldown": "Reenviar disponible en {seconds}s",
+      "lostDevicePrefix": "¿Perdiste tu dispositivo?",
+      "recoveryLink": "Usa un código de recuperación",
+      "verifiedTitle": "Verificado",
+      "verifiedDescription": "Todo listo. Continuando a tu panel…",
+      "continue": "Continuar"
+    }
+  },
+  "nav": {
+    "groups": {
+      "platform": "Plataforma",
+      "projects": "Proyectos",
+      "teams": "Equipos"
+    },
+    "actions": {
+      "toggle": "Alternar",
+      "more": "Más",
+      "addTeam": "Añadir equipo",
+      "viewProject": "Ver proyecto",
+      "shareProject": "Compartir proyecto",
+      "deleteProject": "Eliminar proyecto"
+    },
+    "user": {
+      "upgrade": "Mejorar a Pro",
+      "account": "Cuenta",
+      "billing": "Facturación",
+      "notifications": "Notificaciones",
+      "logout": "Cerrar sesión"
+    },
+    "items": {
+      "dashboard": "Panel",
+      "kanban": "Kanban",
+      "dataTable": "Tabla de datos",
+      "calendar": "Calendario",
+      "uiKit": "Kit UI",
+      "forms": "Formularios",
+      "playground": "Sandbox",
+      "history": "Historial",
+      "starred": "Destacados",
+      "settings": "Ajustes",
+      "models": "Modelos",
+      "documentation": "Documentación",
+      "introduction": "Introducción",
+      "getStarted": "Empezar",
+      "tutorials": "Tutoriales",
+      "changelog": "Cambios",
+      "general": "General",
+      "team": "Equipo",
+      "billing": "Facturación",
+      "limits": "Límites",
+      "support": "Soporte",
+      "feedback": "Comentarios"
+    }
+  }
+}

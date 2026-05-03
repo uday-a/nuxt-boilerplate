@@ -53,10 +53,10 @@ const sections = [
         <template v-for="(row, idx) in section.rows" :key="row.label">
           <div class="flex items-start justify-between gap-6 py-3">
             <div class="space-y-0.5">
-              <Label class="text-sm font-medium">{{ row.label }}</Label>
+              <Label :for="`playground-switch-${section.title}-${idx}`" class="text-sm font-medium">{{ row.label }}</Label>
               <p class="text-muted-foreground text-xs leading-relaxed">{{ row.help }}</p>
             </div>
-            <Switch v-model="row.model.value" />
+            <Switch :id="`playground-switch-${section.title}-${idx}`" v-model="row.model.value" />
           </div>
           <Separator v-if="idx < section.rows.length - 1" />
         </template>
@@ -71,27 +71,27 @@ const sections = [
       <CardContent class="space-y-6">
         <div class="space-y-2">
           <div class="flex items-center justify-between">
-            <Label class="text-sm font-medium">Temperature</Label>
+            <Label for="slider-temperature" class="text-sm font-medium">Temperature</Label>
             <span class="text-muted-foreground font-mono text-xs tabular-nums">{{ temperature[0] }}</span>
           </div>
-          <Slider v-model="temperature" :min="0" :max="2" :step="0.1" />
+          <Slider id="slider-temperature" v-model="temperature" :min="0" :max="2" :step="0.1" aria-label="Temperature" />
           <p class="text-muted-foreground text-xs">Higher = more creative. Lower = more deterministic.</p>
         </div>
         <Separator />
         <div class="space-y-2">
           <div class="flex items-center justify-between">
-            <Label class="text-sm font-medium">Top P</Label>
+            <Label for="slider-top-p" class="text-sm font-medium">Top P</Label>
             <span class="text-muted-foreground font-mono text-xs tabular-nums">{{ topP[0] }}</span>
           </div>
-          <Slider v-model="topP" :min="0" :max="1" :step="0.05" />
+          <Slider id="slider-top-p" v-model="topP" :min="0" :max="1" :step="0.05" aria-label="Top P" />
         </div>
         <Separator />
         <div class="space-y-2">
           <div class="flex items-center justify-between">
-            <Label class="text-sm font-medium">Max tokens</Label>
+            <Label for="slider-max-tokens" class="text-sm font-medium">Max tokens</Label>
             <span class="text-muted-foreground font-mono text-xs tabular-nums">{{ maxTokens[0] }}</span>
           </div>
-          <Slider v-model="maxTokens" :min="256" :max="8192" :step="256" />
+          <Slider id="slider-max-tokens" v-model="maxTokens" :min="256" :max="8192" :step="256" aria-label="Max tokens" />
         </div>
       </CardContent>
     </Card>

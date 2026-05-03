@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Github, Chrome } from 'lucide-vue-next'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
+
+const { t } = useI18n()
 
 withDefaults(
   defineProps<{
@@ -18,8 +20,8 @@ withDefaults(
     oauthProviders?: Array<'github' | 'google'>
   }>(),
   {
-    title: 'Create your account',
-    description: 'Start your 14-day free trial. No credit card required.',
+    title: undefined,
+    description: undefined,
     signInHref: '/login',
     termsHref: '#',
     privacyHref: '#',
@@ -51,33 +53,33 @@ function onSubmit() {
   <div class="bg-background flex min-h-svh items-center justify-center p-6">
     <Card class="w-full max-w-md">
       <CardHeader class="text-center">
-        <CardTitle class="text-2xl">{{ title }}</CardTitle>
-        <CardDescription>{{ description }}</CardDescription>
+        <h1 class="text-2xl leading-none font-semibold tracking-tight">{{ title ?? t('auth.signUp.title') }}</h1>
+        <CardDescription>{{ description ?? t('auth.signUp.description') }}</CardDescription>
       </CardHeader>
       <CardContent>
         <form class="space-y-4" @submit.prevent="onSubmit">
           <div class="grid gap-2">
-            <Label for="signup-name">Full name</Label>
+            <Label for="signup-name">{{ t('auth.signUp.nameLabel') }}</Label>
             <Input id="signup-name" v-model="name" autocomplete="name" required />
           </div>
           <div class="grid gap-2">
-            <Label for="signup-email">Email</Label>
+            <Label for="signup-email">{{ t('auth.signUp.emailLabel') }}</Label>
             <Input
               id="signup-email"
               v-model="email"
               type="email"
-              placeholder="you@company.com"
+              :placeholder="t('auth.signUp.emailPlaceholder')"
               autocomplete="email"
               required
             />
           </div>
           <div class="grid gap-2">
-            <Label for="signup-password">Password</Label>
+            <Label for="signup-password">{{ t('auth.signUp.passwordLabel') }}</Label>
             <Input id="signup-password" v-model="password" type="password" autocomplete="new-password" required />
-            <p class="text-muted-foreground text-xs">8+ characters, mix of letters, numbers and symbols.</p>
+            <p class="text-muted-foreground text-xs">{{ t('auth.signUp.passwordHint') }}</p>
           </div>
           <div class="grid gap-2">
-            <Label for="signup-confirm">Confirm password</Label>
+            <Label for="signup-confirm">{{ t('auth.signUp.confirmLabel') }}</Label>
             <Input
               id="signup-confirm"
               v-model="confirm"
@@ -86,24 +88,24 @@ function onSubmit() {
               :aria-invalid="!passwordsMatch"
               required
             />
-            <p v-if="!passwordsMatch" class="text-destructive text-xs">Passwords don't match.</p>
+            <p v-if="!passwordsMatch" class="text-destructive text-xs">{{ t('auth.signUp.passwordsMismatch') }}</p>
           </div>
           <div class="flex items-start gap-2">
             <Checkbox id="signup-accept" v-model="accept" />
             <Label for="signup-accept" class="text-sm leading-snug font-normal">
-              I agree to the
-              <a :href="termsHref" class="text-foreground underline-offset-4 hover:underline">Terms of Service</a>
-              and
-              <a :href="privacyHref" class="text-foreground underline-offset-4 hover:underline">Privacy Policy</a>.
+              {{ t('auth.signUp.agreePrefix') }}
+              <a :href="termsHref" class="text-foreground underline-offset-4 hover:underline">{{ t('auth.signUp.termsLink') }}</a>
+              {{ t('auth.signUp.agreeJoiner') }}
+              <a :href="privacyHref" class="text-foreground underline-offset-4 hover:underline">{{ t('auth.signUp.privacyLink') }}</a>.
             </Label>
           </div>
-          <Button type="submit" class="w-full" :disabled="!canSubmit">Create account</Button>
+          <Button type="submit" class="w-full" :disabled="!canSubmit">{{ t('auth.signUp.submit') }}</Button>
         </form>
 
         <template v-if="oauthProviders.length > 0">
           <div class="my-6 flex items-center gap-3">
             <Separator class="flex-1" />
-            <span class="text-muted-foreground text-xs uppercase">or continue with</span>
+            <span class="text-muted-foreground text-xs uppercase">{{ t('auth.signUp.orContinueWith') }}</span>
             <Separator class="flex-1" />
           </div>
           <div class="grid gap-2" :class="oauthProviders.length > 1 ? 'sm:grid-cols-2' : ''">
@@ -118,8 +120,8 @@ function onSubmit() {
       </CardContent>
       <CardFooter class="justify-center">
         <p class="text-muted-foreground text-sm">
-          Already have an account?
-          <a :href="signInHref" class="text-foreground font-medium underline-offset-4 hover:underline">Sign in</a>
+          {{ t('auth.signUp.hasAccount') }}
+          <a :href="signInHref" class="text-foreground font-medium underline-offset-4 hover:underline">{{ t('auth.signUp.signInLink') }}</a>
         </p>
       </CardFooter>
     </Card>

@@ -13,18 +13,18 @@ const { loggedIn } = useUserSession()
     class="sticky top-0 z-40 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60"
   >
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-      <a href="#" class="flex items-center gap-2">
+      <NuxtLink to="/" class="flex items-center gap-2">
         <div class="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
           <Boxes class="size-4" />
         </div>
         <span class="text-base font-semibold">Acme</span>
-      </a>
+      </NuxtLink>
 
       <nav class="hidden items-center gap-6 md:flex" aria-label="Primary">
         <a href="#features" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a>
         <a href="#pricing" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
         <a href="#customers" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Customers</a>
-        <a href="#docs" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Docs</a>
+        <NuxtLink to="/documentation" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Docs</NuxtLink>
         <a href="#blog" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Blog</a>
       </nav>
 
@@ -73,7 +73,7 @@ const { loggedIn } = useUserSession()
               <a href="#features" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Features</a>
               <a href="#pricing" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Pricing</a>
               <a href="#customers" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Customers</a>
-              <a href="#docs" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Docs</a>
+              <NuxtLink to="/documentation" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Docs</NuxtLink>
               <a href="#blog" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Blog</a>
             </nav>
             <div class="flex flex-col gap-2 border-t p-4">

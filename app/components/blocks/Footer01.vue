@@ -48,10 +48,10 @@ function subscribe() {
           <div class="space-y-3">
             <h3 class="text-sm font-semibold">Product</h3>
             <ul class="space-y-2">
-              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a></li>
-              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a></li>
-              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Changelog</a></li>
-              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Roadmap</a></li>
+              <li><NuxtLink to="/#features" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Features</NuxtLink></li>
+              <li><NuxtLink to="/#pricing" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</NuxtLink></li>
+              <li><NuxtLink to="/documentation/changelog" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Changelog</NuxtLink></li>
+              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground" aria-disabled="true">Roadmap</a></li>
             </ul>
           </div>
           <div class="space-y-3">
@@ -66,10 +66,10 @@ function subscribe() {
           <div class="space-y-3">
             <h3 class="text-sm font-semibold">Resources</h3>
             <ul class="space-y-2">
-              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Documentation</a></li>
-              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">API</a></li>
-              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Help center</a></li>
-              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Status</a></li>
+              <li><NuxtLink to="/documentation" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Documentation</NuxtLink></li>
+              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground" aria-disabled="true">API</a></li>
+              <li><NuxtLink to="/support" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Help center</NuxtLink></li>
+              <li><a href="#" class="text-sm text-muted-foreground transition-colors hover:text-foreground" aria-disabled="true">Status</a></li>
             </ul>
           </div>
           <div class="space-y-3">

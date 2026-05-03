@@ -114,26 +114,26 @@ const sendWeeklyDigest = ref(true)
       <CardContent class="space-y-1">
         <div class="flex items-start justify-between gap-6 py-3">
           <div class="space-y-0.5">
-            <Label class="text-sm font-medium">Allow external shares</Label>
+            <Label for="allow-external-shares" class="text-sm font-medium">Allow external shares</Label>
             <p class="text-muted-foreground text-xs">Members can generate public read-only share links. Disabled by default at the Enterprise tier.</p>
           </div>
-          <Switch v-model="allowExternalShares" />
+          <Switch id="allow-external-shares" v-model="allowExternalShares" />
         </div>
         <Separator />
         <div class="flex items-start justify-between gap-6 py-3">
           <div class="space-y-0.5">
-            <Label class="text-sm font-medium">Require SSO</Label>
+            <Label for="require-sso" class="text-sm font-medium">Require SSO</Label>
             <p class="text-muted-foreground text-xs">All members must authenticate via your SAML or OIDC provider. Email/password is blocked.</p>
           </div>
-          <Switch v-model="requireSso" />
+          <Switch id="require-sso" v-model="requireSso" />
         </div>
         <Separator />
         <div class="flex items-start justify-between gap-6 py-3">
           <div class="space-y-0.5">
-            <Label class="text-sm font-medium">Send weekly digest</Label>
+            <Label for="send-weekly-digest" class="text-sm font-medium">Send weekly digest</Label>
             <p class="text-muted-foreground text-xs">Mondays at 9am workspace time. Usage, top prompts, and any rate-limit hits from the prior week.</p>
           </div>
-          <Switch v-model="sendWeeklyDigest" />
+          <Switch id="send-weekly-digest" v-model="sendWeeklyDigest" />
         </div>
       </CardContent>
     </Card>

@@ -180,18 +180,18 @@ async function onSubmit(e: Event) {
       <CardContent class="space-y-5">
         <div class="flex items-center justify-between gap-4">
           <div class="space-y-0.5">
-            <Label class="inline-flex items-center gap-1.5"><Bell class="size-3.5" />Email notifications</Label>
+            <Label for="notify-email" class="inline-flex items-center gap-1.5"><Bell class="size-3.5" />Email notifications</Label>
             <p class="text-muted-foreground text-xs">Daily digest of activity in your workspace.</p>
           </div>
-          <Switch v-model="notifications.email" />
+          <Switch id="notify-email" v-model="notifications.email" />
         </div>
         <Separator />
         <div class="flex items-center justify-between gap-4">
           <div class="space-y-0.5">
-            <Label>Push notifications</Label>
+            <Label for="notify-push">Push notifications</Label>
             <p class="text-muted-foreground text-xs">Real-time on mobile when something needs your attention.</p>
           </div>
-          <Switch v-model="notifications.push" />
+          <Switch id="notify-push" v-model="notifications.push" />
         </div>
         <Separator />
         <div class="space-y-2">
@@ -222,10 +222,10 @@ async function onSubmit(e: Event) {
       <CardContent class="space-y-4">
         <div class="space-y-2">
           <div class="flex items-baseline justify-between">
-            <Label>Team seats</Label>
+            <Label for="billing-seats">Team seats</Label>
             <span class="text-sm tabular-nums">{{ billing.seats }} seats · ${{ (billing.seats * 12).toLocaleString() }}/mo</span>
           </div>
-          <Slider v-model="billing.seats" :min="1" :max="50" :step="1" />
+          <Slider id="billing-seats" v-model="billing.seats" :min="1" :max="50" :step="1" aria-label="Team seats" />
           <div class="text-muted-foreground flex justify-between text-[11px] tabular-nums">
             <span>1</span>
             <span>50</span>
