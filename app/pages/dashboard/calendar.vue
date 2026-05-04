@@ -40,33 +40,16 @@ const eventOpen = ref(false)
 const selectedEvent = ref<CalendarEvent | null>(null)
 const search = ref('')
 
-const today = new Date('2026-05-16')
-const todayKey = isoDate(today)
-const cursor = ref(new Date(today.getFullYear(), today.getMonth(), 1))
-
-// Range selection
-const rangeAnchor = ref(todayKey) // mousedown / shift-click origin
-const rangeStart = ref(todayKey)
-const rangeEnd = ref(todayKey)
-const isDragging = ref(false)
-const ctxMenuKey = ref<string | null>(null) // which cell opened context menu
-
 const { data: events, pending: loading } = useFetch<CalendarEvent[]>('/api/mock/events')
 
-function isoDate(d: Date) {
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}-${m}-${day}`
-}
-
-function dateFromKey(k: string) {
-  return new Date(k + 'T00:00:00')
-}
-
-function dayDiff(a: string, b: string) {
-  return Math.round((dateFromKey(b).getTime() - dateFromKey(a).getTime()) / 86400000)
-}
+// Headless month-grid + range-select state and handlers.
+const {
+  today, todayKey,
+  cursor, monthLabel, gridDays, weekdays,
+  rangeStart, rangeBounds, rangeDayCount, isRange, inRange,
+  prevMonth, nextMonth, goToToday: goToday, selectWeekOf, clearRange,
+  onCellMouseDown, onCellMouseEnter, endDrag,
+} = useMonthGrid({ initialDate: '2026-05-16' })
 
 const typeMeta: Record<CalendarEvent['type'], {
   label: string
@@ -83,28 +66,6 @@ const typeMeta: Record<CalendarEvent['type'], {
   reminder: { label: 'Reminder', icon: AlertCircle,  chip: 'bg-amber-500/10 text-amber-300 ring-amber-500/20',       bar: 'bg-amber-500',   dot: 'bg-amber-500',   glow: 'bg-amber-500/10',   text: 'text-amber-300',   ring: 'hover:ring-amber-500/30' },
   travel:   { label: 'Travel',   icon: Plane,        chip: 'bg-violet-500/10 text-violet-300 ring-violet-500/20',    bar: 'bg-violet-500',  dot: 'bg-violet-500',  glow: 'bg-violet-500/10',  text: 'text-violet-300',  ring: 'hover:ring-violet-500/30' },
 }
-
-const monthLabel = computed(() =>
-  cursor.value.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-)
-
-const gridDays = computed(() => {
-  const first = new Date(cursor.value.getFullYear(), cursor.value.getMonth(), 1)
-  const offset = first.getDay()
-  const start = new Date(first)
-  start.setDate(first.getDate() - offset)
-  const days: { date: Date; key: string; inMonth: boolean }[] = []
-  for (let i = 0; i < 42; i++) {
-    const d = new Date(start)
-    d.setDate(start.getDate() + i)
-    days.push({
-      date: d,
-      key: isoDate(d),
-      inMonth: d.getMonth() === cursor.value.getMonth(),
-    })
-  }
-  return days
-})
 
 const filtered = computed(() => {
   const q = search.value.trim().toLowerCase()
@@ -177,21 +138,6 @@ function fmtNextDate(key: string) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-// Range computed: always normalized lo→hi
-const rangeBounds = computed(() => {
-  const a = rangeStart.value
-  const b = rangeEnd.value
-  return a <= b ? { lo: a, hi: b } : { lo: b, hi: a }
-})
-
-const rangeDayCount = computed(() => dayDiff(rangeBounds.value.lo, rangeBounds.value.hi) + 1)
-const isRange = computed(() => rangeBounds.value.lo !== rangeBounds.value.hi)
-
-function inRange(key: string) {
-  const { lo, hi } = rangeBounds.value
-  return key >= lo && key <= hi
-}
-
 const rangeEvents = computed(() => {
   const { lo, hi } = rangeBounds.value
   return (filtered.value)
@@ -214,60 +160,9 @@ const upcoming = computed(() =>
     .slice(0, 4),
 )
 
-function prevMonth() {
-  cursor.value = new Date(cursor.value.getFullYear(), cursor.value.getMonth() - 1, 1)
-}
-function nextMonth() {
-  cursor.value = new Date(cursor.value.getFullYear(), cursor.value.getMonth() + 1, 1)
-}
-function goToday() {
-  cursor.value = new Date(today.getFullYear(), today.getMonth(), 1)
-  rangeAnchor.value = todayKey
-  rangeStart.value = todayKey
-  rangeEnd.value = todayKey
-}
-
 function openEvent(e: CalendarEvent) {
   selectedEvent.value = e
   eventOpen.value = true
-}
-
-function onCellMouseDown(key: string, ev: MouseEvent) {
-  if (ev.button !== 0) return // ignore right-click — context menu handles it
-  if (ev.shiftKey) {
-    rangeEnd.value = key
-    return
-  }
-  rangeAnchor.value = key
-  rangeStart.value = key
-  rangeEnd.value = key
-  isDragging.value = true
-}
-
-function onCellMouseEnter(key: string) {
-  if (!isDragging.value) return
-  rangeEnd.value = key
-  rangeStart.value = rangeAnchor.value
-}
-
-function endDrag() {
-  if (isDragging.value) isDragging.value = false
-}
-
-function clearRange() {
-  rangeAnchor.value = todayKey
-  rangeStart.value = todayKey
-  rangeEnd.value = todayKey
-}
-
-function selectWeekOf(key: string) {
-  const d = dateFromKey(key)
-  const dow = d.getDay()
-  const wkStart = new Date(d); wkStart.setDate(d.getDate() - dow)
-  const wkEnd = new Date(wkStart); wkEnd.setDate(wkStart.getDate() + 6)
-  rangeAnchor.value = isoDate(wkStart)
-  rangeStart.value = isoDate(wkStart)
-  rangeEnd.value = isoDate(wkEnd)
 }
 
 function copyDate(key: string) {
@@ -284,17 +179,6 @@ function fmtDayShort(key: string) {
 function initials(name: string) {
   return name.split(' ').map((n) => n[0]).join('').slice(0, 2)
 }
-
-onMounted(() => {
-  window.addEventListener('mouseup', endDrag)
-  window.addEventListener('mouseleave', endDrag)
-})
-onBeforeUnmount(() => {
-  window.removeEventListener('mouseup', endDrag)
-  window.removeEventListener('mouseleave', endDrag)
-})
-
-const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 // Helper: classes for cell based on range position
 function cellRangeClass(key: string, inMonth: boolean) {
