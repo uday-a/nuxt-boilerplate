@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  Activity,
   BookOpen,
   Bot,
   CalendarDays,
@@ -55,6 +56,7 @@ const data = computed(() => ({
     { title: t('nav.items.kanban'), url: '/dashboard/kanban', icon: KanbanSquare },
     { title: t('nav.items.dataTable'), url: '/dashboard/data-table', icon: Table2 },
     { title: t('nav.items.calendar'), url: '/dashboard/calendar', icon: CalendarDays },
+    { title: t('nav.items.activity'), url: '/dashboard/activity', icon: Activity },
     { title: t('nav.items.uiKit'), url: '/dashboard/ui-kit', icon: LayoutTemplate },
     { title: t('nav.items.forms'), url: '/dashboard/forms', icon: FileText },
     {
