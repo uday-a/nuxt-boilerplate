@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Bell, Check, Loader2 } from 'lucide-vue-next'
+import { Bell, Check, Loader2, Languages } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,6 +32,19 @@ const account = ref({
   timezone: 'utc',
   visibility: 'team' as 'private' | 'team' | 'public',
 })
+
+// Language preference is owned by @nuxtjs/i18n: changes flush to the
+// i18n cookie immediately and persist across reloads — no Save needed.
+const { locale, locales, setLocale } = useI18n()
+const languageOptions = computed(() =>
+  (unref(locales) as { code: string; name?: string }[]).map((l) => ({
+    code: l.code,
+    label: l.name || l.code.toUpperCase(),
+  })),
+)
+async function onLocaleChange(next: string | number | Record<string, unknown>) {
+  await setLocale(next as 'en' | 'es')
+}
 
 const notifications = ref({
   email: true,
@@ -136,6 +149,24 @@ async function onSubmit(e: Event) {
               <SelectItem value="jst">JST · Japan (UTC+9)</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+        <div class="space-y-1.5 sm:col-span-2">
+          <Label for="language" class="inline-flex items-center gap-1.5">
+            <Languages class="size-3.5" />Language
+          </Label>
+          <Select :model-value="locale" @update:model-value="onLocaleChange">
+            <SelectTrigger id="language" class="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="opt in languageOptions" :key="opt.code" :value="opt.code">
+                {{ opt.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <p class="text-muted-foreground text-xs">
+            Switches the UI immediately and is saved in your i18n cookie — no need to hit Save.
+          </p>
         </div>
         <div class="space-y-2 sm:col-span-2">
           <Label>Profile visibility</Label>
