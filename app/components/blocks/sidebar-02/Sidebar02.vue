@@ -1,20 +1,15 @@
 <script setup lang="ts">
 import {
   Activity,
-  BookOpen,
-  Bot,
   CalendarDays,
   FileText,
-  Frame,
+  Folder,
   KanbanSquare,
   LayoutDashboard,
   LayoutTemplate,
   LifeBuoy,
-  Map,
-  PieChart,
   Send,
   Settings2,
-  SquareTerminal,
   Table2,
 } from "lucide-vue-next"
 
@@ -60,42 +55,15 @@ const data = computed(() => ({
     { title: t('nav.items.uiKit'), url: '/dashboard/ui-kit', icon: LayoutTemplate },
     { title: t('nav.items.forms'), url: '/dashboard/forms', icon: FileText },
     {
-      title: t('nav.items.playground'),
-      url: '/playground',
-      icon: SquareTerminal,
-      items: [
-        { title: t('nav.items.history'), url: '/playground/history' },
-        { title: t('nav.items.starred'), url: '/playground/starred' },
-        { title: t('nav.items.settings'), url: '/playground/settings' },
-      ],
-    },
-    {
-      title: t('nav.items.models'),
-      url: '/models',
-      icon: Bot,
-      items: [
-        { title: 'Genesis', url: '/models/genesis' },
-        { title: 'Explorer', url: '/models/explorer' },
-        { title: 'Quantum', url: '/models/quantum' },
-      ],
-    },
-    {
-      title: t('nav.items.documentation'),
-      url: '/documentation',
-      icon: BookOpen,
-      items: [
-        { title: t('nav.items.introduction'), url: '/documentation/introduction' },
-        { title: t('nav.items.getStarted'), url: '/documentation/get-started' },
-        { title: t('nav.items.tutorials'), url: '/documentation/tutorials' },
-        { title: t('nav.items.changelog'), url: '/documentation/changelog' },
-      ],
-    },
-    {
       title: t('nav.items.settings'),
       url: '/settings',
       icon: Settings2,
       items: [
         { title: t('nav.items.general'), url: '/settings/general' },
+        { title: t('nav.items.account'), url: '/settings/account' },
+        { title: t('nav.items.security'), url: '/settings/security' },
+        { title: t('nav.items.notifications'), url: '/settings/notifications' },
+        { title: t('nav.items.integrations'), url: '/settings/integrations' },
         { title: t('nav.items.team'), url: '/settings/team' },
         { title: t('nav.items.billing'), url: '/settings/billing' },
         { title: t('nav.items.limits'), url: '/settings/limits' },
@@ -106,10 +74,13 @@ const data = computed(() => ({
     { title: t('nav.items.support'), url: '/support', icon: LifeBuoy },
     { title: t('nav.items.feedback'), url: '/feedback', icon: Send },
   ],
+  // Replace with a fetch from /api/projects when wiring backend. The
+  // dynamic detail route is /projects/[id] — names below match the seed
+  // list in app/pages/projects/index.vue.
   projects: [
-    { name: 'Design Engineering', url: '/projects/design-engineering', icon: Frame },
-    { name: 'Sales & Marketing', url: '/projects/sales-marketing', icon: PieChart },
-    { name: 'Travel', url: '/projects/travel', icon: Map },
+    { name: 'Design Engineering', url: '/projects/design-engineering', icon: Folder },
+    { name: 'Sales & Marketing', url: '/projects/sales-marketing', icon: Folder },
+    { name: 'Travel', url: '/projects/travel', icon: Folder },
   ],
 }))
 </script>

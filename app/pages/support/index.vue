@@ -20,7 +20,7 @@ const faq = [
 ]
 
 const channels = [
-  { icon: BookOpen, title: 'Documentation', description: 'Self-serve guides for 90% of questions.', href: '/documentation', meta: '75 pages', cta: 'Browse docs' },
+  { icon: BookOpen, title: 'Documentation', description: 'Self-serve guides for 90% of questions.', href: '#', meta: '75 pages', cta: 'Browse docs' },
   { icon: MessageSquare, title: 'Community Discord', description: 'Async Q&A with the team and other builders. Typically responded to within 4 hours.', href: '#', meta: '3,400 members', cta: 'Join Discord' },
   { icon: Mail, title: 'Email support', description: 'Pro and Enterprise. Median response time: 2.4 hours during business days.', href: 'mailto:support@uipkge.dev', meta: 'support@uipkge.dev', cta: 'Email us' },
 ]

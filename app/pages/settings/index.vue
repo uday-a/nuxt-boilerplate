@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { User, Users, CreditCard, Gauge, ArrowRight } from 'lucide-vue-next'
+import { User, UserCircle, ShieldCheck, Bell, Plug, Users, CreditCard, Gauge, ArrowRight } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
@@ -8,6 +8,10 @@ useHead({ title: 'Settings' })
 
 const sections = [
   { slug: 'general', icon: User, title: 'General', description: 'Workspace name, timezone, default locale, brand colours.', meta: 'You · 4 fields' },
+  { slug: 'account', icon: UserCircle, title: 'Account', description: 'Profile, email, password, account deletion.', meta: 'Your personal info' },
+  { slug: 'security', icon: ShieldCheck, title: 'Security', description: 'Sessions, two-factor auth, API tokens.', meta: '1 active session' },
+  { slug: 'notifications', icon: Bell, title: 'Notifications', description: 'Email and in-app delivery preferences.', meta: 'Email · in-app' },
+  { slug: 'integrations', icon: Plug, title: 'Integrations', description: 'Connected OAuth apps and webhooks.', meta: '0 connected' },
   { slug: 'team', icon: Users, title: 'Team', description: 'Members, roles, invitations, and SSO configuration.', meta: '8 members · 2 pending invites' },
   { slug: 'billing', icon: CreditCard, title: 'Billing', description: 'Current plan, payment method, invoices, usage caps.', meta: 'Pro · $148.40 this cycle' },
   { slug: 'limits', icon: Gauge, title: 'Limits', description: 'API quotas, rate limits, storage allowances per workspace.', meta: '47% of monthly quota' },

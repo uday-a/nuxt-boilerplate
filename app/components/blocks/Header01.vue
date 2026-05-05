@@ -22,9 +22,8 @@ const { loggedIn } = useUserSession()
 
       <nav class="hidden items-center gap-6 md:flex" aria-label="Primary">
         <a href="#features" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a>
-        <a href="#pricing" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
+        <NuxtLink to="/pricing" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</NuxtLink>
         <a href="#customers" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Customers</a>
-        <NuxtLink to="/documentation" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Docs</NuxtLink>
         <a href="#blog" class="text-sm text-muted-foreground transition-colors hover:text-foreground">Blog</a>
       </nav>
 
@@ -71,9 +70,8 @@ const { loggedIn } = useUserSession()
             </div>
             <nav class="flex flex-1 flex-col gap-1 p-4" aria-label="Mobile">
               <a href="#features" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Features</a>
-              <a href="#pricing" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Pricing</a>
+              <NuxtLink to="/pricing" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Pricing</NuxtLink>
               <a href="#customers" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Customers</a>
-              <NuxtLink to="/documentation" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Docs</NuxtLink>
               <a href="#blog" class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted" @click="mobileOpen = false">Blog</a>
             </nav>
             <div class="flex flex-col gap-2 border-t p-4">
