@@ -29,6 +29,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+      // Mirrors `isDemoMode` from server/utils/env.ts so the client UI
+      // (e.g. /login's "Continue as demo" button) can decide whether to
+      // surface demo affordances without an extra round-trip.
+      demoMode: process.env.NUXT_DEMO_MODE === 'true'
+        || (process.env.NUXT_DEMO_MODE !== 'false'
+          && !process.env.NUXT_OAUTH_GITHUB_CLIENT_ID
+          && process.env.NODE_ENV !== 'production'),
     },
   },
   compatibilityDate: '2025-07-15',
@@ -61,9 +68,16 @@ export default defineNuxtConfig({
     ],
     strategy: 'no_prefix',
   },
-  i18now: {
-    projectId: process.env.I18NOW_PROJECT_ID!,
-    apiKey: process.env.I18NOW_API_KEY,
-    mode: 'local',
-  },
+  // The `i18now` key is augmented onto the Nuxt config only when the
+  // @i18now/nuxt module is registered (which we do conditionally above).
+  // Cast so TypeScript stops complaining when the module isn't loaded.
+  ...(process.env.I18NOW_PROJECT_ID
+    ? {
+        i18now: {
+          projectId: process.env.I18NOW_PROJECT_ID,
+          apiKey: process.env.I18NOW_API_KEY,
+          mode: 'local' as const,
+        },
+      }
+    : {}),
 })

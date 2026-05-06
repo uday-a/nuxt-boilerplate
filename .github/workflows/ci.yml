@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel in-progress runs for the same ref when a new commit lands.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: lint + typecheck + build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Build-time env. `NUXT_SESSION_PASSWORD` is required by zod env at
+    # boot/build — value is throwaway since CI never serves traffic.
+    env:
+      NUXT_SESSION_PASSWORD: ci-only-throwaway-32-character-secret
+      NUXT_PUBLIC_SITE_URL: https://example.com
+      NUXT_DEMO_MODE: 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        # --legacy-peer-deps because @tanstack/zod-form-adapter and a few
+        # transitives still declare zod ^3 peers; we use zod 4 at runtime.
+        run: npm ci --legacy-peer-deps
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build

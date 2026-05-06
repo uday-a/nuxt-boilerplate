@@ -42,8 +42,10 @@ const languageOptions = computed(() =>
     label: l.name || l.code.toUpperCase(),
   })),
 )
-async function onLocaleChange(next: string | number | Record<string, unknown>) {
-  await setLocale(next as 'en' | 'es')
+// reka-ui's Select emits `AcceptableValue` (object | string | number | boolean
+// | null); we only ever bind string locale codes, so coerce.
+async function onLocaleChange(next: unknown) {
+  if (typeof next === 'string') await setLocale(next as 'en' | 'es')
 }
 
 const notifications = ref({

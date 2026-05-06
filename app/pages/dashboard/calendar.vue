@@ -46,7 +46,7 @@ const { data: events, pending: loading } = useFetch<CalendarEvent[]>('/api/mock/
 const {
   today, todayKey,
   cursor, monthLabel, gridDays, weekdays,
-  rangeStart, rangeBounds, rangeDayCount, isRange, inRange,
+  rangeAnchor, rangeStart, rangeEnd, rangeBounds, rangeDayCount, isRange, inRange,
   prevMonth, nextMonth, goToToday: goToday, selectWeekOf, clearRange,
   onCellMouseDown, onCellMouseEnter, endDrag,
 } = useMonthGrid({ initialDate: '2026-05-16' })

@@ -43,6 +43,13 @@ const emit = defineEmits<{
 }>()
 
 const { theme, setTheme } = useTheme()
+// ThemeSwitch's Theme union includes 'black' (extra registry preset) which
+// our app-level useTheme doesn't model. Coerce at the boundary; the cookie
+// only ever stores values from our narrower union.
+function onThemeChange(next: 'light' | 'dark' | 'system' | 'black') {
+  if (next === 'black') return
+  setTheme(next)
+}
 </script>
 
 <template>
@@ -93,7 +100,7 @@ const { theme, setTheme } = useTheme()
             <ThemeSwitch
               :model-value="theme"
               variant="icon-only"
-              @update:model-value="setTheme"
+              @update:model-value="onThemeChange"
             />
             <NotificationsPopover>
               <template #default="{ unreadCount }">
@@ -111,12 +118,6 @@ const { theme, setTheme } = useTheme()
                 </Button>
               </template>
             </NotificationsPopover>
-            <!-- ProfileMenu removed from header: the sidebar's NavUser
-                 (sidebar-02 footer) already owns the profile/account
-                 affordance. Two avatars in the same screen pulled the
-                 eye in conflicting directions. The block still accepts
-                 a `user` prop + emits `profile-select` so consumers can
-                 wire those into NavUser or a custom header slot. -->
           </div>
         </div>
       </header>

@@ -34,7 +34,10 @@ const emit = defineEmits<{
 const df = new DateFormatter('en-US', { dateStyle: 'medium' })
 
 const columnId = ref(props.initialColumnId)
-const dueDate = ref<DateValue | undefined>(undefined)
+// `DateValue` from @internationalized/date and reka-ui's calendar accept
+// the same runtime shapes but TypeScript treats them as different brands.
+// `as any` avoids the false-positive without changing behavior.
+const dueDate = ref<DateValue | undefined>(undefined) as any
 const form = ref({
   title: '',
   description: '',

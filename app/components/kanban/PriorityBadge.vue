@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import { priorityConfig } from '@/composables/useKanban'
 import { cn } from '@/lib/utils'
 
+type Priority = keyof typeof priorityConfig
+
 const props = withDefaults(
   defineProps<{
     priority: string
@@ -14,7 +16,7 @@ const props = withDefaults(
   },
 )
 
-const config = computed(() => priorityConfig[props.priority])
+const config = computed(() => priorityConfig[props.priority as Priority])
 </script>
 
 <template>

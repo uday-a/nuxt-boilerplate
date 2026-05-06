@@ -22,7 +22,7 @@ defineProps<{
   viewMode: 'board' | 'list'
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   'update:searchQuery': [value: string]
   'update:selectedPriority': [value: string | null]
   'update:selectedAssignee': [value: string | null]
@@ -38,7 +38,7 @@ defineEmits<{
         :model-value="searchQuery"
         placeholder="Search tasks..."
         class="h-8 pl-8 text-sm"
-        @update:model-value="$emit('update:searchQuery', $event)"
+        @update:model-value="(v: string | number) => emit('update:searchQuery', String(v))"
       />
     </div>
 

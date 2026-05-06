@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Quote } from 'lucide-vue-next'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
@@ -32,6 +32,10 @@ const testimonials = [
 ]
 
 const active = ref(0)
+// Hoist the active testimonial into a computed so the template doesn't
+// have to handle `testimonials[active]` being potentially undefined under
+// strict noUncheckedIndexedAccess.
+const current = computed(() => testimonials[active.value] ?? testimonials[0]!)
 </script>
 
 <template>
@@ -50,18 +54,18 @@ const active = ref(0)
         <CardContent class="space-y-6 p-8 text-center">
           <Quote class="mx-auto size-8 text-primary" />
           <p class="text-xl leading-relaxed text-foreground sm:text-2xl">
-            &ldquo;{{ testimonials[active].quote }}&rdquo;
+            &ldquo;{{ current.quote }}&rdquo;
           </p>
           <div class="flex flex-col items-center gap-2">
             <Avatar class="size-12">
-              <AvatarFallback>{{ testimonials[active].initials }}</AvatarFallback>
+              <AvatarFallback>{{ current.initials }}</AvatarFallback>
             </Avatar>
             <div>
               <p class="text-sm font-semibold">
-                {{ testimonials[active].name }}
+                {{ current.name }}
               </p>
               <p class="text-xs text-muted-foreground">
-                {{ testimonials[active].role }} · {{ testimonials[active].company }}
+                {{ current.role }} · {{ current.company }}
               </p>
             </div>
           </div>

@@ -37,7 +37,9 @@ export interface KanbanColumn {
   tasks: KanbanTask[]
 }
 
-export const priorityConfig: Record<string, { icon: any, class: string, label: string, bg: string }> = {
+// Keyed by the priority union from KanbanTask so indexed access returns
+// the entry type directly under noUncheckedIndexedAccess.
+export const priorityConfig: Record<KanbanTask['priority'], { icon: any, class: string, label: string, bg: string }> = {
   urgent: { icon: CircleAlert, class: 'text-red-500', label: 'Urgent', bg: 'bg-red-500' },
   high: { icon: ArrowUp, class: 'text-orange-500', label: 'High', bg: 'bg-orange-500' },
   medium: { icon: Minus, class: 'text-yellow-500 dark:text-yellow-400', label: 'Medium', bg: 'bg-yellow-500' },

@@ -40,6 +40,14 @@ const Env = z.object({
   AXIOM_DATASET: z.string().optional(),
   AXIOM_ORG_ID: z.string().optional(),
 
+  // Demo mode: lets the /login page mint a session for a fake user so a
+  // fresh fork is fully clickable without a GitHub OAuth app or DB.
+  //   - 'true'  → always on (even in prod — useful for public previews)
+  //   - 'false' → always off (recommended for real production)
+  //   - unset   → auto: on when OAuth isn't configured and we're not in
+  //               production. See `isDemoMode` below.
+  NUXT_DEMO_MODE: z.enum(['true', 'false']).optional(),
+
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 })
 
@@ -70,3 +78,11 @@ if (env.AXIOM_TOKEN && !env.AXIOM_DATASET) {
 if (env.AXIOM_DATASET && !env.AXIOM_TOKEN) {
   throw new Error('AXIOM_DATASET is set but AXIOM_TOKEN is not. Set both, or unset both.')
 }
+
+// Demo mode resolves to:
+//   - explicit 'true'/'false' if set
+//   - otherwise: ON when OAuth isn't configured AND we're not in production.
+// The intent: a fresh `git clone` + `npm run dev` should let you click
+// through every protected page without signing up for anything.
+export const isDemoMode = env.NUXT_DEMO_MODE === 'true'
+  || (env.NUXT_DEMO_MODE !== 'false' && !hasGithubOAuth && env.NODE_ENV !== 'production')

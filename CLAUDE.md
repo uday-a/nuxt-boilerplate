@@ -8,8 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` — production build.
 - `npm run preview` — preview production build locally.
 - `npm run generate` — static generate.
-- `npm install` runs `nuxt prepare` postinstall (regenerates `.nuxt/tsconfig.*`).
-- No `lint` / `test` scripts are defined. Typecheck via `npx nuxi typecheck` if needed.
+- `npm run lint` / `npm run lint:fix` — ESLint flat config via `@nuxt/eslint`.
+- `npm run typecheck` — `vue-tsc --noEmit` via `nuxi typecheck`.
+- `npm run knip` — unused files/exports/deps.
+- `npm run duplicates` — `jscpd` copy-paste detection. Threshold 2.5%.
+- `npm install` runs `nuxt prepare` + `lefthook install` via postinstall.
+- Git hooks (lefthook): pre-commit runs `eslint --fix` on staged files; commit-msg runs commitlint (Conventional Commits).
 - Drizzle (no npm-script wrappers; invoke directly):
   - `npx drizzle-kit generate` — emit SQL into `server/db/migrations/`.
   - `npx drizzle-kit migrate` — apply migrations against `DATABASE_URL`.
@@ -28,7 +32,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `components/kanban/` — kanban-specific pieces.
 - `app/layouts/dashboard.vue` wraps content in `<DashboardLayout>` and derives breadcrumbs from `route.path`. It reads `useUserSession()` and dispatches profile-menu / command-palette intents to the router.
 - `app/pages/` — file-based routing; nested folders (`dashboard/`, `settings/`, `documentation/`, `projects/`, `playground/`, `models/`, `feedback/`, `support/`) define nested routes.
-- `app/middleware/auth.ts` is a **page-level** middleware (opt in via `definePageMeta({ middleware: 'auth' })`). It currently has `const BYPASS = true` so auth is short-circuited for previewing protected pages without logging in — flip back to `false` once OAuth is configured. It uses `useUserSession().loggedIn` and redirects to `/login?next=…`.
+- `app/middleware/auth.ts` is a **page-level** middleware (opt in via `definePageMeta({ middleware: 'auth' })`). Enforces real auth: unauthenticated requests redirect to `/login?next=…`. Demo mode (see graceful-degradation matrix below) keeps the boilerplate clickable without configuring OAuth.
 - `app/lib/utils.ts` exports `cn()` (clsx + tailwind-merge) — the only shared frontend util.
 - `app/composables/`:
   - `useTheme.ts` — three-state theme (`light` | `dark` | `system`) persisted to the **cookie** `uipkge-theme` (not localStorage). Cookie chosen so SSR and the inline boot script agree on the initial value and avoid hydration mismatch.
@@ -59,11 +63,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Environment
 
-`.env.example` lists required keys: `NUXT_SESSION_PASSWORD`, `NUXT_OAUTH_GITHUB_CLIENT_ID`, `NUXT_OAUTH_GITHUB_CLIENT_SECRET`, `DATABASE_URL`, `NUXT_PUBLIC_SITE_URL`. GitHub OAuth callback URL is `http://localhost:3000/auth/github`. `DATABASE_URL` is optional for the OAuth path but required for everything that calls `useDb()` and for any `drizzle-kit` command.
+All env vars are zod-validated at boot via `server/utils/env.ts`. Missing/invalid values throw with a friendly error; partial pairs (e.g. `AXIOM_TOKEN` without `AXIOM_DATASET`) also throw. Import `env` from there instead of reading `process.env` directly.
+
+### Graceful degradation matrix
+
+The boilerplate is designed so a fresh `git clone` + `npm run dev` works without signing up for anything. Each external service degrades independently:
+
+| Env var(s) | Unset behavior | Set behavior |
+|---|---|---|
+| `NUXT_SESSION_PASSWORD` | **Boot fails** — required (32+ chars). Generate via `openssl rand -base64 32`. | Sessions encrypted. |
+| `NUXT_OAUTH_GITHUB_CLIENT_ID` + `_SECRET` | Demo mode auto-activates in dev. `/login` shows "Continue as demo user". | GitHub OAuth available; demo button disappears in production. |
+| `NUXT_DEMO_MODE` | Auto: on in dev when OAuth unset, off in production. | `true` = always on (public previews). `false` = always off (hardens prod). |
+| `DATABASE_URL` | OAuth handler skips DB upsert silently; `useDb()` throws if called. | Drizzle queries run; user upsert on signin. |
+| `I18NOW_PROJECT_ID` (+ `I18NOW_API_KEY`) | `@i18now/nuxt` module not registered; `@nuxtjs/i18n` serves local `i18n/locales/*.json` only. | Translations also pulled from CDN, dev-time auto-sync of new keys. |
+| `AXIOM_TOKEN` + `AXIOM_DATASET` | Logger prints to consola only (no shipping). | Logger ships structured events; Nitro plugin flushes on shutdown. |
+| `NUXT_PUBLIC_SITE_URL` | Defaults to `http://localhost:3000`. | SEO/sitemap/OAuth redirects use the value. |
+| `NUXT_INITIAL_ADMIN_LOGINS` | All new GitHub users default to `role='user'`. | Listed logins are created as `admin` on first sign-in (DB is source of truth after that). |
+
+Rule when adding a new external integration: it must follow the same pattern — optional env, graceful no-op when absent, fail-loud when partially configured.
 
 ## Notable gotchas
 
 - `pathPrefix: false` means two components with the same filename in different subfolders **collide** — rename one.
-- The auth middleware bypass (`BYPASS = true`) is intentional during boilerplate development; don't "fix" it without checking with the user.
 - `.pilot-backup/` holds moved pages awaiting a registry-driven rebuild — ignore unless asked.
 - `app/composables/kanbanData.ts` is ~30k of seed data; don't try to read or edit it in full unless needed.
+- The demo session sets `role: 'admin'`. Real production should set `NUXT_DEMO_MODE=false`.
