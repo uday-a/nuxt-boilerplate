@@ -11,20 +11,29 @@ import {
   <section class="bg-background">
     <div class="mx-auto max-w-3xl px-6 py-24">
       <div class="text-center">
-        <p class="text-sm font-medium uppercase tracking-widest text-primary">FAQ</p>
+        <p class="text-sm font-medium uppercase tracking-widest text-primary">
+          FAQ
+        </p>
         <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
           Questions, answered
         </h2>
         <p class="mx-auto mt-3 max-w-xl text-lg text-muted-foreground">
           Anything we missed? Email
-          <a href="mailto:hello@acme.test" class="underline underline-offset-4 hover:text-foreground">
+          <a
+            href="mailto:hello@acme.test"
+            class="underline underline-offset-4 hover:text-foreground"
+          >
             hello@acme.test
           </a>
           and we'll reply within a day.
         </p>
       </div>
 
-      <Accordion type="single" collapsible class="mt-10 w-full">
+      <Accordion
+        type="single"
+        collapsible
+        class="mt-10 w-full"
+      >
         <AccordionItem value="trial">
           <AccordionTrigger>How does the 14-day free trial work?</AccordionTrigger>
           <AccordionContent>

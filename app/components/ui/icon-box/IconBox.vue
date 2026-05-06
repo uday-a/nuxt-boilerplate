@@ -15,7 +15,7 @@ const props = withDefaults(
     variant: 'primary',
     shape: 'rounded',
     size: 'md',
-  }
+  },
 )
 
 const variantClasses: Record<string, string> = {
@@ -44,6 +44,9 @@ const iconSizes: Record<string, string> = {
 
 <template>
   <div :class="cn('shrink-0', variantClasses[variant], shapeClasses[shape], sizeClasses[size], props.class)">
-    <component :is="icon" :class="cn(iconSizes[size], props.iconClass)" />
+    <component
+      :is="icon"
+      :class="cn(iconSizes[size], props.iconClass)"
+    />
   </div>
 </template>

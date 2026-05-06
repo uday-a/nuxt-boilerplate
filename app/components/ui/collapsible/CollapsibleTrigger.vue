@@ -6,7 +6,11 @@ const props = defineProps<CollapsibleTriggerProps>()
 </script>
 
 <template>
-  <CollapsibleTrigger data-uipkge data-slot="collapsible-trigger" v-bind="props">
+  <CollapsibleTrigger
+    data-uipkge
+    data-slot="collapsible-trigger"
+    v-bind="props"
+  >
     <slot />
   </CollapsibleTrigger>
 </template>

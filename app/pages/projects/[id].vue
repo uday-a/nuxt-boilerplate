@@ -9,7 +9,7 @@ const id = computed(() => String(route.params.id))
 
 // Replace with a real fetch keyed on `id` when wiring backend.
 const name = computed(() =>
-  id.value.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+  id.value.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
 )
 
 useHead(() => ({ title: `${name.value} · Projects` }))
@@ -20,9 +20,13 @@ useHead(() => ({ title: `${name.value} · Projects` }))
     <header class="space-y-2">
       <div class="flex items-center gap-2">
         <Folder class="text-muted-foreground size-4" />
-        <h1 class="text-2xl font-semibold tracking-tight">{{ name }}</h1>
+        <h1 class="text-2xl font-semibold tracking-tight">
+          {{ name }}
+        </h1>
       </div>
-      <p class="text-muted-foreground text-sm">Project workspace · id <code>{{ id }}</code></p>
+      <p class="text-muted-foreground text-sm">
+        Project workspace · id <code>{{ id }}</code>
+      </p>
     </header>
 
     <div class="grid gap-4 lg:grid-cols-3">

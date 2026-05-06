@@ -25,7 +25,7 @@ const props = withDefaults(
     autoSubmit: false,
     status: 'default',
     size: 'md',
-  }
+  },
 )
 
 const emits = defineEmits<

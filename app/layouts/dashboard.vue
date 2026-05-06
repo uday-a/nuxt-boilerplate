@@ -16,7 +16,7 @@ const breadcrumbs = computed(() => {
 
 const { user: sessionUser, clear } = useUserSession()
 const user = computed(() => {
-  const u = sessionUser.value as { firstName?: string; lastName?: string; email?: string; profilePictureUrl?: string } | undefined
+  const u = sessionUser.value as { firstName?: string, lastName?: string, email?: string, profilePictureUrl?: string } | undefined
   if (!u) return { name: 'Guest', email: '', avatar: '' }
   const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.email || 'Guest'
   return { name, email: u.email ?? '', avatar: u.profilePictureUrl ?? '' }
@@ -29,12 +29,12 @@ async function onProfileSelect(key: string) {
     await router.push('/login')
     return
   }
-  if (key === 'account') router.push('/dashboard/profile')
-  if (key === 'billing') router.push('/dashboard/billing')
-  if (key === 'settings') router.push('/dashboard/settings')
+  if (key === 'account') router.push('/settings/account')
+  if (key === 'billing') router.push('/settings/billing')
+  if (key === 'settings') router.push('/settings')
 }
 
-function onCommandSelect(item: { label: string; hint?: string }) {
+function onCommandSelect(item: { label: string, hint?: string }) {
   if (item.hint) router.push(item.hint)
 }
 </script>

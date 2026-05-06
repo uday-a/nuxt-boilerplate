@@ -25,11 +25,11 @@ const columns = useState<KanbanColumn[]>('kanban-columns')
 
 const subtasksDone = computed(() => {
   if (!columns.value || !props.task.subtaskIds.length) return 0
-  return props.task.subtaskIds.filter((id) => getTaskColumn(columns.value, id)?.id === 'done').length
+  return props.task.subtaskIds.filter(id => getTaskColumn(columns.value, id)?.id === 'done').length
 })
 
 defineEmits<{
-  click: [task: KanbanTask]
+  'click': [task: KanbanTask]
   'quick-view': [task: KanbanTask]
 }>()
 </script>
@@ -64,10 +64,18 @@ defineEmits<{
             <MoreHorizontal class="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" class="w-36">
-          <DropdownMenuItem @click.stop="$emit('quick-view', task)">Quick view</DropdownMenuItem>
+        <DropdownMenuContent
+          align="end"
+          class="w-36"
+        >
+          <DropdownMenuItem @click.stop="$emit('quick-view', task)">
+            Quick view
+          </DropdownMenuItem>
           <DropdownMenuItem as-child>
-            <NuxtLink :to="`/dashboard/kanban/${task.id}`" class="gap-2">
+            <NuxtLink
+              :to="`/dashboard/kanban/${task.id}`"
+              class="gap-2"
+            >
               <ExternalLink class="size-3.5" />
               Open detail
             </NuxtLink>
@@ -76,7 +84,9 @@ defineEmits<{
           <DropdownMenuItem>Move to...</DropdownMenuItem>
           <DropdownMenuItem>Assign to...</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem class="text-destructive">Delete</DropdownMenuItem>
+          <DropdownMenuItem class="text-destructive">
+            Delete
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -90,23 +100,47 @@ defineEmits<{
       {{ task.title }}
     </p>
 
-    <div v-if="task.tags.length" class="mb-2 flex flex-wrap gap-1 pl-2">
-      <TagBadge v-for="tag in task.tags" :key="tag.label" :label="tag.label" :color="tag.color" />
+    <div
+      v-if="task.tags.length"
+      class="mb-2 flex flex-wrap gap-1 pl-2"
+    >
+      <TagBadge
+        v-for="tag in task.tags"
+        :key="tag.label"
+        :label="tag.label"
+        :color="tag.color"
+      />
     </div>
 
-    <div v-if="task.subtaskIds.length" class="mb-2 pl-2">
-      <SubtaskProgress :done="subtasksDone" :total="task.subtaskIds.length" />
+    <div
+      v-if="task.subtaskIds.length"
+      class="mb-2 pl-2"
+    >
+      <SubtaskProgress
+        :done="subtasksDone"
+        :total="task.subtaskIds.length"
+      />
     </div>
 
     <div class="flex items-center gap-2 pl-2">
-      <DueDateBadge v-if="task.dueDate" :due-date="task.dueDate" variant="chip" />
+      <DueDateBadge
+        v-if="task.dueDate"
+        :due-date="task.dueDate"
+        variant="chip"
+      />
 
-      <div v-if="task.commentItems.length" class="text-muted-foreground/70 flex items-center gap-1 text-[11px]">
+      <div
+        v-if="task.commentItems.length"
+        class="text-muted-foreground/70 flex items-center gap-1 text-[11px]"
+      >
         <MessageSquare class="size-3" />
         {{ task.commentItems.length }}
       </div>
 
-      <div v-if="task.fileItems.length" class="text-muted-foreground/70 flex items-center gap-1 text-[11px]">
+      <div
+        v-if="task.fileItems.length"
+        class="text-muted-foreground/70 flex items-center gap-1 text-[11px]"
+      >
         <Paperclip class="size-3" />
         {{ task.fileItems.length }}
       </div>
@@ -115,9 +149,18 @@ defineEmits<{
         <TooltipProvider :delay-duration="200">
           <Tooltip>
             <TooltipTrigger as-child>
-              <UserAvatar :name="task.assignee.name" :color="task.assignee.color" size="xs" />
+              <UserAvatar
+                :name="task.assignee.name"
+                :color="task.assignee.color"
+                size="xs"
+              />
             </TooltipTrigger>
-            <TooltipContent side="bottom" class="text-xs">{{ task.assignee.name }}</TooltipContent>
+            <TooltipContent
+              side="bottom"
+              class="text-xs"
+            >
+              {{ task.assignee.name }}
+            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>

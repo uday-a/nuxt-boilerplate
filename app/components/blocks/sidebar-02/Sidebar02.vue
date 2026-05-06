@@ -11,7 +11,7 @@ import {
   Send,
   Settings2,
   Table2,
-} from "lucide-vue-next"
+} from 'lucide-vue-next'
 
 import NavMain from './NavMain.vue'
 import NavProjects from './NavProjects.vue'
@@ -93,10 +93,16 @@ const data = computed(() => ({
     <SidebarContent>
       <NavMain :items="data.navMain" />
       <NavProjects :projects="data.projects" />
-      <NavSecondary :items="data.navSecondary" class="mt-auto" />
+      <NavSecondary
+        :items="data.navSecondary"
+        class="mt-auto"
+      />
     </SidebarContent>
     <SidebarFooter>
-      <NavUser :user="navUser" @logout="onLogout" />
+      <NavUser
+        :user="navUser"
+        @logout="onLogout"
+      />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>

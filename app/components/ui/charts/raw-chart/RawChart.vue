@@ -51,6 +51,10 @@ withDefaults(
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', $props.class)"
   >
-    <VChart :option="option" :autoresize="autoresize" class="size-full" />
+    <VChart
+      :option="option"
+      :autoresize="autoresize"
+      class="size-full"
+    />
   </div>
 </template>

@@ -21,7 +21,9 @@ const cycle = ref<Cycle>('monthly')
   <section class="bg-background">
     <div class="mx-auto max-w-6xl px-6 py-24">
       <div class="mb-10 text-center">
-        <p class="text-sm font-medium uppercase tracking-widest text-primary">Pricing</p>
+        <p class="text-sm font-medium uppercase tracking-widest text-primary">
+          Pricing
+        </p>
         <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
           Plans for teams of every size
         </h2>
@@ -35,10 +37,17 @@ const cycle = ref<Cycle>('monthly')
             :model-value="cycle"
             @update:model-value="(v) => v && (cycle = v as Cycle)"
           >
-            <ToggleGroupItem value="monthly">Monthly</ToggleGroupItem>
+            <ToggleGroupItem value="monthly">
+              Monthly
+            </ToggleGroupItem>
             <ToggleGroupItem value="yearly">
               Yearly
-              <Badge variant="secondary" class="ml-2">−20%</Badge>
+              <Badge
+                variant="secondary"
+                class="ml-2"
+              >
+                −20%
+              </Badge>
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
@@ -47,7 +56,9 @@ const cycle = ref<Cycle>('monthly')
       <div class="grid gap-6 lg:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle class="text-xl">Starter</CardTitle>
+            <CardTitle class="text-xl">
+              Starter
+            </CardTitle>
             <CardDescription>For small teams trying things out.</CardDescription>
             <div class="mt-4 flex items-baseline gap-1">
               <span class="text-4xl font-semibold tracking-tight">
@@ -77,7 +88,12 @@ const cycle = ref<Cycle>('monthly')
             </ul>
           </CardContent>
           <CardFooter>
-            <Button class="w-full" variant="outline">Start free</Button>
+            <Button
+              class="w-full"
+              variant="outline"
+            >
+              Start free
+            </Button>
           </CardFooter>
         </Card>
 
@@ -85,50 +101,56 @@ const cycle = ref<Cycle>('monthly')
           <Badge class="absolute -top-3 left-1/2 z-10 -translate-x-1/2 gap-1 shadow-sm">
             <Sparkles class="size-3" /> Most popular
           </Badge>
-        <Card class="border-primary shadow-lg ring-1 ring-primary/10">
-          <CardHeader>
-            <CardTitle class="text-xl">Team</CardTitle>
-            <CardDescription>For growing companies scaling people ops.</CardDescription>
-            <div class="mt-4 flex items-baseline gap-1">
-              <span class="text-4xl font-semibold tracking-tight">
-                ${{ cycle === 'monthly' ? 29 : 24 }}
-              </span>
-              <span class="text-sm text-muted-foreground">/ user / month</span>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <ul class="space-y-3 text-sm">
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Unlimited employees</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Payroll + tax filing</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Onboarding workflows</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Performance reviews</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Slack + priority support</span>
-              </li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button class="w-full">Start 14-day trial</Button>
-          </CardFooter>
-        </Card>
+          <Card class="border-primary shadow-lg ring-1 ring-primary/10">
+            <CardHeader>
+              <CardTitle class="text-xl">
+                Team
+              </CardTitle>
+              <CardDescription>For growing companies scaling people ops.</CardDescription>
+              <div class="mt-4 flex items-baseline gap-1">
+                <span class="text-4xl font-semibold tracking-tight">
+                  ${{ cycle === 'monthly' ? 29 : 24 }}
+                </span>
+                <span class="text-sm text-muted-foreground">/ user / month</span>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul class="space-y-3 text-sm">
+                <li class="flex items-start gap-2">
+                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
+                  <span>Unlimited employees</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
+                  <span>Payroll + tax filing</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
+                  <span>Onboarding workflows</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
+                  <span>Performance reviews</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
+                  <span>Slack + priority support</span>
+                </li>
+              </ul>
+            </CardContent>
+            <CardFooter>
+              <Button class="w-full">
+                Start 14-day trial
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle class="text-xl">Enterprise</CardTitle>
+            <CardTitle class="text-xl">
+              Enterprise
+            </CardTitle>
             <CardDescription>Custom controls for regulated industries.</CardDescription>
             <div class="mt-4 flex items-baseline gap-1">
               <span class="text-3xl font-semibold tracking-tight">Custom</span>
@@ -159,7 +181,12 @@ const cycle = ref<Cycle>('monthly')
             </ul>
           </CardContent>
           <CardFooter>
-            <Button class="w-full" variant="outline">Talk to sales</Button>
+            <Button
+              class="w-full"
+              variant="outline"
+            >
+              Talk to sales
+            </Button>
           </CardFooter>
         </Card>
       </div>

@@ -11,15 +11,21 @@ const props = withDefaults(
   }>(),
   {
     iconSize: 'size-3.5',
-  }
+  },
 )
 
 const config = computed(() => priorityConfig[props.priority])
 </script>
 
 <template>
-  <div v-if="config" :class="cn('flex items-center gap-1', props.class)">
-    <component :is="config.icon" :class="[iconSize, config.class]" />
+  <div
+    v-if="config"
+    :class="cn('flex items-center gap-1', props.class)"
+  >
+    <component
+      :is="config.icon"
+      :class="[iconSize, config.class]"
+    />
     <span :class="['text-[11px] font-semibold', config.class]">{{ config.label }}</span>
   </div>
 </template>

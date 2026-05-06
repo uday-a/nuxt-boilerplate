@@ -15,7 +15,9 @@ useHead({
     <main>
       <div class="mx-auto max-w-6xl px-6 py-16">
         <header class="mx-auto max-w-2xl text-center">
-          <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Pricing</h1>
+          <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
+            Pricing
+          </h1>
           <p class="text-muted-foreground mt-3 text-base">
             Start free. Upgrade when you outgrow it.
           </p>

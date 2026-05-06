@@ -38,7 +38,9 @@ const active = ref(0)
   <section class="bg-muted/30">
     <div class="mx-auto max-w-4xl px-6 py-24">
       <div class="text-center">
-        <p class="text-sm font-medium uppercase tracking-widest text-primary">Testimonials</p>
+        <p class="text-sm font-medium uppercase tracking-widest text-primary">
+          Testimonials
+        </p>
         <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
           Loved by teams everywhere
         </h2>
@@ -55,7 +57,9 @@ const active = ref(0)
               <AvatarFallback>{{ testimonials[active].initials }}</AvatarFallback>
             </Avatar>
             <div>
-              <p class="text-sm font-semibold">{{ testimonials[active].name }}</p>
+              <p class="text-sm font-semibold">
+                {{ testimonials[active].name }}
+              </p>
               <p class="text-xs text-muted-foreground">
                 {{ testimonials[active].role }} · {{ testimonials[active].company }}
               </p>

@@ -40,8 +40,8 @@ const STATUS_TO_CODE: Record<number, ErrorCode> = {
   429: ErrorCode.RATE_LIMITED,
 }
 
-export interface ApiSuccess<T> { ok: true; data: T }
-export interface ApiFailure { ok: false; error: { code: ErrorCode; message: string; details?: unknown } }
+export interface ApiSuccess<T> { ok: true, data: T }
+export interface ApiFailure { ok: false, error: { code: ErrorCode, message: string, details?: unknown } }
 export type ApiResponse<T> = ApiSuccess<T> | ApiFailure
 
 export function ok<T>(data: T): ApiSuccess<T> {
@@ -77,8 +77,9 @@ export function apiHandler<T>(fn: (event: H3Event) => T | Promise<T>): EventHand
     try {
       const data = await fn(event)
       return ok(data)
-    } catch (err: unknown) {
-      const e = err as { statusCode?: number; statusMessage?: string; message?: string; data?: { code?: ErrorCode; message?: string; details?: unknown } }
+    }
+    catch (err: unknown) {
+      const e = err as { statusCode?: number, statusMessage?: string, message?: string, data?: { code?: ErrorCode, message?: string, details?: unknown } }
       const statusCode = e.statusCode ?? 500
       const code: ErrorCode = e.data?.code ?? STATUS_TO_CODE[statusCode] ?? ErrorCode.INTERNAL
       const message = e.data?.message ?? e.message ?? 'Internal error'

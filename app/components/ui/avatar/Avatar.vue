@@ -8,23 +8,23 @@ import { cn } from '@/lib/utils'
 const avatarVariants = cva('relative flex shrink-0 overflow-hidden', {
   variants: {
     size: {
-      xs: 'size-4',
-      sm: 'size-6',
-      default: 'size-8',
-      lg: 'size-12',
-      xl: 'size-16',
+      'xs': 'size-4',
+      'sm': 'size-6',
+      'default': 'size-8',
+      'lg': 'size-12',
+      'xl': 'size-16',
       '2xl': 'size-20',
     },
     rounded: {
-      none: 'rounded-none',
-      sm: 'rounded-sm',
-      default: 'rounded-full',
-      md: 'rounded-md',
-      lg: 'rounded-lg',
-      xl: 'rounded-xl',
+      'none': 'rounded-none',
+      'sm': 'rounded-sm',
+      'default': 'rounded-full',
+      'md': 'rounded-md',
+      'lg': 'rounded-lg',
+      'xl': 'rounded-xl',
       '2xl': 'rounded-2xl',
       '3xl': 'rounded-3xl',
-      full: 'rounded-full',
+      'full': 'rounded-full',
     },
     color: {
       default: '',
@@ -78,7 +78,7 @@ const props = withDefaults(
     tile: false,
     disabled: false,
     loading: false,
-  }
+  },
 )
 
 const emit = defineEmits<{
@@ -107,13 +107,18 @@ const rootClasses = computed(() =>
     props.tile ? 'rounded-none' : '',
     props.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
     props.loading ? 'animate-pulse' : '',
-    props.class
-  )
+    props.class,
+  ),
 )
 </script>
 
 <template>
-  <span :class="rootClasses" data-uipkge data-slot="avatar" @click="handleClick">
+  <span
+    :class="rootClasses"
+    data-uipkge
+    data-slot="avatar"
+    @click="handleClick"
+  >
     <slot />
   </span>
 </template>

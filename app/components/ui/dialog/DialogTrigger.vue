@@ -10,7 +10,12 @@ const props = defineProps<{
 </script>
 
 <template>
-  <DialogTrigger data-uipkge data-slot="dialog-trigger" :class="props.class" :as-child="props.asChild">
+  <DialogTrigger
+    data-uipkge
+    data-slot="dialog-trigger"
+    :class="props.class"
+    :as-child="props.asChild"
+  >
     <slot />
   </DialogTrigger>
 </template>

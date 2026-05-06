@@ -5,7 +5,7 @@ useHead({ title: 'Create an account' })
 const { loggedIn } = useUserSession()
 if (loggedIn.value) await navigateTo('/dashboard')
 
-function onSubmit(_payload: { name: string; email: string; password: string }) {
+function onSubmit(_payload: { name: string, email: string, password: string }) {
   alert('Email signup is not wired. Use the GitHub button to continue.')
 }
 

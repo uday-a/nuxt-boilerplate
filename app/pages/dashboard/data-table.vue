@@ -157,7 +157,7 @@ const page = ref(0)
 const pageSize = ref(10)
 const selected = ref<Set<string>>(new Set())
 const density = ref<Density>('comfortable')
-const visibleCols = ref<Set<string>>(new Set(columns.filter((c) => c.defaultVisible).map((c) => c.key)))
+const visibleCols = ref<Set<string>>(new Set(columns.filter(c => c.defaultVisible).map(c => c.key)))
 const loading = ref(true)
 const detailOpen = ref(false)
 const detailCustomer = ref<Customer | null>(null)
@@ -221,9 +221,9 @@ watch([search, statusFilter, planFilter, dateRange, pageSize], () => {
   page.value = 0
 })
 
-const allOnPageChecked = computed(() => paged.value.length > 0 && paged.value.every((c) => selected.value.has(c.id)))
-const someOnPageChecked = computed(() => paged.value.some((c) => selected.value.has(c.id)) && !allOnPageChecked.value)
-const allFilteredChecked = computed(() => sorted.value.length > 0 && sorted.value.every((c) => selected.value.has(c.id)))
+const allOnPageChecked = computed(() => paged.value.length > 0 && paged.value.every(c => selected.value.has(c.id)))
+const someOnPageChecked = computed(() => paged.value.some(c => selected.value.has(c.id)) && !allOnPageChecked.value)
+const allFilteredChecked = computed(() => sorted.value.length > 0 && sorted.value.every(c => selected.value.has(c.id)))
 
 function togglePage(v: boolean) {
   const next = new Set(selected.value)
@@ -235,7 +235,7 @@ function togglePage(v: boolean) {
 }
 
 function selectAllFiltered() {
-  selected.value = new Set(sorted.value.map((c) => c.id))
+  selected.value = new Set(sorted.value.map(c => c.id))
 }
 
 function toggleRow(id: string, v: boolean) {
@@ -292,9 +292,9 @@ function openDetail(c: Customer) {
 // CSV builds from currently visible columns and the filtered+sorted set --
 // matches what the user sees on screen, not the raw dataset.
 function exportCsv() {
-  const cols = columns.filter((c) => visibleCols.value.has(c.key))
-  const header = cols.map((c) => c.label).join(',')
-  const rows = sorted.value.map((row) =>
+  const cols = columns.filter(c => visibleCols.value.has(c.key))
+  const header = cols.map(c => c.label).join(',')
+  const rows = sorted.value.map(row =>
     cols
       .map((c) => {
         const v = row[c.key as keyof Customer]
@@ -313,21 +313,21 @@ function exportCsv() {
 }
 
 const dateRangeLabel: Record<DateRange, string> = {
-  all: 'All time',
+  'all': 'All time',
   '7d': 'Last 7 days',
   '30d': 'Last 30 days',
   '90d': 'Last 90 days',
 }
 
 const cellPad = computed(() => (density.value === 'compact' ? 'py-1.5' : 'py-3'))
-const visibleCount = computed(() => columns.filter((c) => visibleCols.value.has(c.key)).length + 2)
+const visibleCount = computed(() => columns.filter(c => visibleCols.value.has(c.key)).length + 2)
 
 function initials(name: string) {
   return name
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase() ?? '')
+    .map(w => w[0]?.toUpperCase() ?? '')
     .join('')
 }
 
@@ -361,11 +361,14 @@ function timelineFor(c: Customer): TimelineEvent[] {
   events.push({ icon: UserPlus, title: 'Account created', meta: c.createdAt, tone: 'text-muted-foreground' })
   if (c.status === 'invited') {
     events.push({ icon: Mail, title: 'Invite email sent', meta: c.lastSeen, tone: 'text-amber-600 dark:text-amber-400' })
-  } else if (c.status === 'trial') {
+  }
+  else if (c.status === 'trial') {
     events.push({ icon: Activity, title: 'Trial started', meta: c.lastSeen, tone: 'text-blue-600 dark:text-blue-400' })
-  } else if (c.status === 'churned') {
+  }
+  else if (c.status === 'churned') {
     events.push({ icon: CreditCard, title: 'Subscription ended', meta: c.lastSeen, tone: 'text-rose-600 dark:text-rose-400' })
-  } else {
+  }
+  else {
     events.push({ icon: CreditCard, title: `Renewed at ${formatMoney(c.mrr)}/mo`, meta: c.lastSeen, tone: 'text-emerald-600 dark:text-emerald-400' })
     events.push({ icon: Users, title: `${c.seats} seats provisioned`, meta: c.lastSeen, tone: 'text-muted-foreground' })
   }
@@ -377,16 +380,28 @@ function timelineFor(c: Customer): TimelineEvent[] {
   <div class="space-y-4">
     <header class="flex flex-wrap items-end justify-between gap-4">
       <div class="space-y-1">
-        <h1 class="text-2xl font-semibold tracking-tight">Customers</h1>
+        <h1 class="text-2xl font-semibold tracking-tight">
+          Customers
+        </h1>
         <p class="text-muted-foreground text-sm">
           {{ customers.length }} accounts · {{ sorted.length }} after filters · {{ selected.size }} selected
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <Button variant="outline" size="sm" class="h-8 gap-1.5" @click="exportCsv">
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-8 gap-1.5"
+          @click="exportCsv"
+        >
           <Download class="size-3.5" />Export CSV
         </Button>
-        <Button size="sm" class="h-8 gap-1.5"><Plus class="size-3.5" />Add customer</Button>
+        <Button
+          size="sm"
+          class="h-8 gap-1.5"
+        >
+          <Plus class="size-3.5" />Add customer
+        </Button>
       </div>
     </header>
 
@@ -395,17 +410,34 @@ function timelineFor(c: Customer): TimelineEvent[] {
         <div class="flex flex-wrap items-center gap-2">
           <div class="relative max-w-xs flex-1 min-w-[12rem]">
             <Search class="text-muted-foreground absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2" />
-            <Input v-model="search" placeholder="Search name, email, country…" class="h-8 pl-7 text-sm" />
+            <Input
+              v-model="search"
+              placeholder="Search name, email, country…"
+              class="h-8 pl-7 text-sm"
+            />
           </div>
 
           <Popover>
             <PopoverTrigger as-child>
-              <Button variant="outline" size="sm" class="h-8 gap-1.5 text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                class="h-8 gap-1.5 text-xs"
+              >
                 <Filter class="size-3.5" />Status
-                <Badge v-if="statusFilter.size" variant="secondary" class="ml-1 h-4 px-1 text-[10px]">{{ statusFilter.size }}</Badge>
+                <Badge
+                  v-if="statusFilter.size"
+                  variant="secondary"
+                  class="ml-1 h-4 px-1 text-[10px]"
+                >
+                  {{ statusFilter.size }}
+                </Badge>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" class="w-48 p-1">
+            <PopoverContent
+              align="start"
+              class="w-48 p-1"
+            >
               <button
                 v-for="s in STATUSES"
                 :key="s"
@@ -416,21 +448,42 @@ function timelineFor(c: Customer): TimelineEvent[] {
                   <span :class="['size-2 rounded-full', s === 'active' ? 'bg-emerald-500' : s === 'trial' ? 'bg-blue-500' : s === 'invited' ? 'bg-amber-500' : 'bg-rose-500']" />
                   {{ s }}
                 </span>
-                <Check v-if="statusFilter.has(s)" class="text-muted-foreground size-3" />
+                <Check
+                  v-if="statusFilter.has(s)"
+                  class="text-muted-foreground size-3"
+                />
               </button>
               <Separator class="my-1" />
-              <button class="text-muted-foreground hover:bg-accent w-full rounded px-2 py-1.5 text-left text-xs" @click="statusFilter = new Set()">Clear</button>
+              <button
+                class="text-muted-foreground hover:bg-accent w-full rounded px-2 py-1.5 text-left text-xs"
+                @click="statusFilter = new Set()"
+              >
+                Clear
+              </button>
             </PopoverContent>
           </Popover>
 
           <Popover>
             <PopoverTrigger as-child>
-              <Button variant="outline" size="sm" class="h-8 gap-1.5 text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                class="h-8 gap-1.5 text-xs"
+              >
                 <Filter class="size-3.5" />Plan
-                <Badge v-if="planFilter.size" variant="secondary" class="ml-1 h-4 px-1 text-[10px]">{{ planFilter.size }}</Badge>
+                <Badge
+                  v-if="planFilter.size"
+                  variant="secondary"
+                  class="ml-1 h-4 px-1 text-[10px]"
+                >
+                  {{ planFilter.size }}
+                </Badge>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" class="w-44 p-1">
+            <PopoverContent
+              align="start"
+              class="w-44 p-1"
+            >
               <button
                 v-for="p in PLANS"
                 :key="p"
@@ -438,22 +491,41 @@ function timelineFor(c: Customer): TimelineEvent[] {
                 @click="planFilter = toggleSetValue(planFilter, p)"
               >
                 {{ p }}
-                <Check v-if="planFilter.has(p)" class="text-muted-foreground size-3" />
+                <Check
+                  v-if="planFilter.has(p)"
+                  class="text-muted-foreground size-3"
+                />
               </button>
               <Separator class="my-1" />
-              <button class="text-muted-foreground hover:bg-accent w-full rounded px-2 py-1.5 text-left text-xs" @click="planFilter = new Set()">Clear</button>
+              <button
+                class="text-muted-foreground hover:bg-accent w-full rounded px-2 py-1.5 text-left text-xs"
+                @click="planFilter = new Set()"
+              >
+                Clear
+              </button>
             </PopoverContent>
           </Popover>
 
           <Select v-model="dateRange">
-            <SelectTrigger size="sm" class="h-8 w-[140px] text-xs">
+            <SelectTrigger
+              size="sm"
+              class="h-8 w-[140px] text-xs"
+            >
               <SelectValue :placeholder="dateRangeLabel[dateRange]" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All time</SelectItem>
-              <SelectItem value="7d">Last 7 days</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 90 days</SelectItem>
+              <SelectItem value="all">
+                All time
+              </SelectItem>
+              <SelectItem value="7d">
+                Last 7 days
+              </SelectItem>
+              <SelectItem value="30d">
+                Last 30 days
+              </SelectItem>
+              <SelectItem value="90d">
+                Last 90 days
+              </SelectItem>
             </SelectContent>
           </Select>
 
@@ -468,18 +540,41 @@ function timelineFor(c: Customer): TimelineEvent[] {
           </Button>
 
           <div class="ml-auto flex items-center gap-2">
-            <ToggleGroup v-model="density" type="single" size="sm" variant="outline" class="h-8">
-              <ToggleGroupItem value="compact" class="h-8 px-2 text-xs">Compact</ToggleGroupItem>
-              <ToggleGroupItem value="comfortable" class="h-8 px-2 text-xs">Cozy</ToggleGroupItem>
+            <ToggleGroup
+              v-model="density"
+              type="single"
+              size="sm"
+              variant="outline"
+              class="h-8"
+            >
+              <ToggleGroupItem
+                value="compact"
+                class="h-8 px-2 text-xs"
+              >
+                Compact
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="comfortable"
+                class="h-8 px-2 text-xs"
+              >
+                Cozy
+              </ToggleGroupItem>
             </ToggleGroup>
 
             <Popover>
               <PopoverTrigger as-child>
-                <Button variant="outline" size="sm" class="h-8 gap-1.5 text-xs">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  class="h-8 gap-1.5 text-xs"
+                >
                   <Columns3 class="size-3.5" />Columns
                 </Button>
               </PopoverTrigger>
-              <PopoverContent align="end" class="w-44 p-1">
+              <PopoverContent
+                align="end"
+                class="w-44 p-1"
+              >
                 <button
                   v-for="c in columns"
                   :key="c.key"
@@ -487,14 +582,20 @@ function timelineFor(c: Customer): TimelineEvent[] {
                   @click="toggleColumn(c.key)"
                 >
                   {{ c.label }}
-                  <Check v-if="isVisible(c.key)" class="text-muted-foreground size-3" />
+                  <Check
+                    v-if="isVisible(c.key)"
+                    class="text-muted-foreground size-3"
+                  />
                 </button>
               </PopoverContent>
             </Popover>
           </div>
         </div>
 
-        <div v-if="selected.size > 0" class="bg-muted/40 -mx-4 -mb-3 flex flex-wrap items-center gap-2 border-t px-4 py-2 text-xs">
+        <div
+          v-if="selected.size > 0"
+          class="bg-muted/40 -mx-4 -mb-3 flex flex-wrap items-center gap-2 border-t px-4 py-2 text-xs"
+        >
           <span class="font-medium">{{ selected.size }} selected</span>
           <button
             v-if="allOnPageChecked && !allFilteredChecked && sorted.length > pageSize"
@@ -504,10 +605,35 @@ function timelineFor(c: Customer): TimelineEvent[] {
             Select all {{ sorted.length }} matching
           </button>
           <div class="ml-auto flex items-center gap-2">
-            <Button variant="outline" size="sm" class="h-7 text-xs">Email</Button>
-            <Button variant="outline" size="sm" class="h-7 text-xs">Change plan</Button>
-            <Button variant="outline" size="sm" class="h-7 text-xs text-rose-600">Archive</Button>
-            <Button variant="ghost" size="sm" class="h-7 text-xs" @click="clearSelection">Clear</Button>
+            <Button
+              variant="outline"
+              size="sm"
+              class="h-7 text-xs"
+            >
+              Email
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              class="h-7 text-xs"
+            >
+              Change plan
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              class="h-7 text-xs text-rose-600"
+            >
+              Archive
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              class="h-7 text-xs"
+              @click="clearSelection"
+            >
+              Clear
+            </Button>
           </div>
         </div>
       </CardHeader>
@@ -523,14 +649,23 @@ function timelineFor(c: Customer): TimelineEvent[] {
                     @update:model-value="(v) => togglePage(Boolean(v))"
                   />
                 </TableHead>
-                <template v-for="c in columns" :key="c.key">
-                  <TableHead v-if="isVisible(c.key)" :class="c.alignRight ? 'text-right' : ''">
+                <template
+                  v-for="c in columns"
+                  :key="c.key"
+                >
+                  <TableHead
+                    v-if="isVisible(c.key)"
+                    :class="c.alignRight ? 'text-right' : ''"
+                  >
                     <button
                       v-if="c.sortable"
                       :class="['hover:text-foreground inline-flex items-center gap-1 font-medium', c.alignRight ? 'ml-auto' : '']"
                       @click="toggleSort(c.key as SortKey, c.sortable)"
                     >
-                      {{ c.label }}<component :is="sortIcon(c.key as SortKey)" class="size-3" />
+                      {{ c.label }}<component
+                        :is="sortIcon(c.key as SortKey)"
+                        class="size-3"
+                      />
                     </button>
                     <span v-else>{{ c.label }}</span>
                   </TableHead>
@@ -540,12 +675,23 @@ function timelineFor(c: Customer): TimelineEvent[] {
             </TableHeader>
 
             <TableBody v-if="loading">
-              <TableRow v-for="i in pageSize" :key="`sk-${i}`">
-                <TableCell :class="['pl-4', cellPad]"><Skeleton class="size-4 rounded" /></TableCell>
-                <TableCell v-for="c in columns.filter((c) => isVisible(c.key))" :key="c.key" :class="[cellPad]">
+              <TableRow
+                v-for="i in pageSize"
+                :key="`sk-${i}`"
+              >
+                <TableCell :class="['pl-4', cellPad]">
+                  <Skeleton class="size-4 rounded" />
+                </TableCell>
+                <TableCell
+                  v-for="c in columns.filter((c) => isVisible(c.key))"
+                  :key="c.key"
+                  :class="[cellPad]"
+                >
                   <Skeleton :class="['h-3', c.key === 'name' ? 'w-40' : 'w-16']" />
                 </TableCell>
-                <TableCell :class="cellPad"><Skeleton class="size-4 rounded" /></TableCell>
+                <TableCell :class="cellPad">
+                  <Skeleton class="size-4 rounded" />
+                </TableCell>
               </TableRow>
             </TableBody>
 
@@ -557,45 +703,119 @@ function timelineFor(c: Customer): TimelineEvent[] {
                 class="hover:bg-muted/40 cursor-pointer"
                 @click="openDetail(c)"
               >
-                <TableCell :class="['pl-4', cellPad]" @click.stop>
-                  <Checkbox :model-value="selected.has(c.id)" @update:model-value="(v) => toggleRow(c.id, Boolean(v))" />
+                <TableCell
+                  :class="['pl-4', cellPad]"
+                  @click.stop
+                >
+                  <Checkbox
+                    :model-value="selected.has(c.id)"
+                    @update:model-value="(v) => toggleRow(c.id, Boolean(v))"
+                  />
                 </TableCell>
-                <TableCell v-if="isVisible('name')" :class="cellPad">
-                  <div class="font-medium">{{ c.name }}</div>
-                  <div class="text-muted-foreground text-xs">{{ c.email }}</div>
+                <TableCell
+                  v-if="isVisible('name')"
+                  :class="cellPad"
+                >
+                  <div class="font-medium">
+                    {{ c.name }}
+                  </div>
+                  <div class="text-muted-foreground text-xs">
+                    {{ c.email }}
+                  </div>
                 </TableCell>
-                <TableCell v-if="isVisible('plan')" :class="['text-muted-foreground', cellPad]">{{ c.plan }}</TableCell>
-                <TableCell v-if="isVisible('status')" :class="cellPad">
-                  <Badge variant="outline" :class="['gap-1 px-2 text-[10px] font-medium uppercase tracking-wide', statusTone[c.status]]">
+                <TableCell
+                  v-if="isVisible('plan')"
+                  :class="['text-muted-foreground', cellPad]"
+                >
+                  {{ c.plan }}
+                </TableCell>
+                <TableCell
+                  v-if="isVisible('status')"
+                  :class="cellPad"
+                >
+                  <Badge
+                    variant="outline"
+                    :class="['gap-1 px-2 text-[10px] font-medium uppercase tracking-wide', statusTone[c.status]]"
+                  >
                     {{ c.status }}
                   </Badge>
                 </TableCell>
-                <TableCell v-if="isVisible('mrr')" :class="['text-right tabular-nums', cellPad]">{{ formatMoney(c.mrr) }}</TableCell>
-                <TableCell v-if="isVisible('seats')" :class="['text-right tabular-nums text-muted-foreground', cellPad]">{{ c.seats || '—' }}</TableCell>
-                <TableCell v-if="isVisible('country')" :class="['text-muted-foreground', cellPad]">{{ c.country }}</TableCell>
-                <TableCell v-if="isVisible('lastSeen')" :class="['text-muted-foreground text-xs tabular-nums', cellPad]">{{ c.lastSeen }}</TableCell>
-                <TableCell v-if="isVisible('createdAt')" :class="['text-muted-foreground text-xs tabular-nums', cellPad]">{{ c.createdAt }}</TableCell>
-                <TableCell :class="cellPad" @click.stop>
+                <TableCell
+                  v-if="isVisible('mrr')"
+                  :class="['text-right tabular-nums', cellPad]"
+                >
+                  {{ formatMoney(c.mrr) }}
+                </TableCell>
+                <TableCell
+                  v-if="isVisible('seats')"
+                  :class="['text-right tabular-nums text-muted-foreground', cellPad]"
+                >
+                  {{ c.seats || '—' }}
+                </TableCell>
+                <TableCell
+                  v-if="isVisible('country')"
+                  :class="['text-muted-foreground', cellPad]"
+                >
+                  {{ c.country }}
+                </TableCell>
+                <TableCell
+                  v-if="isVisible('lastSeen')"
+                  :class="['text-muted-foreground text-xs tabular-nums', cellPad]"
+                >
+                  {{ c.lastSeen }}
+                </TableCell>
+                <TableCell
+                  v-if="isVisible('createdAt')"
+                  :class="['text-muted-foreground text-xs tabular-nums', cellPad]"
+                >
+                  {{ c.createdAt }}
+                </TableCell>
+                <TableCell
+                  :class="cellPad"
+                  @click.stop
+                >
                   <DropdownMenu>
                     <DropdownMenuTrigger as-child>
-                      <Button variant="ghost" size="icon" class="size-7"><MoreHorizontal class="size-3.5" /></Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        class="size-7"
+                      >
+                        <MoreHorizontal class="size-3.5" />
+                      </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem @click="openDetail(c)">View details</DropdownMenuItem>
+                      <DropdownMenuItem @click="openDetail(c)">
+                        View details
+                      </DropdownMenuItem>
                       <DropdownMenuItem>Edit</DropdownMenuItem>
                       <DropdownMenuItem>Email</DropdownMenuItem>
                       <DropdownMenuItem>Copy ID</DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem class="text-rose-600">Archive</DropdownMenuItem>
+                      <DropdownMenuItem class="text-rose-600">
+                        Archive
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-              <TableEmpty v-if="paged.length === 0" :colspan="visibleCount">
+              <TableEmpty
+                v-if="paged.length === 0"
+                :colspan="visibleCount"
+              >
                 <div class="flex flex-col items-center gap-2 py-6">
                   <SlidersHorizontal class="text-muted-foreground size-5" />
-                  <p class="text-sm">No customers match your filters.</p>
-                  <Button variant="outline" size="sm" class="h-7 text-xs" @click="resetFilters">Reset filters</Button>
+                  <p class="text-sm">
+                    No customers match your filters.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="h-7 text-xs"
+                    @click="resetFilters"
+                  >
+                    Reset filters
+                  </Button>
                 </div>
               </TableEmpty>
             </TableBody>
@@ -614,14 +834,25 @@ function timelineFor(c: Customer): TimelineEvent[] {
           <div class="flex items-center gap-2">
             <span class="text-muted-foreground">Rows per page</span>
             <Select v-model.number="pageSize">
-              <SelectTrigger size="sm" class="h-7 w-[68px] text-xs">
+              <SelectTrigger
+                size="sm"
+                class="h-7 w-[68px] text-xs"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem :value="5">5</SelectItem>
-                <SelectItem :value="10">10</SelectItem>
-                <SelectItem :value="20">20</SelectItem>
-                <SelectItem :value="50">50</SelectItem>
+                <SelectItem :value="5">
+                  5
+                </SelectItem>
+                <SelectItem :value="10">
+                  10
+                </SelectItem>
+                <SelectItem :value="20">
+                  20
+                </SelectItem>
+                <SelectItem :value="50">
+                  50
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -629,16 +860,40 @@ function timelineFor(c: Customer): TimelineEvent[] {
           <span class="text-muted-foreground tabular-nums">Page {{ page + 1 }} of {{ pageCount }}</span>
 
           <div class="flex items-center gap-1">
-            <Button variant="outline" size="icon" class="size-7" :disabled="page === 0" @click="page = 0">
+            <Button
+              variant="outline"
+              size="icon"
+              class="size-7"
+              :disabled="page === 0"
+              @click="page = 0"
+            >
               <ChevronsLeft class="size-3.5" />
             </Button>
-            <Button variant="outline" size="icon" class="size-7" :disabled="page === 0" @click="page--">
+            <Button
+              variant="outline"
+              size="icon"
+              class="size-7"
+              :disabled="page === 0"
+              @click="page--"
+            >
               <ChevronLeft class="size-3.5" />
             </Button>
-            <Button variant="outline" size="icon" class="size-7" :disabled="page >= pageCount - 1" @click="page++">
+            <Button
+              variant="outline"
+              size="icon"
+              class="size-7"
+              :disabled="page >= pageCount - 1"
+              @click="page++"
+            >
               <ChevronRight class="size-3.5" />
             </Button>
-            <Button variant="outline" size="icon" class="size-7" :disabled="page >= pageCount - 1" @click="page = pageCount - 1">
+            <Button
+              variant="outline"
+              size="icon"
+              class="size-7"
+              :disabled="page >= pageCount - 1"
+              @click="page = pageCount - 1"
+            >
               <ChevronsRight class="size-3.5" />
             </Button>
           </div>
@@ -651,7 +906,11 @@ function timelineFor(c: Customer): TimelineEvent[] {
         <template v-if="detailCustomer">
           <SheetHeader class="space-y-0 border-b p-5">
             <div class="flex items-start gap-3">
-              <Avatar size="lg" rounded="lg" class="ring-background ring-2 shadow-sm">
+              <Avatar
+                size="lg"
+                rounded="lg"
+                class="ring-background ring-2 shadow-sm"
+              >
                 <AvatarFallback
                   class="text-sm font-semibold"
                   :style="{
@@ -663,7 +922,9 @@ function timelineFor(c: Customer): TimelineEvent[] {
                 </AvatarFallback>
               </Avatar>
               <div class="min-w-0 flex-1 space-y-1">
-                <SheetTitle class="truncate text-base leading-tight">{{ detailCustomer.name }}</SheetTitle>
+                <SheetTitle class="truncate text-base leading-tight">
+                  {{ detailCustomer.name }}
+                </SheetTitle>
                 <SheetDescription class="flex items-center gap-1 text-xs">
                   <Mail class="size-3" />{{ detailCustomer.email }}
                 </SheetDescription>
@@ -693,20 +954,32 @@ function timelineFor(c: Customer): TimelineEvent[] {
                   <CreditCard class="size-3" />MRR
                 </span>
                 <span class="text-base font-semibold tabular-nums">{{ formatMoney(detailCustomer.mrr) }}</span>
-                <span v-if="detailCustomer.mrr > 0" class="text-emerald-600 inline-flex items-center gap-0.5 text-[10px] font-medium dark:text-emerald-400">
+                <span
+                  v-if="detailCustomer.mrr > 0"
+                  class="text-emerald-600 inline-flex items-center gap-0.5 text-[10px] font-medium dark:text-emerald-400"
+                >
                   <ArrowUpRight class="size-2.5" />{{ Math.round(detailCustomer.mrr * 12 / 1000) }}k ARR
                 </span>
-                <span v-else class="text-muted-foreground text-[10px]">No revenue</span>
+                <span
+                  v-else
+                  class="text-muted-foreground text-[10px]"
+                >No revenue</span>
               </div>
               <div class="bg-background flex flex-col gap-1 px-4 py-3">
                 <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
                   <Users class="size-3" />Seats
                 </span>
                 <span class="text-base font-semibold tabular-nums">{{ detailCustomer.seats || 0 }}</span>
-                <span v-if="detailCustomer.seats" class="text-muted-foreground tabular-nums text-[10px]">
+                <span
+                  v-if="detailCustomer.seats"
+                  class="text-muted-foreground tabular-nums text-[10px]"
+                >
                   ${{ Math.round(detailCustomer.mrr / detailCustomer.seats) }}/seat
                 </span>
-                <span v-else class="text-muted-foreground text-[10px]">No seats</span>
+                <span
+                  v-else
+                  class="text-muted-foreground text-[10px]"
+                >No seats</span>
               </div>
               <div class="bg-background flex flex-col gap-1 px-4 py-3">
                 <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
@@ -719,20 +992,36 @@ function timelineFor(c: Customer): TimelineEvent[] {
 
             <dl class="divide-border divide-y px-5 text-sm">
               <div class="flex items-center justify-between py-2.5">
-                <dt class="text-muted-foreground text-xs">Customer ID</dt>
-                <dd class="font-mono text-xs">cus_{{ detailCustomer.id.padStart(6, '0') }}</dd>
+                <dt class="text-muted-foreground text-xs">
+                  Customer ID
+                </dt>
+                <dd class="font-mono text-xs">
+                  cus_{{ detailCustomer.id.padStart(6, '0') }}
+                </dd>
               </div>
               <div class="flex items-center justify-between py-2.5">
-                <dt class="text-muted-foreground text-xs">Customer since</dt>
-                <dd class="tabular-nums text-xs">{{ detailCustomer.createdAt }}</dd>
+                <dt class="text-muted-foreground text-xs">
+                  Customer since
+                </dt>
+                <dd class="tabular-nums text-xs">
+                  {{ detailCustomer.createdAt }}
+                </dd>
               </div>
               <div class="flex items-center justify-between py-2.5">
-                <dt class="text-muted-foreground text-xs">Last seen</dt>
-                <dd class="tabular-nums text-xs">{{ detailCustomer.lastSeen }}</dd>
+                <dt class="text-muted-foreground text-xs">
+                  Last seen
+                </dt>
+                <dd class="tabular-nums text-xs">
+                  {{ detailCustomer.lastSeen }}
+                </dd>
               </div>
               <div class="flex items-center justify-between py-2.5">
-                <dt class="text-muted-foreground text-xs">Country</dt>
-                <dd class="text-xs">{{ detailCustomer.country }}</dd>
+                <dt class="text-muted-foreground text-xs">
+                  Country
+                </dt>
+                <dd class="text-xs">
+                  {{ detailCustomer.country }}
+                </dd>
               </div>
             </dl>
 
@@ -742,25 +1031,49 @@ function timelineFor(c: Customer): TimelineEvent[] {
               </div>
               <ol class="relative space-y-3 pl-5">
                 <span class="bg-border absolute top-1 bottom-1 left-[7px] w-px" />
-                <li v-for="(ev, i) in timelineFor(detailCustomer)" :key="i" class="relative">
+                <li
+                  v-for="(ev, i) in timelineFor(detailCustomer)"
+                  :key="i"
+                  class="relative"
+                >
                   <span class="bg-background border-border absolute -left-5 top-0.5 inline-flex size-4 items-center justify-center rounded-full border">
-                    <component :is="ev.icon" :class="['size-2.5', ev.tone]" />
+                    <component
+                      :is="ev.icon"
+                      :class="['size-2.5', ev.tone]"
+                    />
                   </span>
-                  <div class="text-xs font-medium leading-tight">{{ ev.title }}</div>
-                  <div class="text-muted-foreground tabular-nums text-[10px]">{{ ev.meta }}</div>
+                  <div class="text-xs font-medium leading-tight">
+                    {{ ev.title }}
+                  </div>
+                  <div class="text-muted-foreground tabular-nums text-[10px]">
+                    {{ ev.meta }}
+                  </div>
                 </li>
               </ol>
             </div>
           </div>
 
           <div class="bg-background sticky bottom-0 flex items-center gap-2 border-t p-4">
-            <Button size="sm" class="h-8 flex-1 text-xs">Open profile</Button>
-            <Button variant="outline" size="sm" class="h-8 gap-1.5 text-xs">
+            <Button
+              size="sm"
+              class="h-8 flex-1 text-xs"
+            >
+              Open profile
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              class="h-8 gap-1.5 text-xs"
+            >
               <Mail class="size-3.5" />Email
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger as-child>
-                <Button variant="outline" size="icon" class="size-8">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  class="size-8"
+                >
                   <MoreHorizontal class="size-3.5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -769,7 +1082,9 @@ function timelineFor(c: Customer): TimelineEvent[] {
                 <DropdownMenuItem>Change plan</DropdownMenuItem>
                 <DropdownMenuItem>Copy ID</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem class="text-rose-600">Archive</DropdownMenuItem>
+                <DropdownMenuItem class="text-rose-600">
+                  Archive
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

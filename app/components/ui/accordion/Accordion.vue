@@ -26,7 +26,7 @@ const props = withDefaults(
   }>(),
   {
     variant: 'default',
-  }
+  },
 )
 
 const emits = defineEmits<AccordionRootEmits>()
@@ -36,7 +36,7 @@ const forwarded = useForwardPropsEmits(delegated, emits)
 
 provide(
   Symbol.for('accordionVariant'),
-  computed(() => props.variant)
+  computed(() => props.variant),
 )
 </script>
 

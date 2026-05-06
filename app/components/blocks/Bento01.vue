@@ -8,7 +8,9 @@ import { Card, CardContent } from '@/components/ui/card'
   <section class="bg-background">
     <div class="mx-auto max-w-6xl px-6 py-24">
       <div class="mb-12 max-w-2xl space-y-3">
-        <p class="text-sm font-medium uppercase tracking-widest text-primary">Built for scale</p>
+        <p class="text-sm font-medium uppercase tracking-widest text-primary">
+          Built for scale
+        </p>
         <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
           A workspace your team grows into, not out of.
         </h2>
@@ -24,10 +26,14 @@ import { Card, CardContent } from '@/components/ui/card'
               <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Sparkles class="size-5" />
               </div>
-              <Badge variant="secondary">New</Badge>
+              <Badge variant="secondary">
+                New
+              </Badge>
             </div>
             <div class="space-y-3">
-              <h3 class="text-2xl font-semibold tracking-tight">AI-assisted reviews</h3>
+              <h3 class="text-2xl font-semibold tracking-tight">
+                AI-assisted reviews
+              </h3>
               <p class="text-muted-foreground">
                 Draft 360 feedback in seconds. The assistant reads your goals, your 1:1
                 notes and your peer reviews, then writes a first pass you can edit. Every
@@ -45,16 +51,28 @@ import { Card, CardContent } from '@/components/ui/card'
               </div>
               <div class="mt-4 grid grid-cols-3 gap-3 text-center text-xs">
                 <div>
-                  <p class="font-mono text-base text-foreground">12</p>
-                  <p class="text-muted-foreground">Goals</p>
+                  <p class="font-mono text-base text-foreground">
+                    12
+                  </p>
+                  <p class="text-muted-foreground">
+                    Goals
+                  </p>
                 </div>
                 <div>
-                  <p class="font-mono text-base text-foreground">34</p>
-                  <p class="text-muted-foreground">1:1 notes</p>
+                  <p class="font-mono text-base text-foreground">
+                    34
+                  </p>
+                  <p class="text-muted-foreground">
+                    1:1 notes
+                  </p>
                 </div>
                 <div>
-                  <p class="font-mono text-base text-foreground">8</p>
-                  <p class="text-muted-foreground">Peers</p>
+                  <p class="font-mono text-base text-foreground">
+                    8
+                  </p>
+                  <p class="text-muted-foreground">
+                    Peers
+                  </p>
                 </div>
               </div>
             </div>
@@ -67,7 +85,9 @@ import { Card, CardContent } from '@/components/ui/card'
               <Activity class="size-5" />
             </div>
             <div class="space-y-2">
-              <h3 class="text-lg font-semibold tracking-tight">Real-time activity</h3>
+              <h3 class="text-lg font-semibold tracking-tight">
+                Real-time activity
+              </h3>
               <p class="text-sm text-muted-foreground">
                 Every event — hire, promotion, time-off, payroll run — streams into a
                 single timeline you can filter by team, person or module.
@@ -82,8 +102,12 @@ import { Card, CardContent } from '@/components/ui/card'
               <Clock class="size-5" />
             </div>
             <div>
-              <p class="text-3xl font-semibold tracking-tight">12 min</p>
-              <p class="mt-1 text-sm text-muted-foreground">Average setup time</p>
+              <p class="text-3xl font-semibold tracking-tight">
+                12 min
+              </p>
+              <p class="mt-1 text-sm text-muted-foreground">
+                Average setup time
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -94,7 +118,9 @@ import { Card, CardContent } from '@/components/ui/card'
               <ShieldCheck class="size-5" />
             </div>
             <div>
-              <p class="text-sm font-semibold tracking-tight">SOC 2 · ISO 27001 · GDPR</p>
+              <p class="text-sm font-semibold tracking-tight">
+                SOC 2 · ISO 27001 · GDPR
+              </p>
               <p class="mt-1 text-sm text-muted-foreground">
                 Encrypted at rest, audited quarterly.
               </p>

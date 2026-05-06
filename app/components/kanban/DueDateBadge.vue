@@ -45,7 +45,10 @@ const inlineClasses = computed(() => {
     {{ formatted }}
   </div>
 
-  <p v-else :class="cn('flex items-center gap-1 text-[13px] leading-tight font-medium', inlineClasses, props.class)">
+  <p
+    v-else
+    :class="cn('flex items-center gap-1 text-[13px] leading-tight font-medium', inlineClasses, props.class)"
+  >
     <Clock class="size-3" />
     {{ formatted }}
   </p>

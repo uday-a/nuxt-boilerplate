@@ -20,10 +20,11 @@ const props = defineProps<Props>()
     :class="
       cn(
         'flex-1 ring-offset-background focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-2 focus-visible:ring-[3px] focus-visible:outline-none',
-        props.class
+        props.class,
       )
     "
-    data-uipkge data-slot="tabs-content"
+    data-uipkge
+    data-slot="tabs-content"
   >
     <slot v-bind="slotProps" />
   </TabsContent>

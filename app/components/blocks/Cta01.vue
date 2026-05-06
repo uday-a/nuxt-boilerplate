@@ -22,19 +22,32 @@ const { loggedIn } = useUserSession()
         Set up takes 12 minutes. Migrate from your current tool with one CSV upload.
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Button v-if="loggedIn" as-child size="lg">
+        <Button
+          v-if="loggedIn"
+          as-child
+          size="lg"
+        >
           <NuxtLink to="/dashboard">
             Go to dashboard
             <ArrowRight class="ml-2 size-4" />
           </NuxtLink>
         </Button>
-        <Button v-else as-child size="lg">
+        <Button
+          v-else
+          as-child
+          size="lg"
+        >
           <NuxtLink to="/sign-up">
             Start free trial
             <ArrowRight class="ml-2 size-4" />
           </NuxtLink>
         </Button>
-        <Button size="lg" variant="outline">Book a demo</Button>
+        <Button
+          size="lg"
+          variant="outline"
+        >
+          Book a demo
+        </Button>
       </div>
       <p class="mt-4 text-xs text-muted-foreground">
         14-day free trial · No credit card required · Cancel anytime

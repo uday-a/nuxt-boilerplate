@@ -33,7 +33,8 @@ const priorityOrder: Record<string, number> = { urgent: 0, high: 1, medium: 2, l
 function toggleSort(field: SortField) {
   if (sortField.value === field) {
     sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
-  } else {
+  }
+  else {
     sortField.value = field
     sortDir.value = 'asc'
   }
@@ -79,7 +80,7 @@ function sortTasks(tasks: FlatTask[]): FlatTask[] {
         cmp = (a.task.dueDate ?? '9999').localeCompare(b.task.dueDate ?? '9999')
         break
       case 'status': {
-        const colOrder = props.allColumns.map((c) => c.id)
+        const colOrder = props.allColumns.map(c => c.id)
         cmp = colOrder.indexOf(a.columnId) - colOrder.indexOf(b.columnId)
         break
       }
@@ -105,9 +106,9 @@ const flatTasks = computed<FlatTask[]>(() => {
 
 const groupedTasks = computed(() => {
   if (!groupByStatus.value) return null
-  const groups: { column: KanbanColumn; tasks: FlatTask[] }[] = []
+  const groups: { column: KanbanColumn, tasks: FlatTask[] }[] = []
   for (const col of props.allColumns) {
-    const tasks = flatTasks.value.filter((t) => t.columnId === col.id)
+    const tasks = flatTasks.value.filter(t => t.columnId === col.id)
     groups.push({ column: col, tasks })
   }
   return groups
@@ -115,7 +116,7 @@ const groupedTasks = computed(() => {
 
 function subtasksDone(task: KanbanTask): number {
   if (!task.subtaskIds.length) return 0
-  return task.subtaskIds.filter((id) => getTaskColumn(props.allColumns, id)?.id === 'done').length
+  return task.subtaskIds.filter(id => getTaskColumn(props.allColumns, id)?.id === 'done').length
 }
 </script>
 
@@ -124,27 +125,45 @@ function subtasksDone(task: KanbanTask): number {
     <div
       class="bg-muted/50 sticky top-0 z-10 grid grid-cols-[60px_1fr_100px_110px_130px_100px_80px] items-center gap-2 rounded-t-lg border px-3 py-2 text-[11px] font-semibold tracking-wider uppercase"
     >
-      <button class="flex items-center gap-1 text-left" @click="toggleSort('id')">
+      <button
+        class="flex items-center gap-1 text-left"
+        @click="toggleSort('id')"
+      >
         ID
         <ArrowUpDown :class="['size-3', sortField === 'id' ? 'text-foreground' : 'text-muted-foreground/50']" />
       </button>
-      <button class="flex items-center gap-1 text-left" @click="toggleSort('title')">
+      <button
+        class="flex items-center gap-1 text-left"
+        @click="toggleSort('title')"
+      >
         Task
         <ArrowUpDown :class="['size-3', sortField === 'title' ? 'text-foreground' : 'text-muted-foreground/50']" />
       </button>
-      <button class="flex items-center gap-1 text-left" @click="toggleSort('status')">
+      <button
+        class="flex items-center gap-1 text-left"
+        @click="toggleSort('status')"
+      >
         Status
         <ArrowUpDown :class="['size-3', sortField === 'status' ? 'text-foreground' : 'text-muted-foreground/50']" />
       </button>
-      <button class="flex items-center gap-1 text-left" @click="toggleSort('priority')">
+      <button
+        class="flex items-center gap-1 text-left"
+        @click="toggleSort('priority')"
+      >
         Priority
         <ArrowUpDown :class="['size-3', sortField === 'priority' ? 'text-foreground' : 'text-muted-foreground/50']" />
       </button>
-      <button class="flex items-center gap-1 text-left" @click="toggleSort('assignee')">
+      <button
+        class="flex items-center gap-1 text-left"
+        @click="toggleSort('assignee')"
+      >
         Assignee
         <ArrowUpDown :class="['size-3', sortField === 'assignee' ? 'text-foreground' : 'text-muted-foreground/50']" />
       </button>
-      <button class="flex items-center gap-1 text-left" @click="toggleSort('dueDate')">
+      <button
+        class="flex items-center gap-1 text-left"
+        @click="toggleSort('dueDate')"
+      >
         Due
         <ArrowUpDown :class="['size-3', sortField === 'dueDate' ? 'text-foreground' : 'text-muted-foreground/50']" />
       </button>
@@ -152,7 +171,10 @@ function subtasksDone(task: KanbanTask): number {
     </div>
 
     <template v-if="groupedTasks">
-      <template v-for="group in groupedTasks" :key="group.column.id">
+      <template
+        v-for="group in groupedTasks"
+        :key="group.column.id"
+      >
         <button
           class="bg-muted/30 hover:bg-muted/50 flex items-center gap-2 border-x border-b px-3 py-1.5 text-left transition-colors"
           @click="toggleGroup(group.column.id)"
@@ -163,7 +185,10 @@ function subtasksDone(task: KanbanTask): number {
           />
           <span :class="['size-2 rounded-full', group.column.dotColor]" />
           <span class="text-sm font-medium">{{ group.column.title }}</span>
-          <Badge variant="secondary" class="ml-1 h-4 px-1.5 text-[10px] tabular-nums">
+          <Badge
+            variant="secondary"
+            class="ml-1 h-4 px-1.5 text-[10px] tabular-nums"
+          >
             {{ group.tasks.length }}
           </Badge>
         </button>
@@ -195,7 +220,10 @@ function subtasksDone(task: KanbanTask): number {
                   <ExternalLink class="size-3" />
                 </NuxtLink>
               </div>
-              <div v-if="item.task.tags.length || item.task.subtaskIds.length" class="mt-0.5 flex items-center gap-1.5">
+              <div
+                v-if="item.task.tags.length || item.task.subtaskIds.length"
+                class="mt-0.5 flex items-center gap-1.5"
+              >
                 <TagBadge
                   v-for="tag in item.task.tags"
                   :key="tag.label"
@@ -227,7 +255,11 @@ function subtasksDone(task: KanbanTask): number {
                   </span>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem v-for="col in allColumns" :key="col.id" :value="col.id">
+                  <SelectItem
+                    v-for="col in allColumns"
+                    :key="col.id"
+                    :value="col.id"
+                  >
                     <span class="flex items-center gap-1.5">
                       <span :class="['size-1.5 rounded-full', col.dotColor]" />
                       {{ col.title }}
@@ -240,13 +272,24 @@ function subtasksDone(task: KanbanTask): number {
             <PriorityBadge :priority="item.task.priority" />
 
             <div class="flex items-center gap-2">
-              <UserAvatar :name="item.task.assignee.name" :color="item.task.assignee.color" size="xs" />
+              <UserAvatar
+                :name="item.task.assignee.name"
+                :color="item.task.assignee.color"
+                size="xs"
+              />
               <span class="truncate text-[12px]">{{ item.task.assignee.name }}</span>
             </div>
 
             <div>
-              <DueDateBadge v-if="item.task.dueDate" :due-date="item.task.dueDate" variant="chip" />
-              <span v-else class="text-muted-foreground/50 text-[11px]">—</span>
+              <DueDateBadge
+                v-if="item.task.dueDate"
+                :due-date="item.task.dueDate"
+                variant="chip"
+              />
+              <span
+                v-else
+                class="text-muted-foreground/50 text-[11px]"
+              >—</span>
             </div>
 
             <div class="flex items-center justify-center gap-2">
@@ -258,7 +301,9 @@ function subtasksDone(task: KanbanTask): number {
                       {{ item.task.commentItems.length }}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent class="text-xs">{{ item.task.commentItems.length }} comments</TooltipContent>
+                  <TooltipContent class="text-xs">
+                    {{ item.task.commentItems.length }} comments
+                  </TooltipContent>
                 </Tooltip>
                 <Tooltip v-if="item.task.fileItems.length">
                   <TooltipTrigger as-child>
@@ -267,7 +312,9 @@ function subtasksDone(task: KanbanTask): number {
                       {{ item.task.fileItems.length }}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent class="text-xs">{{ item.task.fileItems.length }} files</TooltipContent>
+                  <TooltipContent class="text-xs">
+                    {{ item.task.fileItems.length }} files
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>

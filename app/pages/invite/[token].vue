@@ -25,7 +25,7 @@ useHead(() => ({ title: `Join ${invite.value.workspace}` }))
 const initials = computed(() =>
   invite.value.inviter.name
     .split(' ')
-    .map((s) => s[0])
+    .map(s => s[0])
     .join('')
     .slice(0, 2)
     .toUpperCase(),
@@ -71,8 +71,19 @@ function decline() {
             <span>Role: <span class="text-foreground">{{ invite.role }}</span></span>
           </div>
           <div class="flex flex-col gap-2 pt-2">
-            <Button class="w-full" @click="accept">Accept invite</Button>
-            <Button variant="ghost" class="w-full" @click="decline">Decline</Button>
+            <Button
+              class="w-full"
+              @click="accept"
+            >
+              Accept invite
+            </Button>
+            <Button
+              variant="ghost"
+              class="w-full"
+              @click="decline"
+            >
+              Decline
+            </Button>
           </div>
           <p class="text-muted-foreground text-center text-xs">
             Token: <code>{{ token }}</code>

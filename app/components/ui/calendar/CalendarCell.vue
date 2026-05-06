@@ -19,7 +19,7 @@ const forwardedProps = useForwardProps(delegatedProps)
     :class="
       cn(
         '[&:has([data-selected])]:bg-accent relative flex-1 p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([data-selected])]:rounded-md',
-        props.class
+        props.class,
       )
     "
     v-bind="forwardedProps"

@@ -30,7 +30,7 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'submit', payload: { email: string; password: string; remember: boolean }): void
+  (e: 'submit', payload: { email: string, password: string, remember: boolean }): void
   (e: 'oauth', provider: 'github' | 'google'): void
 }>()
 
@@ -47,11 +47,16 @@ function onSubmit() {
   <div class="bg-background flex min-h-svh items-center justify-center p-6">
     <Card class="w-full max-w-sm">
       <CardHeader class="text-center">
-        <h1 class="text-2xl leading-none font-semibold tracking-tight">{{ title ?? t('auth.signIn.title') }}</h1>
+        <h1 class="text-2xl leading-none font-semibold tracking-tight">
+          {{ title ?? t('auth.signIn.title') }}
+        </h1>
         <CardDescription>{{ description ?? t('auth.signIn.description') }}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form class="space-y-4" @submit.prevent="onSubmit">
+        <form
+          class="space-y-4"
+          @submit.prevent="onSubmit"
+        >
           <div class="grid gap-2">
             <Label for="email">{{ t('auth.signIn.emailLabel') }}</Label>
             <Input
@@ -73,13 +78,30 @@ function onSubmit() {
                 {{ t('auth.signIn.forgotPassword') }}
               </a>
             </div>
-            <Input id="password" v-model="password" type="password" autocomplete="current-password" required />
+            <Input
+              id="password"
+              v-model="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
           </div>
           <div class="flex items-center gap-2">
-            <Checkbox id="remember" v-model="remember" />
-            <Label for="remember" class="text-sm font-normal">{{ t('auth.signIn.rememberMe') }}</Label>
+            <Checkbox
+              id="remember"
+              v-model="remember"
+            />
+            <Label
+              for="remember"
+              class="text-sm font-normal"
+            >{{ t('auth.signIn.rememberMe') }}</Label>
           </div>
-          <Button type="submit" class="w-full">{{ t('auth.signIn.submit') }}</Button>
+          <Button
+            type="submit"
+            class="w-full"
+          >
+            {{ t('auth.signIn.submit') }}
+          </Button>
         </form>
 
         <template v-if="oauthProviders.length > 0">
@@ -88,11 +110,24 @@ function onSubmit() {
             <span class="text-muted-foreground text-xs uppercase">{{ t('auth.signIn.orContinueWith') }}</span>
             <Separator class="flex-1" />
           </div>
-          <div class="grid gap-2" :class="oauthProviders.length > 1 ? 'sm:grid-cols-2' : ''">
-            <Button v-if="oauthProviders.includes('github')" variant="outline" type="button" @click="emit('oauth', 'github')">
+          <div
+            class="grid gap-2"
+            :class="oauthProviders.length > 1 ? 'sm:grid-cols-2' : ''"
+          >
+            <Button
+              v-if="oauthProviders.includes('github')"
+              variant="outline"
+              type="button"
+              @click="emit('oauth', 'github')"
+            >
               <Github class="mr-2 size-4" />GitHub
             </Button>
-            <Button v-if="oauthProviders.includes('google')" variant="outline" type="button" @click="emit('oauth', 'google')">
+            <Button
+              v-if="oauthProviders.includes('google')"
+              variant="outline"
+              type="button"
+              @click="emit('oauth', 'google')"
+            >
               <Chrome class="mr-2 size-4" />Google
             </Button>
           </div>
@@ -101,7 +136,10 @@ function onSubmit() {
       <CardFooter class="justify-center">
         <p class="text-muted-foreground text-sm">
           {{ t('auth.signIn.noAccount') }}
-          <a :href="signUpHref" class="text-foreground font-medium underline-offset-4 hover:underline">{{ t('auth.signIn.signUpLink') }}</a>
+          <a
+            :href="signUpHref"
+            class="text-foreground font-medium underline-offset-4 hover:underline"
+          >{{ t('auth.signIn.signUpLink') }}</a>
         </p>
       </CardFooter>
     </Card>

@@ -28,7 +28,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:open': [value: boolean]
-  create: [columnId: string, tasks: KanbanTask[]]
+  'create': [columnId: string, tasks: KanbanTask[]]
 }>()
 
 const df = new DateFormatter('en-US', { dateStyle: 'medium' })
@@ -49,7 +49,7 @@ watch(
   () => props.initialColumnId,
   (val) => {
     columnId.value = val
-  }
+  },
 )
 
 watch(
@@ -68,7 +68,7 @@ watch(
       dueDate.value = undefined
       newSubtaskText.value = ''
     }
-  }
+  },
 )
 
 function addSubtask() {
@@ -91,12 +91,12 @@ function toggleTag(key: keyof typeof tagPresets) {
 function submit() {
   if (!form.value.title.trim()) return
   const maxId = props.columns
-    .flatMap((c) => c.tasks)
+    .flatMap(c => c.tasks)
     .reduce((max, t) => {
       const num = parseInt(t.id.replace(/^[A-Z]+-/, ''), 10)
       return num > max ? num : max
     }, 0)
-  const idPrefix = props.columns.flatMap((c) => c.tasks)[0]?.id.split('-')[0] ?? 'TASK'
+  const idPrefix = props.columns.flatMap(c => c.tasks)[0]?.id.split('-')[0] ?? 'TASK'
   const parentId = `${idPrefix}-${maxId + 1}`
   const subtaskTasks: KanbanTask[] = form.value.subtaskTexts.map((text, i) => ({
     id: `${idPrefix}-${maxId + 2 + i}`,
@@ -115,9 +115,9 @@ function submit() {
     description: form.value.description.trim() || undefined,
     priority: form.value.priority,
     assignee: assignees[form.value.assigneeKey],
-    tags: form.value.tagKeys.map((k) => tagPresets[k]),
+    tags: form.value.tagKeys.map(k => tagPresets[k]),
     dueDate: dueDate.value ? dueDate.value.toString() : undefined,
-    subtaskIds: subtaskTasks.map((t) => t.id),
+    subtaskIds: subtaskTasks.map(t => t.id),
     commentItems: [],
     fileItems: [],
   }
@@ -127,7 +127,10 @@ function submit() {
 </script>
 
 <template>
-  <Dialog :open="open" @update:open="$emit('update:open', $event)">
+  <Dialog
+    :open="open"
+    @update:open="$emit('update:open', $event)"
+  >
     <DialogScrollContent class="sm:max-w-[680px]">
       <DialogHeader>
         <DialogTitle>New Task</DialogTitle>
@@ -140,7 +143,11 @@ function submit() {
       <div class="grid gap-4 py-2">
         <div class="grid gap-1.5">
           <Label for="task-title">Title</Label>
-          <Input id="task-title" v-model="form.title" placeholder="Enter task title" />
+          <Input
+            id="task-title"
+            v-model="form.title"
+            placeholder="Enter task title"
+          />
         </div>
 
         <div class="grid gap-1.5">
@@ -159,7 +166,11 @@ function submit() {
                 <SelectValue placeholder="Priority" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="(config, key) in priorityConfig" :key="key" :value="key">
+                <SelectItem
+                  v-for="(config, key) in priorityConfig"
+                  :key="key"
+                  :value="key"
+                >
                   {{ config.label }}
                 </SelectItem>
               </SelectContent>
@@ -173,7 +184,11 @@ function submit() {
                 <SelectValue placeholder="Assignee" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="(person, key) in assignees" :key="key" :value="key">
+                <SelectItem
+                  v-for="(person, key) in assignees"
+                  :key="key"
+                  :value="key"
+                >
                   {{ person.name }}
                 </SelectItem>
               </SelectContent>
@@ -187,7 +202,11 @@ function submit() {
                 <SelectValue placeholder="Column" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem v-for="col in columns" :key="col.id" :value="col.id">
+                <SelectItem
+                  v-for="col in columns"
+                  :key="col.id"
+                  :value="col.id"
+                >
                   {{ col.title }}
                 </SelectItem>
               </SelectContent>
@@ -211,7 +230,10 @@ function submit() {
               </Button>
             </PopoverTrigger>
             <PopoverContent class="w-auto p-0">
-              <Calendar v-model="dueDate" initial-focus />
+              <Calendar
+                v-model="dueDate"
+                initial-focus
+              />
             </PopoverContent>
           </Popover>
         </div>
@@ -234,7 +256,10 @@ function submit() {
               ]"
               @click="toggleTag(key as keyof typeof tagPresets)"
             >
-              <CheckCircle2 v-if="form.tagKeys.includes(key as keyof typeof tagPresets)" class="size-3" />
+              <CheckCircle2
+                v-if="form.tagKeys.includes(key as keyof typeof tagPresets)"
+                class="size-3"
+              />
               {{ tag.label }}
             </button>
           </div>
@@ -245,17 +270,37 @@ function submit() {
             Subtasks
             <span class="text-muted-foreground text-xs">(optional)</span>
           </Label>
-          <div v-if="form.subtaskTexts.length" class="space-y-2">
-            <div v-for="(text, index) in form.subtaskTexts" :key="index" class="flex items-center gap-2">
+          <div
+            v-if="form.subtaskTexts.length"
+            class="space-y-2"
+          >
+            <div
+              v-for="(text, index) in form.subtaskTexts"
+              :key="index"
+              class="flex items-center gap-2"
+            >
               <span class="flex-1 text-sm">{{ text }}</span>
-              <Button variant="ghost" size="icon" class="size-6" @click="removeSubtask(index)">
+              <Button
+                variant="ghost"
+                size="icon"
+                class="size-6"
+                @click="removeSubtask(index)"
+              >
                 <X class="size-3" />
               </Button>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <Input v-model="newSubtaskText" placeholder="Add a subtask" @keyup.enter="addSubtask" />
-            <Button variant="outline" size="icon" @click="addSubtask">
+            <Input
+              v-model="newSubtaskText"
+              placeholder="Add a subtask"
+              @keyup.enter="addSubtask"
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              @click="addSubtask"
+            >
               <Plus class="size-4" />
             </Button>
           </div>
@@ -263,8 +308,18 @@ function submit() {
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="$emit('update:open', false)">Cancel</Button>
-        <Button :disabled="!form.title.trim()" @click="submit">Create Task</Button>
+        <Button
+          variant="outline"
+          @click="$emit('update:open', false)"
+        >
+          Cancel
+        </Button>
+        <Button
+          :disabled="!form.title.trim()"
+          @click="submit"
+        >
+          Create Task
+        </Button>
       </DialogFooter>
     </DialogScrollContent>
   </Dialog>

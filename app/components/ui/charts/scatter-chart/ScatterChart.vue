@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const mergedOption = computed(() => {
   const categories = props.categoryField
-    ? [...new Set(props.data.map((d) => d[props.categoryField!]))]
+    ? [...new Set(props.data.map(d => d[props.categoryField!]))]
     : ['default']
 
   const series = categories.map((cat, i) => ({
@@ -39,9 +39,9 @@ const mergedOption = computed(() => {
     itemStyle: { color: chartColors.value[i % chartColors.value.length] },
     data: props.categoryField
       ? props.data
-          .filter((d) => d[props.categoryField!] === cat)
-          .map((d) => [d[props.xField!], d[props.yField!], props.sizeField ? d[props.sizeField] : 0])
-      : props.data.map((d) => [d[props.xField!], d[props.yField!], props.sizeField ? d[props.sizeField] : 0]),
+          .filter(d => d[props.categoryField!] === cat)
+          .map(d => [d[props.xField!], d[props.yField!], props.sizeField ? d[props.sizeField] : 0])
+      : props.data.map(d => [d[props.xField!], d[props.yField!], props.sizeField ? d[props.sizeField] : 0]),
   }))
 
   return {
@@ -82,6 +82,10 @@ const mergedOption = computed(() => {
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', props.class)"
   >
-    <VChart :option="mergedOption" :autoresize="true" class="size-full" />
+    <VChart
+      :option="mergedOption"
+      :autoresize="true"
+      class="size-full"
+    />
   </div>
 </template>

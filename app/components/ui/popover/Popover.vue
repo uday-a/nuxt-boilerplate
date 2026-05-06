@@ -14,7 +14,7 @@ const props = withDefaults(
   {
     persist: false,
     closeBehavior: 'auto',
-  }
+  },
 )
 
 const emits = defineEmits<PopoverRootEmits>()
@@ -48,7 +48,7 @@ watch(
     if (!storageKey.value || typeof localStorage === 'undefined') return
     if (v) localStorage.setItem(storageKey.value, '1')
     else localStorage.removeItem(storageKey.value)
-  }
+  },
 )
 
 const forwarded = useForwardPropsEmits(
@@ -57,7 +57,7 @@ const forwarded = useForwardPropsEmits(
     defaultOpen: props.defaultOpen,
     modal: props.modal,
   })),
-  emits
+  emits,
 )
 
 function onUpdateOpen(value: boolean) {

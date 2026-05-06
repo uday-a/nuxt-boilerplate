@@ -8,7 +8,11 @@ const props = defineProps<{
 </script>
 
 <template>
-  <thead data-uipkge data-slot="table-header" :class="cn('bg-muted/50 [&_tr]:border-b', props.class)">
+  <thead
+    data-uipkge
+    data-slot="table-header"
+    :class="cn('bg-muted/50 [&_tr]:border-b', props.class)"
+  >
     <slot />
   </thead>
 </template>

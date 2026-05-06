@@ -15,7 +15,10 @@ const mergedProps = computed(() => ({
 </script>
 
 <template>
-  <DialogRoot v-slot="slotProps" v-bind="mergedProps">
+  <DialogRoot
+    v-slot="slotProps"
+    v-bind="mergedProps"
+  >
     <slot v-bind="slotProps" />
   </DialogRoot>
 </template>

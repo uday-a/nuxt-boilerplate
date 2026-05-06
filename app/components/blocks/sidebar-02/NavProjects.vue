@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { LucideIcon } from "lucide-vue-next"
+import type { LucideIcon } from 'lucide-vue-next'
 import {
   Folder,
   Forward,
   MoreHorizontal,
   Trash2,
-} from "lucide-vue-next"
+} from 'lucide-vue-next'
 
 import {
   DropdownMenu,
@@ -46,7 +46,10 @@ const { t } = useI18n()
   <SidebarGroup>
     <SidebarGroupLabel>{{ t('nav.groups.projects') }}</SidebarGroupLabel>
     <SidebarMenu>
-      <SidebarMenuItem v-for="item in projects" :key="item.name">
+      <SidebarMenuItem
+        v-for="item in projects"
+        :key="item.name"
+      >
         <SidebarMenuButton as-child>
           <NuxtLink :to="item.url">
             <component :is="item.icon" />

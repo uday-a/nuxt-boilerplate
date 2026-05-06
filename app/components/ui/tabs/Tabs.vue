@@ -21,7 +21,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 // pass it manually. TabsList / TabsTrigger inject this to apply variant CSS.
 provide(
   Symbol.for('tabsOrientation'),
-  computed(() => props.orientation ?? 'horizontal')
+  computed(() => props.orientation ?? 'horizontal'),
 )
 </script>
 
@@ -36,7 +36,7 @@ provide(
       cn(
         'flex w-full',
         orientation === 'vertical' ? 'flex-row gap-4' : 'flex-col gap-2',
-        props.class
+        props.class,
       )
     "
   >

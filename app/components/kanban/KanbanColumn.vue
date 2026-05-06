@@ -6,7 +6,7 @@ import KanbanCard from './KanbanCard.vue'
 import type { KanbanTask } from '@/composables/useKanban'
 
 defineProps<{
-  column: { id: string; title: string; color: string; dotColor: string; tasks: KanbanTask[] }
+  column: { id: string, title: string, color: string, dotColor: string, tasks: KanbanTask[] }
   collapsed: boolean
   draggedTask: string | null
   dragOverColumn: string | null
@@ -22,7 +22,7 @@ defineEmits<{
   'drag-end': []
   'card-drag-over': [event: DragEvent, columnId: string, taskIndex: number]
   'lane-drag-over': [event: DragEvent, columnId: string, taskCount: number]
-  drop: []
+  'drop': []
 }>()
 </script>
 
@@ -41,7 +41,10 @@ defineEmits<{
       <span :class="['text-[11px] font-semibold tracking-tight', column.color, 'rotate-180 [writing-mode:vertical-lr]']">
         {{ column.title }}
       </span>
-      <Badge variant="secondary" class="mt-1 h-5 min-w-5 justify-center rounded-md px-1 text-[10px]">
+      <Badge
+        variant="secondary"
+        class="mt-1 h-5 min-w-5 justify-center rounded-md px-1 text-[10px]"
+      >
         {{ column.tasks.length }}
       </Badge>
       <ChevronsRight class="text-muted-foreground mt-auto size-3.5" />
@@ -57,7 +60,9 @@ defineEmits<{
           <ChevronsLeft class="size-3.5" />
         </button>
         <span :class="['size-2 shrink-0 rounded-full', column.dotColor]" />
-        <h3 :class="['text-[13px] font-semibold tracking-tight', column.color]">{{ column.title }}</h3>
+        <h3 :class="['text-[13px] font-semibold tracking-tight', column.color]">
+          {{ column.title }}
+        </h3>
         <span class="text-muted-foreground bg-muted rounded-md px-1.5 py-0.5 text-[11px] font-medium tabular-nums">
           {{ column.tasks.length }}
         </span>
@@ -89,7 +94,10 @@ defineEmits<{
         ]"
         @dragover.prevent="$emit('lane-drag-over', $event, column.id, column.tasks.length)"
       >
-        <template v-for="(task, taskIndex) in column.tasks" :key="task.id">
+        <template
+          v-for="(task, taskIndex) in column.tasks"
+          :key="task.id"
+        >
           <div
             :class="[
               'drop-indicator mx-1 transition-all duration-150',
@@ -131,7 +139,9 @@ defineEmits<{
           @click="$emit('add-task', column.id)"
         >
           <Plus class="mb-1 size-4" />
-          <p class="text-xs">No tasks</p>
+          <p class="text-xs">
+            No tasks
+          </p>
         </button>
       </div>
 

@@ -32,10 +32,15 @@ function goHome() {
         {{ description }}
       </p>
       <div class="mt-8 flex gap-3">
-        <Button as-child variant="outline">
+        <Button
+          as-child
+          variant="outline"
+        >
           <NuxtLink to="/">Go home</NuxtLink>
         </Button>
-        <Button @click="goHome">Try again</Button>
+        <Button @click="goHome">
+          Try again
+        </Button>
       </div>
     </main>
   </div>

@@ -17,13 +17,13 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const variantClasses = {
-  rectangular: '',
-  rounded: 'rounded-md',
-  circular: 'rounded-full',
-  text: 'rounded h-4 w-full',
-  avatar: 'rounded-full size-10',
-  image: 'rounded-lg size-24',
-  card: 'rounded-xl size-full min-h-[120px]',
+  'rectangular': '',
+  'rounded': 'rounded-md',
+  'circular': 'rounded-full',
+  'text': 'rounded h-4 w-full',
+  'avatar': 'rounded-full size-10',
+  'image': 'rounded-lg size-24',
+  'card': 'rounded-xl size-full min-h-[120px]',
   'table-row': 'rounded h-10 w-full',
 }
 

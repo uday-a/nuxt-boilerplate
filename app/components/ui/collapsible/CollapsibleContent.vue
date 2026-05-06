@@ -6,7 +6,11 @@ const props = defineProps<CollapsibleContentProps>()
 </script>
 
 <template>
-  <CollapsibleContent data-uipkge data-slot="collapsible-content" v-bind="props">
+  <CollapsibleContent
+    data-uipkge
+    data-slot="collapsible-content"
+    v-bind="props"
+  >
     <slot />
   </CollapsibleContent>
 </template>

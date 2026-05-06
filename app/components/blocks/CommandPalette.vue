@@ -116,11 +116,18 @@ defineExpose({ show, hide, toggle })
     </kbd>
   </button>
 
-  <CommandDialog v-model:open="open" title="Command palette" description="Search pages and run commands">
+  <CommandDialog
+    v-model:open="open"
+    title="Command palette"
+    description="Search pages and run commands"
+  >
     <CommandInput :placeholder="placeholder" />
     <CommandList class="max-h-[480px]">
       <CommandEmpty>No matches.</CommandEmpty>
-      <template v-for="(group, gi) in groups" :key="group.heading">
+      <template
+        v-for="(group, gi) in groups"
+        :key="group.heading"
+      >
         <CommandGroup :heading="group.heading">
           <CommandItem
             v-for="item in group.items"
@@ -128,9 +135,18 @@ defineExpose({ show, hide, toggle })
             :value="`${group.heading} ${item.label} ${item.hint ?? ''}`"
             @select="pick(item)"
           >
-            <component :is="item.icon" v-if="item.icon" class="size-4" />
+            <component
+              :is="item.icon"
+              v-if="item.icon"
+              class="size-4"
+            />
             <span>{{ item.label }}</span>
-            <CommandShortcut v-if="item.hint" class="text-muted-foreground/70">{{ item.hint }}</CommandShortcut>
+            <CommandShortcut
+              v-if="item.hint"
+              class="text-muted-foreground/70"
+            >
+              {{ item.hint }}
+            </CommandShortcut>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator v-if="gi < groups.length - 1" />

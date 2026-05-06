@@ -73,16 +73,16 @@ const delegatedProps = reactiveOmit(
   'color',
   'hideDetails',
   'bgColor',
-  'modelValue'
+  'modelValue',
 )
 
 const hasError = computed(
-  () => props.error || (Array.isArray(props.errorMessages) ? props.errorMessages.length > 0 : !!props.errorMessages)
+  () => props.error || (Array.isArray(props.errorMessages) ? props.errorMessages.length > 0 : !!props.errorMessages),
 )
 const hasSuccess = computed(
   () =>
-    !hasError.value &&
-    (Array.isArray(props.successMessages) ? props.successMessages.length > 0 : !!props.successMessages)
+    !hasError.value
+    && (Array.isArray(props.successMessages) ? props.successMessages.length > 0 : !!props.successMessages),
 )
 
 const densityClasses = {
@@ -106,14 +106,24 @@ const stateClasses = computed(() => {
 </script>
 
 <template>
-  <div class="relative w-full" :class="densityClasses[density]">
+  <div
+    class="relative w-full"
+    :class="densityClasses[density]"
+  >
     <!-- Label -->
-    <label v-if="label" class="mb-1 block text-sm font-medium" :class="{ 'text-destructive': hasError }">
+    <label
+      v-if="label"
+      class="mb-1 block text-sm font-medium"
+      :class="{ 'text-destructive': hasError }"
+    >
       {{ label }}
     </label>
 
     <!-- Select Wrapper -->
-    <div class="group/native-select relative w-full" :class="props.class">
+    <div
+      class="group/native-select relative w-full"
+      :class="props.class"
+    >
       <select
         v-bind="{ ...$attrs, ...delegatedProps }"
         v-model="modelValue"
@@ -128,7 +138,7 @@ const stateClasses = computed(() => {
             stateClasses,
             densityClasses[density],
             'w-full min-w-0 appearance-none rounded-md border bg-transparent px-3 pr-9 shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
-            bgColor
+            bgColor,
           )
         "
       >
@@ -163,7 +173,9 @@ const stateClasses = computed(() => {
         <span v-if="typeof successMessages === 'string'">{{ successMessages }}</span>
         <span v-else>{{ successMessages[0] }}</span>
       </template>
-      <template v-else>{{ hint }}</template>
+      <template v-else>
+        {{ hint }}
+      </template>
     </div>
   </div>
 </template>

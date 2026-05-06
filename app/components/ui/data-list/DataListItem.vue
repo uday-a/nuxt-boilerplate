@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
     :class="
       cn(
         'flex flex-row items-center justify-between border-b py-4 transition-all duration-200 first:pt-0 last:border-0 last:pb-0',
-        $attrs.class as string
+        $attrs.class as string,
       )
     "
   >

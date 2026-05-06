@@ -45,17 +45,17 @@ function intensityClass(n: number): string {
 }
 
 const monthCells = computed(() =>
-  gridDays.value.map((d) => ({
+  gridDays.value.map(d => ({
     ...d,
     count: activityFor(d.key),
   })),
 )
 
 const monthStats = computed(() => {
-  const inMonth = monthCells.value.filter((c) => c.inMonth)
+  const inMonth = monthCells.value.filter(c => c.inMonth)
   const total = inMonth.reduce((acc, c) => acc + c.count, 0)
-  const nonZero = inMonth.filter((c) => c.count > 0)
-  const peak = inMonth.reduce<{ key: string; count: number } | null>(
+  const nonZero = inMonth.filter(c => c.count > 0)
+  const peak = inMonth.reduce<{ key: string, count: number } | null>(
     (best, c) => (best === null || c.count > best.count ? { key: c.key, count: c.count } : best),
     null,
   )
@@ -75,7 +75,7 @@ const monthStats = computed(() => {
 
 const rangeStats = computed(() => {
   const { lo, hi } = rangeBounds.value
-  const cells: { key: string; count: number }[] = []
+  const cells: { key: string, count: number }[] = []
   const start = dateFromKey(lo)
   const days = rangeDayCount.value
   for (let i = 0; i < days; i++) {
@@ -84,7 +84,7 @@ const rangeStats = computed(() => {
     cells.push({ key, count: activityFor(key) })
   }
   const total = cells.reduce((a, c) => a + c.count, 0)
-  const active = cells.filter((c) => c.count > 0).length
+  const active = cells.filter(c => c.count > 0).length
   const avg = days > 0 ? Math.round(total / days) : 0
   return { total, avg, active, cells }
 })
@@ -95,19 +95,30 @@ function fmtKey(key: string) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-5" @mouseup="endDrag">
+  <div
+    class="flex flex-col gap-5"
+    @mouseup="endDrag"
+  >
     <!-- Header -->
     <header class="flex flex-wrap items-end justify-between gap-4">
       <div>
         <Breadcrumb>
           <BreadcrumbList>
-            <BreadcrumbItem><BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink></BreadcrumbItem>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard">
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbPage>Activity</BreadcrumbPage>
           </BreadcrumbList>
         </Breadcrumb>
-        <h1 class="text-2xl font-semibold tracking-tight mt-2">Activity</h1>
-        <p class="text-muted-foreground text-sm">Daily session heatmap. Drag or shift-click to summarize a range.</p>
+        <h1 class="text-2xl font-semibold tracking-tight mt-2">
+          Activity
+        </h1>
+        <p class="text-muted-foreground text-sm">
+          Daily session heatmap. Drag or shift-click to summarize a range.
+        </p>
       </div>
     </header>
 
@@ -116,25 +127,41 @@ function fmtKey(key: string) {
       <div class="relative overflow-hidden rounded-xl border bg-card/40 p-4">
         <div class="flex items-center gap-1.5">
           <ActivityIcon class="size-3.5 text-emerald-400" />
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">Total · this month</p>
+          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
+            Total · this month
+          </p>
         </div>
-        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">{{ monthStats.total.toLocaleString() }}</p>
-        <p class="mt-1 text-[11px] text-muted-foreground">sessions</p>
+        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">
+          {{ monthStats.total.toLocaleString() }}
+        </p>
+        <p class="mt-1 text-[11px] text-muted-foreground">
+          sessions
+        </p>
       </div>
       <div class="relative overflow-hidden rounded-xl border bg-card/40 p-4">
         <div class="flex items-center gap-1.5">
           <BarChart3 class="size-3.5 text-sky-400" />
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">Avg · active day</p>
+          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
+            Avg · active day
+          </p>
         </div>
-        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">{{ monthStats.avg }}</p>
-        <p class="mt-1 text-[11px] text-muted-foreground">sessions/day</p>
+        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">
+          {{ monthStats.avg }}
+        </p>
+        <p class="mt-1 text-[11px] text-muted-foreground">
+          sessions/day
+        </p>
       </div>
       <div class="relative overflow-hidden rounded-xl border bg-card/40 p-4">
         <div class="flex items-center gap-1.5">
           <TrendingUp class="size-3.5 text-violet-400" />
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">Peak day</p>
+          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
+            Peak day
+          </p>
         </div>
-        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">{{ monthStats.peak?.count ?? 0 }}</p>
+        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">
+          {{ monthStats.peak?.count ?? 0 }}
+        </p>
         <p class="mt-1 text-[11px] text-muted-foreground truncate">
           {{ monthStats.peak ? fmtKey(monthStats.peak.key) : '—' }}
         </p>
@@ -142,10 +169,16 @@ function fmtKey(key: string) {
       <div class="relative overflow-hidden rounded-xl border bg-card/40 p-4">
         <div class="flex items-center gap-1.5">
           <Flame class="size-3.5 text-amber-400" />
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">Current streak</p>
+          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
+            Current streak
+          </p>
         </div>
-        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">{{ monthStats.streak }}</p>
-        <p class="mt-1 text-[11px] text-muted-foreground">day{{ monthStats.streak === 1 ? '' : 's' }} in a row</p>
+        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">
+          {{ monthStats.streak }}
+        </p>
+        <p class="mt-1 text-[11px] text-muted-foreground">
+          day{{ monthStats.streak === 1 ? '' : 's' }} in a row
+        </p>
       </div>
     </div>
 
@@ -154,16 +187,47 @@ function fmtKey(key: string) {
       <!-- Toolbar -->
       <div class="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/30 px-4 py-2.5">
         <div class="flex items-center gap-2">
-          <Button variant="outline" size="icon" class="size-7" @click="prevMonth"><ChevronLeft class="size-4" /></Button>
-          <Button variant="outline" size="icon" class="size-7" @click="nextMonth"><ChevronRight class="size-4" /></Button>
-          <Button variant="ghost" size="sm" class="h-7 text-xs" @click="goToToday">Today</Button>
-          <h2 class="text-sm font-semibold ml-2">{{ monthLabel }}</h2>
+          <Button
+            variant="outline"
+            size="icon"
+            class="size-7"
+            @click="prevMonth"
+          >
+            <ChevronLeft class="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            class="size-7"
+            @click="nextMonth"
+          >
+            <ChevronRight class="size-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            class="h-7 text-xs"
+            @click="goToToday"
+          >
+            Today
+          </Button>
+          <h2 class="text-sm font-semibold ml-2">
+            {{ monthLabel }}
+          </h2>
         </div>
         <div class="flex items-center gap-3 text-[11px] text-muted-foreground">
-          <div v-if="isRange" class="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-0.5 text-emerald-300 ring-1 ring-inset ring-emerald-500/20">
+          <div
+            v-if="isRange"
+            class="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-0.5 text-emerald-300 ring-1 ring-inset ring-emerald-500/20"
+          >
             <MousePointer2 class="size-3" />
             <span>{{ rangeDayCount }} days · {{ rangeStats.total.toLocaleString() }} sessions · avg {{ rangeStats.avg }}</span>
-            <button class="ml-0.5 hover:text-foreground" @click="clearRange"><X class="size-3" /></button>
+            <button
+              class="ml-0.5 hover:text-foreground"
+              @click="clearRange"
+            >
+              <X class="size-3" />
+            </button>
           </div>
           <div class="flex items-center gap-1.5">
             <Sparkles class="size-3" />
@@ -174,7 +238,13 @@ function fmtKey(key: string) {
 
       <!-- Weekday header -->
       <div class="grid grid-cols-7 border-b bg-muted/10 text-[10px] uppercase tracking-wider text-muted-foreground">
-        <div v-for="w in weekdays" :key="w" class="px-2 py-2 font-medium">{{ w }}</div>
+        <div
+          v-for="w in weekdays"
+          :key="w"
+          class="px-2 py-2 font-medium"
+        >
+          {{ w }}
+        </div>
       </div>
 
       <!-- Heatmap grid -->
@@ -197,12 +267,14 @@ function fmtKey(key: string) {
           <!-- Intensity fill -->
           <div :class="['pointer-events-none absolute inset-1 rounded-md transition-all group-hover:brightness-125 group-hover:inset-0.5', intensityClass(d.count)]" />
           <!-- Date number -->
-          <span :class="[
-            'relative inline-flex size-5 items-center justify-center rounded-full text-[11px] tabular-nums z-10',
-            d.key === todayKey && 'bg-foreground text-background font-semibold ring-2 ring-emerald-400',
-            d.key !== todayKey && d.inMonth && 'text-foreground/80',
-            !d.inMonth && 'text-foreground/40',
-          ]">{{ d.date.getDate() }}</span>
+          <span
+            :class="[
+              'relative inline-flex size-5 items-center justify-center rounded-full text-[11px] tabular-nums z-10',
+              d.key === todayKey && 'bg-foreground text-background font-semibold ring-2 ring-emerald-400',
+              d.key !== todayKey && d.inMonth && 'text-foreground/80',
+              !d.inMonth && 'text-foreground/40',
+            ]"
+          >{{ d.date.getDate() }}</span>
           <!-- Count badge (subtle, top-right) only on hover for active cells -->
           <span
             v-if="d.count > 0 && d.inMonth"
@@ -226,24 +298,43 @@ function fmtKey(key: string) {
     </div>
 
     <!-- Range detail (only when range > 1) -->
-    <div v-if="isRange" class="rounded-xl border bg-gradient-to-br from-emerald-500/10 to-transparent p-4">
+    <div
+      v-if="isRange"
+      class="rounded-xl border bg-gradient-to-br from-emerald-500/10 to-transparent p-4"
+    >
       <div class="flex items-center justify-between gap-3">
         <div>
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">Selected range</p>
-          <p class="mt-1 text-base font-semibold">{{ fmtKey(rangeBounds.lo) }} → {{ fmtKey(rangeBounds.hi) }}</p>
+          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
+            Selected range
+          </p>
+          <p class="mt-1 text-base font-semibold">
+            {{ fmtKey(rangeBounds.lo) }} → {{ fmtKey(rangeBounds.hi) }}
+          </p>
         </div>
         <div class="grid grid-cols-3 gap-3 text-right">
           <div>
-            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">Days</p>
-            <p class="text-lg font-semibold tabular-nums">{{ rangeDayCount }}</p>
+            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Days
+            </p>
+            <p class="text-lg font-semibold tabular-nums">
+              {{ rangeDayCount }}
+            </p>
           </div>
           <div>
-            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">Active</p>
-            <p class="text-lg font-semibold tabular-nums">{{ rangeStats.active }}</p>
+            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Active
+            </p>
+            <p class="text-lg font-semibold tabular-nums">
+              {{ rangeStats.active }}
+            </p>
           </div>
           <div>
-            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">Total</p>
-            <p class="text-lg font-semibold tabular-nums text-emerald-300">{{ rangeStats.total.toLocaleString() }}</p>
+            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Total
+            </p>
+            <p class="text-lg font-semibold tabular-nums text-emerald-300">
+              {{ rangeStats.total.toLocaleString() }}
+            </p>
           </div>
         </div>
       </div>

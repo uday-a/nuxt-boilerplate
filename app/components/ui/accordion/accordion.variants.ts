@@ -50,7 +50,7 @@ export const accordionTriggerVariants = cva(
     defaultVariants: {
       variant: 'default',
     },
-  }
+  },
 )
 
 export type AccordionVariants = VariantProps<typeof accordionVariants>

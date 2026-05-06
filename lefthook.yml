@@ -1,0 +1,17 @@
+# Git hooks managed by lefthook.
+# Install via `npm install` (postinstall runs `lefthook install`).
+# Skip a hook ad-hoc with `LEFTHOOK=0 git commit ...`.
+# See: https://lefthook.dev/configuration/
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: eslint
+      glob: '*.{js,ts,vue,mjs,cjs}'
+      run: npx eslint --fix {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: npx --no -- commitlint --edit {1}

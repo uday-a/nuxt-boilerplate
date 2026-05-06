@@ -8,8 +8,16 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div data-uipkge data-slot="table-container" class="relative w-full overflow-auto">
-    <table data-uipkge data-slot="table" :class="cn('w-full caption-bottom text-sm', props.class)">
+  <div
+    data-uipkge
+    data-slot="table-container"
+    class="relative w-full overflow-auto"
+  >
+    <table
+      data-uipkge
+      data-slot="table"
+      :class="cn('w-full caption-bottom text-sm', props.class)"
+    >
       <slot />
     </table>
   </div>

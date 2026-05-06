@@ -68,7 +68,7 @@ watch(
   () => filterState.search,
   () => {
     filterItems()
-  }
+  },
 )
 
 provideCommandContext({

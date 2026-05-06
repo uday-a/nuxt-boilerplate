@@ -42,7 +42,10 @@ function setActive(team: typeof teams[number]) { activeTeam.value = team }
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:!justify-center"
           >
             <div class="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground group-data-[collapsible=icon]:size-6">
-              <component :is="activeTeam.logo" class="size-4 group-data-[collapsible=icon]:size-3.5" />
+              <component
+                :is="activeTeam.logo"
+                class="size-4 group-data-[collapsible=icon]:size-3.5"
+              />
             </div>
             <div class="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
               <span class="truncate font-display font-bold">{{ activeTeam.name }}</span>
@@ -57,21 +60,38 @@ function setActive(team: typeof teams[number]) { activeTeam.value = team }
           align="start"
           :side-offset="4"
         >
-          <DropdownMenuLabel class="text-muted-foreground text-xs">{{ t('nav.groups.teams') }}</DropdownMenuLabel>
-          <DropdownMenuItem v-for="(team, i) in teams" :key="team.name" class="gap-2 p-2" @select="setActive(team)">
+          <DropdownMenuLabel class="text-muted-foreground text-xs">
+            {{ t('nav.groups.teams') }}
+          </DropdownMenuLabel>
+          <DropdownMenuItem
+            v-for="(team, i) in teams"
+            :key="team.name"
+            class="gap-2 p-2"
+            @select="setActive(team)"
+          >
             <div class="flex size-6 items-center justify-center rounded-sm border">
-              <component :is="team.logo" class="size-3.5 shrink-0" />
+              <component
+                :is="team.logo"
+                class="size-3.5 shrink-0"
+              />
             </div>
             {{ team.name }}
-            <Check v-if="activeTeam === team" class="ml-auto size-4" />
-            <DropdownMenuShortcut v-else>⌘{{ i + 1 }}</DropdownMenuShortcut>
+            <Check
+              v-if="activeTeam === team"
+              class="ml-auto size-4"
+            />
+            <DropdownMenuShortcut v-else>
+              ⌘{{ i + 1 }}
+            </DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem class="gap-2 p-2">
             <div class="flex size-6 items-center justify-center rounded-md border bg-background">
               <Plus class="size-4" />
             </div>
-            <div class="text-muted-foreground font-medium">{{ t('nav.actions.addTeam') }}</div>
+            <div class="text-muted-foreground font-medium">
+              {{ t('nav.actions.addTeam') }}
+            </div>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

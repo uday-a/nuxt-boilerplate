@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<CheckboxGroupProps>(), {
 const modelValue = defineModel<string[]>()
 
 const forwarded = useForwardProps(
-  reactiveOmit(props, 'class', 'label', 'hint', 'error', 'errorMessages', 'density', 'bordered', 'options', 'name', 'inline')
+  reactiveOmit(props, 'class', 'label', 'hint', 'error', 'errorMessages', 'density', 'bordered', 'options', 'name', 'inline'),
 )
 
 const actualOrientation = computed(() => (props.inline ? 'horizontal' : props.orientation))
@@ -63,21 +63,30 @@ provide('checkboxGroupContext', {
   <CheckboxGroupRoot
     v-bind="forwarded"
     :model-value="modelValue"
-    @update:model-value="modelValue = $event"
     :name="name"
     :orientation="actualOrientation"
     class="flex flex-col gap-2"
     :class="[actualOrientation === 'horizontal' ? 'flex-row items-center' : 'flex-col', bordered && 'rounded-lg border p-4', props.class]"
+    @update:model-value="modelValue = $event"
   >
-    <label v-if="label" class="text-sm font-medium">
+    <label
+      v-if="label"
+      class="text-sm font-medium"
+    >
       {{ label }}
     </label>
 
-    <p v-if="hint && !error" class="text-muted-foreground text-xs">
+    <p
+      v-if="hint && !error"
+      class="text-muted-foreground text-xs"
+    >
       {{ hint }}
     </p>
 
-    <div class="flex gap-4" :class="[actualOrientation === 'horizontal' ? 'flex-row items-center flex-wrap' : 'flex-col']">
+    <div
+      class="flex gap-4"
+      :class="[actualOrientation === 'horizontal' ? 'flex-row items-center flex-wrap' : 'flex-col']"
+    >
       <template v-if="options && options.length > 0">
         <Checkbox
           v-for="(option, i) in options"
@@ -90,15 +99,28 @@ provide('checkboxGroupContext', {
         />
       </template>
 
-      <slot v-else :model-value="modelValue" />
+      <slot
+        v-else
+        :model-value="modelValue"
+      />
     </div>
 
-    <div v-if="error || errorMessages" class="flex flex-col gap-0.5">
-      <p v-if="typeof errorMessages === 'string'" class="text-destructive text-xs">
+    <div
+      v-if="error || errorMessages"
+      class="flex flex-col gap-0.5"
+    >
+      <p
+        v-if="typeof errorMessages === 'string'"
+        class="text-destructive text-xs"
+      >
         {{ errorMessages }}
       </p>
       <template v-else>
-        <p v-for="(msg, i) in errorMessages" :key="i" class="text-destructive text-xs">
+        <p
+          v-for="(msg, i) in errorMessages"
+          :key="i"
+          class="text-destructive text-xs"
+        >
           {{ msg }}
         </p>
       </template>

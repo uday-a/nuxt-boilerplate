@@ -6,9 +6,9 @@ import { reactiveOmit } from '@vueuse/core'
 import { RadioGroupRoot, useForwardPropsEmits } from 'reka-ui'
 import { cn } from '@/lib/utils'
 
-export type RadioOption =
-  | string
-  | { label: string; value: string; disabled?: boolean }
+export type RadioOption
+  = | string
+    | { label: string, value: string, disabled?: boolean }
 
 export interface RadioGroupProps extends Omit<RadioGroupRootProps, 'defaultValue' | 'modelValue'> {
   class?: HTMLAttributes['class']
@@ -87,7 +87,7 @@ const delegatedProps = reactiveOmit(
   'options',
   'size',
   'optionType',
-  'buttonVariant'
+  'buttonVariant',
 )
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
@@ -118,14 +118,14 @@ const densityClasses = {
 const hasError = computed(() => {
   if (props.error) return true
   if (
-    props.errorMessages &&
-    (typeof props.errorMessages === 'string' ? props.errorMessages : props.errorMessages.length > 0)
+    props.errorMessages
+    && (typeof props.errorMessages === 'string' ? props.errorMessages : props.errorMessages.length > 0)
   )
     return true
   return false
 })
 
-function normalizeOption(option: RadioOption): { label: string; value: string; disabled?: boolean } {
+function normalizeOption(option: RadioOption): { label: string, value: string, disabled?: boolean } {
   if (typeof option === 'string') {
     return { label: option, value: option }
   }
@@ -142,11 +142,17 @@ function normalizeOption(option: RadioOption): { label: string; value: string; d
     layout intent unambiguous.
   -->
   <div class="flex flex-col gap-2">
-    <label v-if="label" class="text-sm font-medium">
+    <label
+      v-if="label"
+      class="text-sm font-medium"
+    >
       {{ label }}
     </label>
 
-    <p v-if="hint && !hasError" class="text-muted-foreground text-xs">
+    <p
+      v-if="hint && !hasError"
+      class="text-muted-foreground text-xs"
+    >
       {{ hint }}
     </p>
 
@@ -161,7 +167,7 @@ function normalizeOption(option: RadioOption): { label: string; value: string; d
           optionType === 'button' && orientation === 'vertical' && 'flex flex-col items-stretch gap-0',
           optionType !== 'button' && densityClasses[density],
           bordered && 'rounded-lg border p-4',
-          props.class
+          props.class,
         )
       "
       @update:model-value="(val: any) => emits('update:modelValue', val)"
@@ -201,12 +207,22 @@ function normalizeOption(option: RadioOption): { label: string; value: string; d
       <slot v-bind="slotProps" />
     </RadioGroupRoot>
 
-    <div v-if="hasError" class="flex flex-col gap-0.5">
-      <p v-if="typeof errorMessages === 'string'" class="text-destructive text-xs">
+    <div
+      v-if="hasError"
+      class="flex flex-col gap-0.5"
+    >
+      <p
+        v-if="typeof errorMessages === 'string'"
+        class="text-destructive text-xs"
+      >
         {{ errorMessages }}
       </p>
       <template v-else>
-        <p v-for="(msg, i) in errorMessages" :key="i" class="text-destructive text-xs">
+        <p
+          v-for="(msg, i) in errorMessages"
+          :key="i"
+          class="text-destructive text-xs"
+        >
           {{ msg }}
         </p>
       </template>

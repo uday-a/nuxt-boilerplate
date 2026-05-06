@@ -46,7 +46,7 @@ const props = withDefaults(
     modelValue: '',
     placeholder: 'Start writing...',
     minHeight: '120px',
-  }
+  },
 )
 
 const emit = defineEmits<{
@@ -90,7 +90,7 @@ watch(
     if (editor.value && editor.value.getHTML() !== val) {
       editor.value.commands.setContent(val || '', { emitUpdate: false })
     }
-  }
+  },
 )
 
 onBeforeUnmount(() => {
@@ -101,7 +101,8 @@ function toggleLink() {
   if (!editor.value) return
   if (editor.value.isActive('link')) {
     editor.value.chain().focus().unsetLink().run()
-  } else {
+  }
+  else {
     const url = window.prompt('Enter URL')
     if (url) {
       editor.value.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
@@ -258,11 +259,21 @@ const extendedItems = computed<ToolbarItem[]>(() => {
 <template>
   <div :class="cn('rich-text-editor rounded-lg border', props.class)">
     <!-- Toolbar -->
-    <div v-if="editor" class="border-b">
+    <div
+      v-if="editor"
+      class="border-b"
+    >
       <!-- Essential row -->
       <div class="flex items-center gap-0.5 px-2 py-1.5">
-        <template v-for="(item, i) in essentialItems" :key="'e' + i">
-          <Separator v-if="item.type === 'separator'" orientation="vertical" class="mx-1 h-5" />
+        <template
+          v-for="(item, i) in essentialItems"
+          :key="'e' + i"
+        >
+          <Separator
+            v-if="item.type === 'separator'"
+            orientation="vertical"
+            class="mx-1 h-5"
+          />
           <Toggle
             v-else
             size="sm"
@@ -271,11 +282,17 @@ const extendedItems = computed<ToolbarItem[]>(() => {
             class="size-7 p-0"
             @click="item.action?.()"
           >
-            <component :is="item.icon" class="size-3.5" />
+            <component
+              :is="item.icon"
+              class="size-3.5"
+            />
           </Toggle>
         </template>
 
-        <Separator orientation="vertical" class="mx-1 h-5" />
+        <Separator
+          orientation="vertical"
+          class="mx-1 h-5"
+        />
 
         <!-- Expand toggle -->
         <button
@@ -300,8 +317,15 @@ const extendedItems = computed<ToolbarItem[]>(() => {
       >
         <div class="overflow-hidden">
           <div class="flex items-center gap-0.5 border-t px-2 py-1.5">
-            <template v-for="(item, i) in extendedItems" :key="'x' + i">
-              <Separator v-if="item.type === 'separator'" orientation="vertical" class="mx-1 h-5" />
+            <template
+              v-for="(item, i) in extendedItems"
+              :key="'x' + i"
+            >
+              <Separator
+                v-if="item.type === 'separator'"
+                orientation="vertical"
+                class="mx-1 h-5"
+              />
               <Toggle
                 v-else
                 size="sm"
@@ -310,7 +334,10 @@ const extendedItems = computed<ToolbarItem[]>(() => {
                 class="size-7 p-0"
                 @click="item.action?.()"
               >
-                <component :is="item.icon" class="size-3.5" />
+                <component
+                  :is="item.icon"
+                  class="size-3.5"
+                />
               </Toggle>
             </template>
           </div>

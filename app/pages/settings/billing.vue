@@ -40,8 +40,12 @@ const fmt = (n: number, unit: string) => `${n.toLocaleString()}${unit}`
 <template>
   <div class="space-y-6">
     <header class="space-y-1">
-      <h1 class="text-2xl font-semibold tracking-tight">Billing</h1>
-      <p class="text-muted-foreground text-sm">Plan, usage, payment method, and invoice history.</p>
+      <h1 class="text-2xl font-semibold tracking-tight">
+        Billing
+      </h1>
+      <p class="text-muted-foreground text-sm">
+        Plan, usage, payment method, and invoice history.
+      </p>
     </header>
 
     <div class="grid gap-4 lg:grid-cols-[2fr_1fr]">
@@ -49,10 +53,19 @@ const fmt = (n: number, unit: string) => `${n.toLocaleString()}${unit}`
         <CardHeader>
           <div class="flex items-start justify-between gap-3">
             <div class="space-y-1">
-              <CardDescription class="text-xs uppercase tracking-wider">Current plan</CardDescription>
-              <CardTitle class="text-2xl">{{ plan.name }}</CardTitle>
+              <CardDescription class="text-xs uppercase tracking-wider">
+                Current plan
+              </CardDescription>
+              <CardTitle class="text-2xl">
+                {{ plan.name }}
+              </CardTitle>
             </div>
-            <Badge variant="secondary" class="text-[10px]">Renews {{ plan.renews }}</Badge>
+            <Badge
+              variant="secondary"
+              class="text-[10px]"
+            >
+              Renews {{ plan.renews }}
+            </Badge>
           </div>
         </CardHeader>
         <CardContent class="space-y-3">
@@ -65,42 +78,70 @@ const fmt = (n: number, unit: string) => `${n.toLocaleString()}${unit}`
           </p>
           <div class="flex flex-wrap gap-2 pt-2">
             <Button>Upgrade to Enterprise</Button>
-            <Button variant="outline">Change plan</Button>
-            <Button variant="ghost" class="text-muted-foreground">Cancel subscription</Button>
+            <Button variant="outline">
+              Change plan
+            </Button>
+            <Button
+              variant="ghost"
+              class="text-muted-foreground"
+            >
+              Cancel subscription
+            </Button>
           </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle class="text-base">Payment method</CardTitle>
+          <CardTitle class="text-base">
+            Payment method
+          </CardTitle>
         </CardHeader>
         <CardContent class="space-y-3">
           <div class="bg-muted/40 flex items-center gap-3 rounded-lg border p-3">
             <CreditCard class="text-muted-foreground size-5" />
             <div class="flex-1">
-              <p class="text-sm font-medium">Visa ending in 4242</p>
-              <p class="text-muted-foreground text-xs">Expires 09 / 28</p>
+              <p class="text-sm font-medium">
+                Visa ending in 4242
+              </p>
+              <p class="text-muted-foreground text-xs">
+                Expires 09 / 28
+              </p>
             </div>
           </div>
-          <Button variant="outline" size="sm" class="w-full">Update card</Button>
+          <Button
+            variant="outline"
+            size="sm"
+            class="w-full"
+          >
+            Update card
+          </Button>
         </CardContent>
       </Card>
     </div>
 
     <Card>
       <CardHeader>
-        <CardTitle class="text-base">Usage this cycle</CardTitle>
+        <CardTitle class="text-base">
+          Usage this cycle
+        </CardTitle>
         <CardDescription>Resets {{ plan.renews }}. Anything over the cap is billed at the overage rate (see plan details).</CardDescription>
       </CardHeader>
       <CardContent class="space-y-5">
-        <div v-for="u in usageThisCycle" :key="u.label" class="space-y-2">
+        <div
+          v-for="u in usageThisCycle"
+          :key="u.label"
+          class="space-y-2"
+        >
           <div class="flex items-baseline justify-between">
             <span class="text-sm font-medium">{{ u.label }}</span>
             <span class="text-muted-foreground text-xs tabular-nums">{{ fmt(u.used, u.unit) }} / {{ fmt(u.limit, u.unit) }}</span>
           </div>
           <div class="bg-muted h-2 overflow-hidden rounded-full">
-            <div class="bg-primary h-full rounded-full transition-all" :style="{ width: pct(u.used, u.limit) + '%' }" />
+            <div
+              class="bg-primary h-full rounded-full transition-all"
+              :style="{ width: pct(u.used, u.limit) + '%' }"
+            />
           </div>
         </div>
       </CardContent>
@@ -108,7 +149,9 @@ const fmt = (n: number, unit: string) => `${n.toLocaleString()}${unit}`
 
     <Card>
       <CardHeader>
-        <CardTitle class="text-base">Invoices</CardTitle>
+        <CardTitle class="text-base">
+          Invoices
+        </CardTitle>
         <CardDescription>PDF downloads stay available for 7 years.</CardDescription>
       </CardHeader>
       <Table>
@@ -117,27 +160,50 @@ const fmt = (n: number, unit: string) => `${n.toLocaleString()}${unit}`
             <TableHead>Invoice</TableHead>
             <TableHead>Issued</TableHead>
             <TableHead>Period</TableHead>
-            <TableHead class="text-right">Amount</TableHead>
+            <TableHead class="text-right">
+              Amount
+            </TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Method</TableHead>
-            <TableHead class="text-right">PDF</TableHead>
+            <TableHead class="text-right">
+              PDF
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="inv in invoices" :key="inv.id">
-            <TableCell class="font-mono text-xs">{{ inv.id }}</TableCell>
-            <TableCell class="text-muted-foreground text-xs tabular-nums">{{ inv.date }}</TableCell>
-            <TableCell class="text-xs">{{ inv.period }}</TableCell>
-            <TableCell class="text-right tabular-nums">${{ inv.amount.toFixed(2) }}</TableCell>
+          <TableRow
+            v-for="inv in invoices"
+            :key="inv.id"
+          >
+            <TableCell class="font-mono text-xs">
+              {{ inv.id }}
+            </TableCell>
+            <TableCell class="text-muted-foreground text-xs tabular-nums">
+              {{ inv.date }}
+            </TableCell>
+            <TableCell class="text-xs">
+              {{ inv.period }}
+            </TableCell>
+            <TableCell class="text-right tabular-nums">
+              ${{ inv.amount.toFixed(2) }}
+            </TableCell>
             <TableCell>
               <span class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 text-xs capitalize">
                 <CheckCircle2 class="size-3" />
                 {{ inv.status }}
               </span>
             </TableCell>
-            <TableCell class="text-muted-foreground text-xs">{{ inv.method }}</TableCell>
+            <TableCell class="text-muted-foreground text-xs">
+              {{ inv.method }}
+            </TableCell>
             <TableCell class="text-right">
-              <Button variant="ghost" size="icon" class="size-7"><Download class="size-3.5" /></Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="size-7"
+              >
+                <Download class="size-3.5" />
+              </Button>
             </TableCell>
           </TableRow>
         </TableBody>

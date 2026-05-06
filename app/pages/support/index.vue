@@ -31,32 +31,62 @@ const status = { level: 'all-systems-go', label: 'All systems operational', upda
 <template>
   <div class="space-y-6">
     <header class="space-y-1">
-      <h1 class="text-2xl font-semibold tracking-tight">Support</h1>
-      <p class="text-muted-foreground text-sm">Documentation, community, and human help — pick whichever gets you unstuck fastest.</p>
+      <h1 class="text-2xl font-semibold tracking-tight">
+        Support
+      </h1>
+      <p class="text-muted-foreground text-sm">
+        Documentation, community, and human help — pick whichever gets you unstuck fastest.
+      </p>
     </header>
 
     <Card class="border-emerald-500/30 bg-emerald-500/5">
       <CardContent class="flex items-center gap-3 py-4">
         <CheckCircle2 class="text-emerald-500 size-5 shrink-0" />
         <div class="flex-1 space-y-0.5">
-          <p class="text-sm font-semibold">{{ status.label }}</p>
-          <p class="text-muted-foreground text-xs">Updated {{ status.updated }}. <a href="#" class="text-foreground underline-offset-4 hover:underline">View status page →</a></p>
+          <p class="text-sm font-semibold">
+            {{ status.label }}
+          </p>
+          <p class="text-muted-foreground text-xs">
+            Updated {{ status.updated }}. <a
+              href="#"
+              class="text-foreground underline-offset-4 hover:underline"
+            >View status page →</a>
+          </p>
         </div>
       </CardContent>
     </Card>
 
     <div class="grid gap-4 lg:grid-cols-3">
-      <Card v-for="c in channels" :key="c.title">
+      <Card
+        v-for="c in channels"
+        :key="c.title"
+      >
         <CardHeader>
           <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
-            <component :is="c.icon" class="size-5" />
+            <component
+              :is="c.icon"
+              class="size-5"
+            />
           </div>
-          <CardTitle class="text-base pt-3">{{ c.title }}</CardTitle>
+          <CardTitle class="text-base pt-3">
+            {{ c.title }}
+          </CardTitle>
           <CardDescription>{{ c.description }}</CardDescription>
         </CardHeader>
         <CardContent class="space-y-3">
-          <Badge variant="secondary" class="text-[10px]">{{ c.meta }}</Badge>
-          <Button variant="outline" size="sm" class="w-full gap-1.5" as="a" :href="c.href">
+          <Badge
+            variant="secondary"
+            class="text-[10px]"
+          >
+            {{ c.meta }}
+          </Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            class="w-full gap-1.5"
+            as="a"
+            :href="c.href"
+          >
             {{ c.cta }}
             <ExternalLink class="size-3" />
           </Button>
@@ -66,14 +96,28 @@ const status = { level: 'all-systems-go', label: 'All systems operational', upda
 
     <Card>
       <CardHeader>
-        <CardTitle class="text-base flex items-center gap-2"><LifeBuoy class="size-4" /> Frequently asked</CardTitle>
+        <CardTitle class="text-base flex items-center gap-2">
+          <LifeBuoy class="size-4" /> Frequently asked
+        </CardTitle>
         <CardDescription>Eight questions that account for ~70% of inbound tickets.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Accordion type="single" collapsible class="w-full">
-          <AccordionItem v-for="(f, i) in faq" :key="i" :value="`item-${i}`">
-            <AccordionTrigger class="text-left text-sm">{{ f.q }}</AccordionTrigger>
-            <AccordionContent class="text-muted-foreground text-sm leading-relaxed">{{ f.a }}</AccordionContent>
+        <Accordion
+          type="single"
+          collapsible
+          class="w-full"
+        >
+          <AccordionItem
+            v-for="(f, i) in faq"
+            :key="i"
+            :value="`item-${i}`"
+          >
+            <AccordionTrigger class="text-left text-sm">
+              {{ f.q }}
+            </AccordionTrigger>
+            <AccordionContent class="text-muted-foreground text-sm leading-relaxed">
+              {{ f.a }}
+            </AccordionContent>
           </AccordionItem>
         </Accordion>
       </CardContent>

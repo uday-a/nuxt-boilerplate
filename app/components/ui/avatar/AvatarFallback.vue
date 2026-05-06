@@ -8,11 +8,11 @@ import { cn } from '@/lib/utils'
 const fallbackVariants = cva('flex size-full items-center justify-center rounded-full bg-muted font-medium', {
   variants: {
     size: {
-      xs: 'text-[8px]',
-      sm: 'text-xs',
-      default: 'text-sm',
-      lg: 'text-base',
-      xl: 'text-lg',
+      'xs': 'text-[8px]',
+      'sm': 'text-xs',
+      'default': 'text-sm',
+      'lg': 'text-base',
+      'xl': 'text-lg',
       '2xl': 'text-xl',
     },
     color: {
@@ -47,7 +47,7 @@ const props = withDefaults(
   {
     size: 'default',
     color: 'default',
-  }
+  },
 )
 
 const emit = defineEmits<{
@@ -62,7 +62,12 @@ const rootClasses = computed(() => cn(fallbackVariants({ size: props.size, color
 </script>
 
 <template>
-  <span :class="rootClasses" data-uipkge data-slot="avatar-fallback" @click="handleClick">
+  <span
+    :class="rootClasses"
+    data-uipkge
+    data-slot="avatar-fallback"
+    @click="handleClick"
+  >
     <slot v-if="!text">{{ text }}</slot>
     <slot v-else />
   </span>

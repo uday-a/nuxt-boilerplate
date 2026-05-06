@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const mergedOption = computed(() => {
   const fields = Array.isArray(props.yField) ? props.yField : [props.yField]
-  const xData = props.data.map((d) => d[props.xField!])
+  const xData = props.data.map(d => d[props.xField!])
 
   const series = fields.map((field, i) => ({
     name: field,
@@ -37,7 +37,7 @@ const mergedOption = computed(() => {
     symbolSize: 6,
     lineStyle: { width: 2 },
     itemStyle: { color: chartColors.value[i % chartColors.value.length] },
-    data: props.data.map((d) => d[field]),
+    data: props.data.map(d => d[field]),
   }))
 
   return {
@@ -75,6 +75,10 @@ const mergedOption = computed(() => {
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', props.class)"
   >
-    <VChart :option="mergedOption" :autoresize="true" class="size-full" />
+    <VChart
+      :option="mergedOption"
+      :autoresize="true"
+      class="size-full"
+    />
   </div>
 </template>

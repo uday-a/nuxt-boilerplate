@@ -129,8 +129,8 @@ const wrapperClasses = computed(() => {
     ? 'pointer-events-none opacity-50 cursor-not-allowed bg-muted/30'
     : ''
 
-  const ariaInvalidClass =
-    'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
+  const ariaInvalidClass
+    = 'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
 
   return cn(
     base,
@@ -146,8 +146,8 @@ const wrapperClasses = computed(() => {
 })
 
 function addonClasses(position: 'before' | 'after') {
-  const roundedClass =
-    position === 'before'
+  const roundedClass
+    = position === 'before'
       ? 'rounded-l-md rounded-r-none border-r-0'
       : 'rounded-r-md rounded-l-none border-l-0'
   return cn(
@@ -160,10 +160,10 @@ function addonClasses(position: 'before' | 'after') {
 const inputPadding = computed(() => {
   const hasLeft = hasPrefix.value
   const hasRight = hasSuffix.value || hasRightConfig.value
-  const leftPad =
-    props.size === 'small' ? 'pl-2' : props.size === 'large' ? 'pl-3' : 'pl-2.5'
-  const rightPad =
-    props.size === 'small' ? 'pr-2' : props.size === 'large' ? 'pr-3' : 'pr-2.5'
+  const leftPad
+    = props.size === 'small' ? 'pl-2' : props.size === 'large' ? 'pl-3' : 'pl-2.5'
+  const rightPad
+    = props.size === 'small' ? 'pr-2' : props.size === 'large' ? 'pr-3' : 'pr-2.5'
 
   if (!hasLeft && !hasRight) return cn(leftPad, rightPad)
   if (hasLeft && !hasRight) return cn('pl-0', rightPad)
@@ -185,8 +185,13 @@ function togglePassword() {
 <template>
   <div class="flex w-full">
     <!-- Addon before -->
-    <div v-if="hasAddonBefore" :class="addonClasses('before')">
-      <slot name="addonBefore">{{ addonBefore }}</slot>
+    <div
+      v-if="hasAddonBefore"
+      :class="addonClasses('before')"
+    >
+      <slot name="addonBefore">
+        {{ addonBefore }}
+      </slot>
     </div>
 
     <!-- Input wrapper -->
@@ -206,7 +211,11 @@ function togglePassword() {
         :class="props.size === 'small' ? 'pl-2' : props.size === 'large' ? 'pl-3' : 'pl-2.5'"
       >
         <slot name="prefix">
-          <component :is="prefixIcon" v-if="prefixIcon" class="size-4" />
+          <component
+            :is="prefixIcon"
+            v-if="prefixIcon"
+            class="size-4"
+          />
           <template v-else>{{ prefix }}</template>
         </slot>
       </span>
@@ -234,7 +243,7 @@ function togglePassword() {
         "
         @focus="focused = true"
         @blur="focused = false"
-      />
+      >
 
       <!-- Suffix / Actions -- built-in actions (clear / password toggle /
            count) render first, then the user's suffix slot so the slotted
@@ -260,17 +269,33 @@ function togglePassword() {
           :aria-pressed="passwordVisible"
           @mousedown.prevent="togglePassword"
         >
-          <Eye v-if="passwordVisible" class="size-4" />
-          <EyeOff v-else class="size-4" />
+          <Eye
+            v-if="passwordVisible"
+            class="size-4"
+          />
+          <EyeOff
+            v-else
+            class="size-4"
+          />
         </button>
 
-        <span v-if="showCountDisplay" class="text-muted-foreground pointer-events-none select-none text-xs">
+        <span
+          v-if="showCountDisplay"
+          class="text-muted-foreground pointer-events-none select-none text-xs"
+        >
           {{ currentLength }}/{{ maxlength }}
         </span>
 
-        <span v-if="hasSuffix" class="text-muted-foreground pointer-events-none select-none">
+        <span
+          v-if="hasSuffix"
+          class="text-muted-foreground pointer-events-none select-none"
+        >
           <slot name="suffix">
-            <component :is="suffixIcon" v-if="suffixIcon" class="size-4" />
+            <component
+              :is="suffixIcon"
+              v-if="suffixIcon"
+              class="size-4"
+            />
             <template v-else>{{ suffix }}</template>
           </slot>
         </span>
@@ -278,8 +303,13 @@ function togglePassword() {
     </div>
 
     <!-- Addon after -->
-    <div v-if="hasAddonAfter" :class="addonClasses('after')">
-      <slot name="addonAfter">{{ addonAfter }}</slot>
+    <div
+      v-if="hasAddonAfter"
+      :class="addonClasses('after')"
+    >
+      <slot name="addonAfter">
+        {{ addonAfter }}
+      </slot>
     </div>
   </div>
 </template>

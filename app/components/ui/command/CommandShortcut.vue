@@ -8,7 +8,11 @@ const props = defineProps<{
 </script>
 
 <template>
-  <span data-uipkge data-slot="command-shortcut" :class="cn('text-muted-foreground ml-auto text-xs tracking-widest', props.class)">
+  <span
+    data-uipkge
+    data-slot="command-shortcut"
+    :class="cn('text-muted-foreground ml-auto text-xs tracking-widest', props.class)"
+  >
     <slot />
   </span>
 </template>

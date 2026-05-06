@@ -1,0 +1,25 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "app/middleware/**/*.ts",
+    "app/composables/**/*.ts",
+    "server/**/*.ts"
+  ],
+  "project": [
+    "app/**/*.{ts,vue}",
+    "server/**/*.ts",
+    "*.{ts,mjs,js}"
+  ],
+  "ignore": [
+    "app/components/ui/**"
+  ],
+  "ignoreDependencies": [
+    "@resvg/resvg-js",
+    "satori",
+    "h3",
+    "nitropack",
+    "consola",
+    "@i18now/nuxt",
+    "@tanstack/vue-table"
+  ]
+}

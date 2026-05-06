@@ -18,7 +18,7 @@ interface Notification {
   actor?: string
 }
 
-const categoryConfig: Record<NotificationCategory, { icon: any; accent: string; bg: string }> = {
+const categoryConfig: Record<NotificationCategory, { icon: any, accent: string, bg: string }> = {
   hr: {
     icon: UserPlus,
     accent: 'bg-emerald-500',
@@ -117,7 +117,7 @@ const notifications = ref<Notification[]>([
   {
     id: '8',
     title: 'Benefits enrollment closing',
-    body: "Open enrollment period ends Mar 31. 12 employees haven't enrolled yet.",
+    body: 'Open enrollment period ends Mar 31. 12 employees haven\'t enrolled yet.',
     category: 'hr',
     timestamp: new Date(now.getTime() - 48 * 60 * 60 * 1000),
     read: true,
@@ -127,11 +127,11 @@ const notifications = ref<Notification[]>([
 const activeFilter = ref<'all' | 'unread'>('all')
 const isOpen = ref(false)
 
-const unreadCount = computed(() => notifications.value.filter((n) => !n.read).length)
+const unreadCount = computed(() => notifications.value.filter(n => !n.read).length)
 
 const filteredNotifications = computed(() => {
   if (activeFilter.value === 'unread') {
-    return notifications.value.filter((n) => !n.read)
+    return notifications.value.filter(n => !n.read)
   }
   return notifications.value
 })
@@ -139,8 +139,8 @@ const filteredNotifications = computed(() => {
 const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
 const groupedNotifications = computed(() => {
-  const today = filteredNotifications.value.filter((n) => n.timestamp >= todayStart)
-  const earlier = filteredNotifications.value.filter((n) => n.timestamp < todayStart)
+  const today = filteredNotifications.value.filter(n => n.timestamp >= todayStart)
+  const earlier = filteredNotifications.value.filter(n => n.timestamp < todayStart)
   return { today, earlier }
 })
 
@@ -157,16 +157,16 @@ function formatTime(date: Date): string {
 }
 
 function markAsRead(id: string) {
-  const n = notifications.value.find((n) => n.id === id)
+  const n = notifications.value.find(n => n.id === id)
   if (n) n.read = true
 }
 
 function markAllRead() {
-  notifications.value.forEach((n) => (n.read = true))
+  notifications.value.forEach(n => (n.read = true))
 }
 
 function dismissNotification(id: string) {
-  notifications.value = notifications.value.filter((n) => n.id !== id)
+  notifications.value = notifications.value.filter(n => n.id !== id)
 }
 </script>
 
@@ -182,7 +182,9 @@ function dismissNotification(id: string) {
     >
       <div class="flex items-center justify-between px-4 pt-4 pb-3">
         <div class="flex items-center gap-2.5">
-          <h3 class="text-sm font-semibold tracking-tight">Notifications</h3>
+          <h3 class="text-sm font-semibold tracking-tight">
+            Notifications
+          </h3>
           <Badge
             v-if="unreadCount > 0"
             class="bg-primary/15 text-primary hover:bg-primary/15 h-5 rounded-full px-1.5 text-[10px] font-bold tabular-nums"
@@ -240,7 +242,9 @@ function dismissNotification(id: string) {
           <div class="bg-muted mb-3 rounded-full p-3">
             <BellOff class="text-muted-foreground size-5" />
           </div>
-          <p class="text-sm font-medium">All caught up</p>
+          <p class="text-sm font-medium">
+            All caught up
+          </p>
           <p class="text-muted-foreground mt-0.5 text-xs">
             No {{ activeFilter === 'unread' ? 'unread ' : '' }}notifications
           </p>
@@ -272,7 +276,10 @@ function dismissNotification(id: string) {
                     categoryConfig[n.category].bg,
                   ]"
                 >
-                  <component :is="categoryConfig[n.category].icon" class="size-4" />
+                  <component
+                    :is="categoryConfig[n.category].icon"
+                    class="size-4"
+                  />
                 </div>
 
                 <div class="min-w-0 flex-1">
@@ -284,7 +291,10 @@ function dismissNotification(id: string) {
                       <span class="text-muted-foreground text-[10px] whitespace-nowrap tabular-nums">
                         {{ formatTime(n.timestamp) }}
                       </span>
-                      <span v-if="!n.read" class="bg-primary size-1.5 shrink-0 rounded-full" />
+                      <span
+                        v-if="!n.read"
+                        class="bg-primary size-1.5 shrink-0 rounded-full"
+                      />
                     </div>
                   </div>
                   <p class="text-muted-foreground mt-0.5 line-clamp-2 text-xs leading-relaxed">
@@ -328,7 +338,10 @@ function dismissNotification(id: string) {
                     categoryConfig[n.category].bg,
                   ]"
                 >
-                  <component :is="categoryConfig[n.category].icon" class="size-4" />
+                  <component
+                    :is="categoryConfig[n.category].icon"
+                    class="size-4"
+                  />
                 </div>
 
                 <div class="min-w-0 flex-1">
@@ -340,7 +353,10 @@ function dismissNotification(id: string) {
                       <span class="text-muted-foreground text-[10px] whitespace-nowrap tabular-nums">
                         {{ formatTime(n.timestamp) }}
                       </span>
-                      <span v-if="!n.read" class="bg-primary size-1.5 shrink-0 rounded-full" />
+                      <span
+                        v-if="!n.read"
+                        class="bg-primary size-1.5 shrink-0 rounded-full"
+                      />
                     </div>
                   </div>
                   <p class="text-muted-foreground mt-0.5 line-clamp-2 text-xs leading-relaxed">

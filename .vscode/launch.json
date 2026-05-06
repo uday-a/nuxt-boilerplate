@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Nuxt: server-side",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "skipFiles": ["<node_internals>/**"],
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      }
+    },
+    {
+      "name": "Nuxt: client-side (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/app",
+      "sourceMaps": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Nuxt: full-stack",
+      "configurations": ["Nuxt: server-side", "Nuxt: client-side (Chrome)"]
+    }
+  ]
+}

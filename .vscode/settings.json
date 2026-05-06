@@ -1,0 +1,47 @@
+{
+  // Volar takeover mode — disable VS Code's built-in TS for .vue support to
+  // route everything through @vue/language-server.
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // Format-on-save via ESLint (we don't run Prettier — eslint-stylistic
+  // handles formatting via the @nuxt/eslint config).
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.format.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "vue"
+  ],
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+
+  // Tailwind class sorting + IntelliSense for cva/cn helpers.
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+
+  // Hide generated noise from the file tree.
+  "files.exclude": {
+    "**/.nuxt": true,
+    "**/.output": true,
+    "**/node_modules": true
+  },
+  "search.exclude": {
+    "**/.nuxt": true,
+    "**/.output": true,
+    "**/.pilot-backup": true,
+    "**/package-lock.json": true
+  }
+}

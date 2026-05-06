@@ -29,7 +29,7 @@ const props = withDefaults(
   }>(),
   {
     spacing: 0,
-  }
+  },
 )
 
 const emits = defineEmits<ToggleGroupRootEmits>()
@@ -59,7 +59,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     :class="
       cn(
         'group/toggle-group flex w-fit items-center gap-[--spacing(var(--gap))] rounded-md data-[spacing=default]:data-[variant=outline]:shadow-xs',
-        props.class
+        props.class,
       )
     "
   >

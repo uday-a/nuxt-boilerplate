@@ -11,8 +11,8 @@ import { chartColors, chartTooltipBg, chartTooltipBorder, chartTooltipText } fro
 use([CanvasRenderer, EChartsRadarChart, RadarComponent, TooltipComponent, LegendComponent])
 
 interface Props {
-  indicators: { name: string; max: number }[]
-  data: { name: string; value: number[] }[]
+  indicators: { name: string, max: number }[]
+  data: { name: string, value: number[] }[]
   height?: number | string
   option?: any
   class?: string
@@ -66,6 +66,10 @@ const mergedOption = computed(() => {
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', props.class)"
   >
-    <VChart :option="mergedOption" :autoresize="true" class="size-full" />
+    <VChart
+      :option="mergedOption"
+      :autoresize="true"
+      class="size-full"
+    />
   </div>
 </template>

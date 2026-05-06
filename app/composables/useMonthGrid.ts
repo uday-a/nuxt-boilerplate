@@ -51,7 +51,7 @@ export function useMonthGrid(options: UseMonthGridOptions = {}) {
     const offset = (first.getDay() - weekStartsOn + 7) % 7
     const start = new Date(first)
     start.setDate(first.getDate() - offset)
-    const days: { date: Date; key: DateKey; inMonth: boolean }[] = []
+    const days: { date: Date, key: DateKey, inMonth: boolean }[] = []
     for (let i = 0; i < 42; i++) {
       const d = new Date(start)
       d.setDate(start.getDate() + i)

@@ -87,6 +87,10 @@ const mergedOption = computed(() => ({
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', props.class)"
   >
-    <VChart :option="mergedOption" :autoresize="true" class="size-full" />
+    <VChart
+      :option="mergedOption"
+      :autoresize="true"
+      class="size-full"
+    />
   </div>
 </template>

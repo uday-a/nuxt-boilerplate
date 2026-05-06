@@ -16,7 +16,7 @@ const props = withDefaults(
   }>(),
   {
     loading: 'lazy',
-  }
+  },
 )
 
 const emit = defineEmits<{
@@ -52,6 +52,6 @@ function handleLoad(event: Event) {
     data-slot="avatar-image"
     @error="handleError"
     @load="handleLoad"
-  />
+  >
   <slot v-else />
 </template>

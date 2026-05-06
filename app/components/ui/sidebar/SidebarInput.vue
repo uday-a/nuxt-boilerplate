@@ -18,8 +18,14 @@ const props = defineProps<{
     data-sidebar="input"
     :class="cn('bg-background h-8 w-full shadow-none', props.class)"
   >
-    <template v-for="(_, name) in $slots" #[name]="slotProps">
-      <slot :name="name" v-bind="slotProps" />
+    <template
+      v-for="(_, name) in $slots"
+      #[name]="slotProps"
+    >
+      <slot
+        :name="name"
+        v-bind="slotProps"
+      />
     </template>
   </Input>
 </template>

@@ -31,7 +31,10 @@ function handleClick(event: MouseEvent) {
     data-slot="avatar-group"
     @click="handleClick"
   >
-    <slot :max="max" :size="size" />
+    <slot
+      :max="max"
+      :size="size"
+    />
     <template v-if="max && ($slots.default?.()?.length || 0) > max">
       <div
         :class="
@@ -47,12 +50,18 @@ function handleClick(event: MouseEvent) {
                     ? 'size-12 text-base'
                     : size === 'xl'
                       ? 'size-16 text-lg'
-                      : 'size-20 text-xl'
+                      : 'size-20 text-xl',
           )
         "
       >
-        <slot name="overflow" :count="($slots.default?.()?.length || 0) - max + 1" />
-        <span v-if="!$slots['overflow']" class="flex size-full items-center justify-center font-medium">
+        <slot
+          name="overflow"
+          :count="($slots.default?.()?.length || 0) - max + 1"
+        />
+        <span
+          v-if="!$slots['overflow']"
+          class="flex size-full items-center justify-center font-medium"
+        >
           +{{ ($slots.default?.()?.length || 0) - max + 1 }}
         </span>
       </div>

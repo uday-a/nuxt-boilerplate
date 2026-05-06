@@ -31,7 +31,12 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
     <slot />
   </div>
 
-  <Sheet v-else-if="isMobile" :open="openMobile" v-bind="$attrs" @update:open="setOpenMobile">
+  <Sheet
+    v-else-if="isMobile"
+    :open="openMobile"
+    v-bind="$attrs"
+    @update:open="setOpenMobile"
+  >
     <SheetContent
       data-sidebar="sidebar"
       data-uipkge
@@ -72,7 +77,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)'
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
         )
       "
     />
@@ -87,7 +92,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
-          props.class
+          props.class,
         )
       "
       v-bind="$attrs"

@@ -27,13 +27,13 @@ const LABELS: Record<Theme, string> = {
 }
 
 const VARIANT_OPTIONS: Record<Variant, Theme[]> = {
-  cards: ['light', 'dark', 'system'],
-  icons: ['light', 'dark', 'system'],
+  'cards': ['light', 'dark', 'system'],
+  'icons': ['light', 'dark', 'system'],
   'icon-only': ['light', 'dark'],
-  dropdown: ['light', 'dark', 'system'],
-  pill: ['light', 'dark', 'system'],
+  'dropdown': ['light', 'dark', 'system'],
+  'pill': ['light', 'dark', 'system'],
   'pill-4': ['system', 'light', 'dark', 'black'],
-  switch: ['light', 'dark'],
+  'switch': ['light', 'dark'],
 }
 
 const props = withDefaults(
@@ -44,7 +44,7 @@ const props = withDefaults(
     description?: string
     class?: string
   }>(),
-  { variant: 'cards' }
+  { variant: 'cards' },
 )
 
 const emit = defineEmits<{ 'update:modelValue': [Theme] }>()
@@ -93,8 +93,13 @@ function cycle() {
         "
         @click="set(t)"
       >
-        <component :is="ICONS[t]" class="size-4 mb-2 text-muted-foreground" />
-        <p class="text-xs font-medium">{{ LABELS[t] }}</p>
+        <component
+          :is="ICONS[t]"
+          class="size-4 mb-2 text-muted-foreground"
+        />
+        <p class="text-xs font-medium">
+          {{ LABELS[t] }}
+        </p>
       </button>
     </div>
   </SectionCard>
@@ -121,7 +126,10 @@ function cycle() {
       "
       @click="set(t)"
     >
-      <component :is="ICONS[t]" class="size-4" />
+      <component
+        :is="ICONS[t]"
+        class="size-4"
+      />
     </button>
   </div>
 
@@ -147,7 +155,10 @@ function cycle() {
     ]"
     @click="cycle"
   >
-    <component :is="ICONS[modelValue]" class="size-4" />
+    <component
+      :is="ICONS[modelValue]"
+      class="size-4"
+    />
   </button>
 
   <!-- Dropdown: trigger button → menu of states -->
@@ -160,14 +171,27 @@ function cycle() {
           $props.class,
         ]"
       >
-        <component :is="ICONS[modelValue]" class="size-4" />
+        <component
+          :is="ICONS[modelValue]"
+          class="size-4"
+        />
         <span>{{ LABELS[modelValue] }}</span>
         <ChevronDown class="size-3 opacity-60" />
       </button>
     </DropdownMenuTrigger>
-    <DropdownMenuContent align="end" class="min-w-[140px]">
-      <DropdownMenuItem v-for="t in options" :key="t" @click="set(t)">
-        <component :is="ICONS[t]" class="size-4 mr-2" />
+    <DropdownMenuContent
+      align="end"
+      class="min-w-[140px]"
+    >
+      <DropdownMenuItem
+        v-for="t in options"
+        :key="t"
+        @click="set(t)"
+      >
+        <component
+          :is="ICONS[t]"
+          class="size-4 mr-2"
+        />
         <span>{{ LABELS[t] }}</span>
       </DropdownMenuItem>
     </DropdownMenuContent>
@@ -200,7 +224,10 @@ function cycle() {
       "
       @click="set(t)"
     >
-      <component :is="ICONS[t]" class="size-3.5" />
+      <component
+        :is="ICONS[t]"
+        class="size-3.5"
+      />
       <span>{{ LABELS[t] }}</span>
     </button>
   </div>

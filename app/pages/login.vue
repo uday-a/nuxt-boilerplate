@@ -5,7 +5,7 @@ useHead({ title: 'Sign in' })
 const { loggedIn } = useUserSession()
 if (loggedIn.value) await navigateTo('/dashboard')
 
-function onSubmit(_payload: { email: string; password: string; remember: boolean }) {
+function onSubmit(_payload: { email: string, password: string, remember: boolean }) {
   alert('Email/password not implemented. Use the GitHub button.')
 }
 

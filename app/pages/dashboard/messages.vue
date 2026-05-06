@@ -64,33 +64,33 @@ const composeOpen = ref(false)
 const replyBody = ref('')
 
 const filteredMessages = computed(() => {
-  let list = messages.filter((m) => m.folder === activeFolder.value)
+  let list = messages.filter(m => m.folder === activeFolder.value)
   const q = searchQuery.value.trim().toLowerCase()
   if (q) {
-    list = list.filter((m) =>
-      m.subject.toLowerCase().includes(q) ||
-      m.sender.toLowerCase().includes(q) ||
-      m.preview.toLowerCase().includes(q),
+    list = list.filter(m =>
+      m.subject.toLowerCase().includes(q)
+      || m.sender.toLowerCase().includes(q)
+      || m.preview.toLowerCase().includes(q),
     )
   }
   return list
 })
 
-const selectedMessage = computed(() => messages.find((m) => m.id === selectedId.value))
+const selectedMessage = computed(() => messages.find(m => m.id === selectedId.value))
 
 const tagVariant = (tag: string): any => {
   const map: Record<string, any> = {
-    work: 'default',
-    roadmap: 'secondary',
+    'work': 'default',
+    'roadmap': 'secondary',
     'code-review': 'outline',
-    bugfix: 'destructive',
+    'bugfix': 'destructive',
     'design-system': 'secondary',
-    engineering: 'outline',
-    qa: 'default',
-    onboarding: 'secondary',
-    sales: 'default',
-    feedback: 'secondary',
-    system: 'outline',
+    'engineering': 'outline',
+    'qa': 'default',
+    'onboarding': 'secondary',
+    'sales': 'default',
+    'feedback': 'secondary',
+    'system': 'outline',
   }
   return map[tag] ?? 'secondary'
 }
@@ -102,19 +102,31 @@ function sendReply() {
 
 <template>
   <div class="flex h-[calc(100vh-3.5rem)] flex-col gap-0 -mx-4 -mt-4 lg:-mx-6 lg:-mt-6">
-    <h1 class="sr-only">Messages</h1>
+    <h1 class="sr-only">
+      Messages
+    </h1>
     <!-- Header with breadcrumb -->
     <div class="border-b px-4 py-3 lg:px-6 flex items-center justify-between">
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem><BreadcrumbLink as-child><NuxtLink to="/dashboard">Dashboard</NuxtLink></BreadcrumbLink></BreadcrumbItem>
+          <BreadcrumbItem>
+            <BreadcrumbLink as-child>
+              <NuxtLink to="/dashboard">Dashboard</NuxtLink>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbPage>Messages</BreadcrumbPage>
         </BreadcrumbList>
       </Breadcrumb>
       <div class="flex items-center gap-2">
-        <div class="hidden sm:block"><CommandPalette /></div>
-        <Button size="sm" class="gap-1.5" @click="composeOpen = true">
+        <div class="hidden sm:block">
+          <CommandPalette />
+        </div>
+        <Button
+          size="sm"
+          class="gap-1.5"
+          @click="composeOpen = true"
+        >
           <Plus class="size-3.5" />
           Compose
         </Button>
@@ -135,17 +147,35 @@ function sendReply() {
             @click="activeFolder = folder.id"
           >
             <span class="flex items-center gap-2">
-              <component :is="folder.icon" class="size-4" />
+              <component
+                :is="folder.icon"
+                class="size-4"
+              />
               {{ folder.label }}
             </span>
-            <Badge v-if="folder.count > 0" variant="secondary" class="h-5 px-1.5 text-[10px]">{{ folder.count }}</Badge>
+            <Badge
+              v-if="folder.count > 0"
+              variant="secondary"
+              class="h-5 px-1.5 text-[10px]"
+            >
+              {{ folder.count }}
+            </Badge>
           </button>
         </div>
         <Separator />
         <div class="p-3">
-          <p class="text-xs font-medium text-muted-foreground mb-2">Labels</p>
+          <p class="text-xs font-medium text-muted-foreground mb-2">
+            Labels
+          </p>
           <div class="flex flex-wrap gap-1.5">
-            <Badge v-for="tag in ['work', 'code-review', 'bugfix', 'sales', 'system']" :key="tag" variant="outline" class="text-[10px] cursor-pointer hover:bg-accent">{{ tag }}</Badge>
+            <Badge
+              v-for="tag in ['work', 'code-review', 'bugfix', 'sales', 'system']"
+              :key="tag"
+              variant="outline"
+              class="text-[10px] cursor-pointer hover:bg-accent"
+            >
+              {{ tag }}
+            </Badge>
           </div>
         </div>
       </div>
@@ -155,7 +185,11 @@ function sendReply() {
         <div class="border-b p-2">
           <div class="relative">
             <Search class="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input v-model="searchQuery" placeholder="Search messages..." class="pl-8 h-8 text-sm" />
+            <Input
+              v-model="searchQuery"
+              placeholder="Search messages..."
+              class="pl-8 h-8 text-sm"
+            />
           </div>
         </div>
         <OverlayScroll class="flex-1">
@@ -170,18 +204,36 @@ function sendReply() {
             @click="selectedId = msg.id"
           >
             <Avatar class="size-9 shrink-0">
-              <AvatarFallback :class="['text-[10px] font-semibold', msg.color]">{{ msg.initials }}</AvatarFallback>
+              <AvatarFallback :class="['text-[10px] font-semibold', msg.color]">
+                {{ msg.initials }}
+              </AvatarFallback>
             </Avatar>
             <div class="min-w-0 flex-1 space-y-0.5">
               <div class="flex items-center justify-between gap-2">
-                <p :class="['truncate text-xs', !msg.read ? 'font-semibold' : 'font-medium']">{{ msg.sender }}</p>
+                <p :class="['truncate text-xs', !msg.read ? 'font-semibold' : 'font-medium']">
+                  {{ msg.sender }}
+                </p>
                 <span class="text-muted-foreground shrink-0 text-[10px]">{{ msg.time }}</span>
               </div>
-              <p :class="['truncate text-xs', !msg.read ? 'font-medium' : 'text-muted-foreground']">{{ msg.subject }}</p>
-              <p class="text-muted-foreground line-clamp-1 text-[11px]">{{ msg.preview }}</p>
+              <p :class="['truncate text-xs', !msg.read ? 'font-medium' : 'text-muted-foreground']">
+                {{ msg.subject }}
+              </p>
+              <p class="text-muted-foreground line-clamp-1 text-[11px]">
+                {{ msg.preview }}
+              </p>
               <div class="flex items-center gap-1 pt-0.5">
-                <Star v-if="msg.starred" class="size-3 text-amber-500 fill-amber-500" />
-                <Badge v-for="tag in msg.tags.slice(0, 2)" :key="tag" :variant="tagVariant(tag)" class="text-[9px] h-4 px-1">{{ tag }}</Badge>
+                <Star
+                  v-if="msg.starred"
+                  class="size-3 text-amber-500 fill-amber-500"
+                />
+                <Badge
+                  v-for="tag in msg.tags.slice(0, 2)"
+                  :key="tag"
+                  :variant="tagVariant(tag)"
+                  class="text-[9px] h-4 px-1"
+                >
+                  {{ tag }}
+                </Badge>
               </div>
             </div>
           </div>
@@ -194,18 +246,30 @@ function sendReply() {
           <div class="border-b px-6 py-4 flex items-start justify-between gap-4">
             <div class="flex items-center gap-3">
               <Avatar class="size-10">
-                <AvatarFallback :class="['text-sm font-semibold', selectedMessage.color]">{{ selectedMessage.initials }}</AvatarFallback>
+                <AvatarFallback :class="['text-sm font-semibold', selectedMessage.color]">
+                  {{ selectedMessage.initials }}
+                </AvatarFallback>
               </Avatar>
               <div>
-                <p class="text-sm font-medium">{{ selectedMessage.sender }}</p>
-                <p class="text-muted-foreground text-xs">{{ selectedMessage.email }} · {{ selectedMessage.time }}</p>
+                <p class="text-sm font-medium">
+                  {{ selectedMessage.sender }}
+                </p>
+                <p class="text-muted-foreground text-xs">
+                  {{ selectedMessage.email }} · {{ selectedMessage.time }}
+                </p>
               </div>
             </div>
             <div class="flex items-center gap-1">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger as-child>
-                    <Button variant="ghost" size="icon" class="size-8"><Star :class="['size-4', selectedMessage.starred ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground']" /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="size-8"
+                    >
+                      <Star :class="['size-4', selectedMessage.starred ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground']" />
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent><p>{{ selectedMessage.starred ? 'Unstar' : 'Star' }}</p></TooltipContent>
                 </Tooltip>
@@ -213,16 +277,31 @@ function sendReply() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger as-child>
-                    <Button variant="ghost" size="icon" class="size-8"><Archive class="size-4 text-muted-foreground" /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="size-8"
+                    >
+                      <Archive class="size-4 text-muted-foreground" />
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent><p>Archive</p></TooltipContent>
                 </Tooltip>
               </TooltipProvider>
               <Popover>
                 <PopoverTrigger as-child>
-                  <Button variant="ghost" size="icon" class="size-8"><MoreHorizontal class="size-4 text-muted-foreground" /></Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    class="size-8"
+                  >
+                    <MoreHorizontal class="size-4 text-muted-foreground" />
+                  </Button>
                 </PopoverTrigger>
-                <PopoverContent align="end" class="w-40 p-1">
+                <PopoverContent
+                  align="end"
+                  class="w-40 p-1"
+                >
                   <button class="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs hover:bg-accent">
                     <CheckCheck class="size-3" />Mark as read
                   </button>
@@ -235,25 +314,44 @@ function sendReply() {
           </div>
 
           <div class="flex-1 overflow-auto px-6 py-6">
-            <h2 class="text-lg font-semibold mb-2">{{ selectedMessage.subject }}</h2>
+            <h2 class="text-lg font-semibold mb-2">
+              {{ selectedMessage.subject }}
+            </h2>
             <div class="flex flex-wrap gap-1.5 mb-6">
-              <Badge v-for="tag in selectedMessage.tags" :key="tag" :variant="tagVariant(tag)" class="text-[10px]">{{ tag }}</Badge>
+              <Badge
+                v-for="tag in selectedMessage.tags"
+                :key="tag"
+                :variant="tagVariant(tag)"
+                class="text-[10px]"
+              >
+                {{ tag }}
+              </Badge>
             </div>
             <div class="prose prose-sm dark:prose-invert max-w-none">
-              <p class="text-sm leading-relaxed whitespace-pre-line">{{ selectedMessage.body }}</p>
+              <p class="text-sm leading-relaxed whitespace-pre-line">
+                {{ selectedMessage.body }}
+              </p>
             </div>
           </div>
 
           <div class="border-t px-6 py-4">
             <div class="flex items-end gap-2">
               <div class="flex-1">
-                <Input v-model="replyBody" placeholder="Reply..." class="min-h-[80px] resize-y" />
+                <Input
+                  v-model="replyBody"
+                  placeholder="Reply..."
+                  class="min-h-[80px] resize-y"
+                />
               </div>
               <div class="flex flex-col gap-1">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger as-child>
-                      <Button size="icon" class="size-9" @click="sendReply">
+                      <Button
+                        size="icon"
+                        class="size-9"
+                        @click="sendReply"
+                      >
                         <Send class="size-4" />
                       </Button>
                     </TooltipTrigger>
@@ -264,8 +362,13 @@ function sendReply() {
             </div>
           </div>
         </template>
-        <div v-else class="flex flex-1 items-center justify-center text-muted-foreground">
-          <p class="text-sm">Select a message to read</p>
+        <div
+          v-else
+          class="flex flex-1 items-center justify-center text-muted-foreground"
+        >
+          <p class="text-sm">
+            Select a message to read
+          </p>
         </div>
       </div>
     </div>
@@ -280,11 +383,21 @@ function sendReply() {
         <div class="space-y-3 py-2">
           <Input placeholder="To" />
           <Input placeholder="Subject" />
-          <textarea class="w-full min-h-[120px] rounded-md border bg-background px-3 py-2 text-sm resize-y" placeholder="Write your message..."></textarea>
+          <textarea
+            class="w-full min-h-[120px] rounded-md border bg-background px-3 py-2 text-sm resize-y"
+            placeholder="Write your message..."
+          />
         </div>
         <DialogFooter>
-          <Button variant="outline" @click="composeOpen = false">Cancel</Button>
-          <Button @click="composeOpen = false">Send</Button>
+          <Button
+            variant="outline"
+            @click="composeOpen = false"
+          >
+            Cancel
+          </Button>
+          <Button @click="composeOpen = false">
+            Send
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

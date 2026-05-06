@@ -21,17 +21,29 @@ const sections = [
 <template>
   <div class="space-y-6">
     <header class="space-y-1">
-      <h1 class="text-2xl font-semibold tracking-tight">Settings</h1>
-      <p class="text-muted-foreground text-sm">Workspace configuration. Changes apply to all members.</p>
+      <h1 class="text-2xl font-semibold tracking-tight">
+        Settings
+      </h1>
+      <p class="text-muted-foreground text-sm">
+        Workspace configuration. Changes apply to all members.
+      </p>
     </header>
 
     <div class="grid gap-4 sm:grid-cols-2">
-      <NuxtLink v-for="s in sections" :key="s.slug" :to="`/settings/${s.slug}`" class="group block">
+      <NuxtLink
+        v-for="s in sections"
+        :key="s.slug"
+        :to="`/settings/${s.slug}`"
+        class="group block"
+      >
         <Card class="hover:border-foreground/20 h-full transition-colors">
           <CardHeader>
             <div class="flex items-start justify-between gap-3">
               <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
-                <component :is="s.icon" class="size-5" />
+                <component
+                  :is="s.icon"
+                  class="size-5"
+                />
               </div>
               <ArrowRight class="text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 size-4 transition-transform" />
             </div>
@@ -39,7 +51,10 @@ const sections = [
             <CardDescription>{{ s.description }}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Badge variant="secondary" class="text-[10px]">{{ s.meta }}</Badge>
+            <Badge
+              variant="secondary"
+              class="text-[10px]"
+            >{{ s.meta }}</Badge>
           </CardContent>
         </Card>
       </NuxtLink>

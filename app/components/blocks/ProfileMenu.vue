@@ -33,21 +33,28 @@ const emit = defineEmits<{
 
 const initials = computed(() => {
   const parts = props.user.name.trim().split(/\s+/).slice(0, 2)
-  return parts.map((p) => p[0]?.toUpperCase()).join('') || 'U'
+  return parts.map(p => p[0]?.toUpperCase()).join('') || 'U'
 })
 </script>
 
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <slot :user="user" :initials="initials">
+      <slot
+        :user="user"
+        :initials="initials"
+      >
         <button
           type="button"
           class="hover:bg-accent focus-visible:ring-ring flex size-8 items-center justify-center rounded-lg transition-colors focus-visible:ring-1 focus-visible:outline-none"
           aria-label="Open profile menu"
         >
           <Avatar class="size-7">
-            <AvatarImage v-if="user.avatar" :src="user.avatar" :alt="user.name" />
+            <AvatarImage
+              v-if="user.avatar"
+              :src="user.avatar"
+              :alt="user.name"
+            />
             <AvatarFallback class="bg-primary/10 text-primary text-[11px] font-semibold">
               {{ initials }}
             </AvatarFallback>
@@ -55,11 +62,19 @@ const initials = computed(() => {
         </button>
       </slot>
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="w-60 rounded-lg" align="end" :side-offset="8">
+    <DropdownMenuContent
+      class="w-60 rounded-lg"
+      align="end"
+      :side-offset="8"
+    >
       <DropdownMenuLabel class="p-0 font-normal">
         <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
           <Avatar class="size-9 rounded-lg">
-            <AvatarImage v-if="user.avatar" :src="user.avatar" :alt="user.name" />
+            <AvatarImage
+              v-if="user.avatar"
+              :src="user.avatar"
+              :alt="user.name"
+            />
             <AvatarFallback class="bg-primary/10 text-primary rounded-lg text-xs font-semibold">
               {{ initials }}
             </AvatarFallback>

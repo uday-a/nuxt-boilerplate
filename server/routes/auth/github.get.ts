@@ -1,6 +1,8 @@
 import { eq } from 'drizzle-orm'
 import { useDb, schema } from '~~/server/db'
 import { ROLES, type Role } from '~~/server/db/schema'
+import { env } from '~~/server/utils/env'
+import { logger } from '~~/server/utils/logger'
 
 // nuxt-auth-utils GitHub OAuth handler. The module exposes
 // `defineOAuthGitHubEventHandler` which performs the full code-exchange
@@ -20,7 +22,7 @@ export default defineOAuthGitHubEventHandler({
     // role on conflict — once the row exists the DB is the source of truth
     // (lets you demote without editing env, and prevents env drift across
     // environments from clobbering production roles).
-    const bootstrapAdmins = (process.env.NUXT_INITIAL_ADMIN_LOGINS ?? '')
+    const bootstrapAdmins = (env.NUXT_INITIAL_ADMIN_LOGINS ?? '')
       .split(',').map((s: string) => s.trim()).filter(Boolean)
     const initialRole: Role = bootstrapAdmins.includes(user.login) ? 'admin' : 'user'
 
@@ -61,8 +63,12 @@ export default defineOAuthGitHubEventHandler({
       if (dbRole && (ROLES as readonly string[]).includes(dbRole)) {
         role = dbRole as Role
       }
-    } catch (e) {
-      console.warn('[auth/github] DB upsert skipped:', (e as Error).message)
+    }
+    catch (e) {
+      logger.warn('auth.github.db_upsert_skipped', {
+        login: user.login,
+        error: (e as Error).message,
+      })
     }
 
     await setUserSession(event, {
@@ -76,10 +82,11 @@ export default defineOAuthGitHubEventHandler({
       },
       loggedInAt: Date.now(),
     })
+    logger.info('auth.github.signin', { login: user.login, role })
     return sendRedirect(event, '/dashboard')
   },
   onError(event, error) {
-    console.error('GitHub OAuth error:', error)
+    logger.error('auth.github.oauth_error', { error: String(error) })
     return sendRedirect(event, '/login?error=oauth')
   },
 })

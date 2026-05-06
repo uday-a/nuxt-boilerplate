@@ -13,7 +13,12 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <component :is="props.tag" data-uipkge data-slot="skeleton-group" :class="cn('space-y-2', props.class)">
+  <component
+    :is="props.tag"
+    data-uipkge
+    data-slot="skeleton-group"
+    :class="cn('space-y-2', props.class)"
+  >
     <slot />
   </component>
 </template>

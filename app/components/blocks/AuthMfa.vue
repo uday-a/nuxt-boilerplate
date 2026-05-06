@@ -72,19 +72,39 @@ function startResendCooldown() {
           <div class="bg-primary/10 text-primary mx-auto mb-2 flex size-12 items-center justify-center rounded-full">
             <ShieldCheck class="size-6" />
           </div>
-          <h1 class="text-2xl leading-none font-semibold tracking-tight">{{ title ?? t('auth.mfa.title') }}</h1>
+          <h1 class="text-2xl leading-none font-semibold tracking-tight">
+            {{ title ?? t('auth.mfa.title') }}
+          </h1>
           <CardDescription>{{ description ?? t('auth.mfa.description') }}</CardDescription>
         </CardHeader>
         <CardContent class="space-y-4">
           <div class="flex justify-center">
-            <PinInput v-model="code" otp :disabled="verifying">
+            <PinInput
+              v-model="code"
+              otp
+              :disabled="verifying"
+            >
               <PinInputGroup>
-                <PinInputSlot v-for="i in 6" :key="i" :index="i - 1" />
+                <PinInputSlot
+                  v-for="i in 6"
+                  :key="i"
+                  :index="i - 1"
+                />
               </PinInputGroup>
             </PinInput>
           </div>
-          <p v-if="verifying" class="text-muted-foreground text-center text-sm">{{ t('auth.mfa.verifying') }}</p>
-          <p v-if="error" class="text-destructive text-center text-sm">{{ error }}</p>
+          <p
+            v-if="verifying"
+            class="text-muted-foreground text-center text-sm"
+          >
+            {{ t('auth.mfa.verifying') }}
+          </p>
+          <p
+            v-if="error"
+            class="text-destructive text-center text-sm"
+          >
+            {{ error }}
+          </p>
           <div class="text-center">
             <button
               v-if="resendIn === 0"
@@ -94,13 +114,21 @@ function startResendCooldown() {
             >
               <RotateCw class="size-3" />{{ t('auth.mfa.resend') }}
             </button>
-            <p v-else class="text-muted-foreground text-xs">{{ t('auth.mfa.resendCooldown', { seconds: resendIn }) }}</p>
+            <p
+              v-else
+              class="text-muted-foreground text-xs"
+            >
+              {{ t('auth.mfa.resendCooldown', { seconds: resendIn }) }}
+            </p>
           </div>
         </CardContent>
         <CardFooter class="justify-center">
           <p class="text-muted-foreground text-xs">
             {{ t('auth.mfa.lostDevicePrefix') }}
-            <a :href="recoveryHref" class="text-foreground underline-offset-4 hover:underline">{{ t('auth.mfa.recoveryLink') }}</a>
+            <a
+              :href="recoveryHref"
+              class="text-foreground underline-offset-4 hover:underline"
+            >{{ t('auth.mfa.recoveryLink') }}</a>
           </p>
         </CardFooter>
       </template>
@@ -111,10 +139,17 @@ function startResendCooldown() {
             <ShieldCheck class="size-6" />
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-semibold">{{ t('auth.mfa.verifiedTitle') }}</h3>
-            <p class="text-muted-foreground text-sm">{{ t('auth.mfa.verifiedDescription') }}</p>
+            <h3 class="text-lg font-semibold">
+              {{ t('auth.mfa.verifiedTitle') }}
+            </h3>
+            <p class="text-muted-foreground text-sm">
+              {{ t('auth.mfa.verifiedDescription') }}
+            </p>
           </div>
-          <a :href="continueHref" @click="emit('continue')"><Button class="w-full">{{ t('auth.mfa.continue') }}</Button></a>
+          <a
+            :href="continueHref"
+            @click="emit('continue')"
+          ><Button class="w-full">{{ t('auth.mfa.continue') }}</Button></a>
         </CardContent>
       </template>
     </Card>

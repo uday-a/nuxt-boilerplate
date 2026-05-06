@@ -17,7 +17,7 @@ const delegated = reactiveOmit(props, 'class')
     :class="
       cn(
         'overflow-hidden text-sm text-muted-foreground',
-        'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
+        'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
       )
     "
   >

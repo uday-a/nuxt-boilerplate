@@ -12,7 +12,7 @@ const delegated = reactiveOmit(props, 'class')
 
 const variantRef = inject<{ value: 'default' | 'separated' | 'ghost' } | undefined>(
   Symbol.for('accordionVariant'),
-  undefined
+  undefined,
 )
 const variant = computed(() => variantRef?.value ?? 'default')
 </script>

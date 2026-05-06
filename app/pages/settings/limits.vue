@@ -40,28 +40,47 @@ const riskClass: Record<string, string> = {
 <template>
   <div class="space-y-6">
     <header class="space-y-1">
-      <h1 class="text-2xl font-semibold tracking-tight">Limits</h1>
-      <p class="text-muted-foreground text-sm">Quotas and rate limits for your workspace. Anything in red needs attention.</p>
+      <h1 class="text-2xl font-semibold tracking-tight">
+        Limits
+      </h1>
+      <p class="text-muted-foreground text-sm">
+        Quotas and rate limits for your workspace. Anything in red needs attention.
+      </p>
     </header>
 
     <Card class="border-rose-500/30 bg-rose-500/5">
       <CardContent class="flex items-start gap-3 py-4">
         <AlertTriangle class="text-rose-500 mt-0.5 size-5 shrink-0" />
         <div class="flex-1 space-y-1">
-          <p class="text-sm font-semibold">File bundles approaching limit</p>
-          <p class="text-muted-foreground text-xs">47 of 50 active bundles. Archive unused bundles or upgrade to remove the cap.</p>
+          <p class="text-sm font-semibold">
+            File bundles approaching limit
+          </p>
+          <p class="text-muted-foreground text-xs">
+            47 of 50 active bundles. Archive unused bundles or upgrade to remove the cap.
+          </p>
         </div>
-        <Button variant="outline" size="sm">Manage bundles</Button>
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          Manage bundles
+        </Button>
       </CardContent>
     </Card>
 
     <Card>
       <CardHeader>
-        <CardTitle class="text-base">Quotas</CardTitle>
+        <CardTitle class="text-base">
+          Quotas
+        </CardTitle>
         <CardDescription>Monthly quotas reset on the 1st. Workspace-total quotas don't reset.</CardDescription>
       </CardHeader>
       <CardContent class="space-y-5">
-        <div v-for="q in quotas" :key="q.name" class="space-y-2">
+        <div
+          v-for="q in quotas"
+          :key="q.name"
+          class="space-y-2"
+        >
           <div class="flex items-baseline justify-between gap-3">
             <div class="flex items-baseline gap-2">
               <span class="text-sm font-medium">{{ q.name }}</span>
@@ -70,7 +89,10 @@ const riskClass: Record<string, string> = {
             <span class="text-muted-foreground text-xs tabular-nums">{{ fmt(q.used) }} / {{ fmt(q.limit) }} <span class="font-medium text-foreground">({{ pct(q.used, q.limit) }}%)</span></span>
           </div>
           <div class="bg-muted h-2 overflow-hidden rounded-full">
-            <div :class="['h-full rounded-full transition-all', riskClass[q.risk]]" :style="{ width: pct(q.used, q.limit) + '%' }" />
+            <div
+              :class="['h-full rounded-full transition-all', riskClass[q.risk]]"
+              :style="{ width: pct(q.used, q.limit) + '%' }"
+            />
           </div>
         </div>
       </CardContent>
@@ -78,18 +100,32 @@ const riskClass: Record<string, string> = {
 
     <Card>
       <CardHeader>
-        <CardTitle class="text-base">Rate limits</CardTitle>
+        <CardTitle class="text-base">
+          Rate limits
+        </CardTitle>
         <CardDescription>Per-API-key limits. Multiple keys multiply your effective ceiling.</CardDescription>
       </CardHeader>
       <CardContent class="divide-y">
-        <div v-for="r in rateLimits" :key="r.endpoint" class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+        <div
+          v-for="r in rateLimits"
+          :key="r.endpoint"
+          class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
+        >
           <div class="space-y-0.5">
-            <p class="font-mono text-sm">{{ r.endpoint }}</p>
-            <p class="text-muted-foreground text-xs">{{ r.tier }} tier</p>
+            <p class="font-mono text-sm">
+              {{ r.endpoint }}
+            </p>
+            <p class="text-muted-foreground text-xs">
+              {{ r.tier }} tier
+            </p>
           </div>
           <div class="text-right">
-            <p class="text-sm font-medium tabular-nums">{{ r.perMinute.toLocaleString() }} <span class="text-muted-foreground font-normal">/ min</span></p>
-            <p class="text-muted-foreground text-xs tabular-nums">Burst: {{ r.burst }}</p>
+            <p class="text-sm font-medium tabular-nums">
+              {{ r.perMinute.toLocaleString() }} <span class="text-muted-foreground font-normal">/ min</span>
+            </p>
+            <p class="text-muted-foreground text-xs tabular-nums">
+              Burst: {{ r.burst }}
+            </p>
           </div>
         </div>
       </CardContent>
@@ -98,8 +134,12 @@ const riskClass: Record<string, string> = {
     <Card class="hover:bg-muted/40 cursor-pointer transition-colors">
       <CardContent class="flex items-center justify-between gap-4 py-4">
         <div>
-          <p class="text-sm font-semibold">Need higher limits?</p>
-          <p class="text-muted-foreground text-xs">Enterprise tier lifts all caps and adds dedicated capacity in your region.</p>
+          <p class="text-sm font-semibold">
+            Need higher limits?
+          </p>
+          <p class="text-muted-foreground text-xs">
+            Enterprise tier lifts all caps and adds dedicated capacity in your region.
+          </p>
         </div>
         <ChevronRight class="text-muted-foreground size-4" />
       </CardContent>

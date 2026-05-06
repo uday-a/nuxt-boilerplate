@@ -12,7 +12,11 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div data-uipkge data-slot="card" :class="cn(cardVariants({ variant }), 'overflow-hidden', props.class)">
+  <div
+    data-uipkge
+    data-slot="card"
+    :class="cn(cardVariants({ variant }), 'overflow-hidden', props.class)"
+  >
     <slot />
   </div>
 </template>

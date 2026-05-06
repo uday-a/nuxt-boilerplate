@@ -25,11 +25,11 @@ import {
 } from '.'
 
 const props = withDefaults(
-  defineProps<CalendarRootProps & { class?: HTMLAttributes['class']; layout?: LayoutTypes; yearRange?: DateValue[] }>(),
+  defineProps<CalendarRootProps & { class?: HTMLAttributes['class'], layout?: LayoutTypes, yearRange?: DateValue[] }>(),
   {
     modelValue: undefined,
     layout: undefined,
-  }
+  },
 )
 const emits = defineEmits<CalendarRootEmits>()
 
@@ -148,7 +148,12 @@ function setYear(e: Event) {
         </CalendarNextButton>
       </nav>
 
-      <slot name="calendar-heading" :date="date" :month="ReuseMonthTemplate" :year="ReuseYearTemplate">
+      <slot
+        name="calendar-heading"
+        :date="date"
+        :month="ReuseMonthTemplate"
+        :year="ReuseYearTemplate"
+      >
         <template v-if="layout === 'month-and-year'">
           <div class="flex items-center justify-center gap-1">
             <ReuseMonthTemplate :date="date" />
@@ -174,19 +179,40 @@ function setYear(e: Event) {
     </CalendarHeader>
 
     <div class="mt-4 flex flex-col gap-y-4 sm:flex-row sm:gap-x-4 sm:gap-y-0">
-      <CalendarGrid v-for="month in grid" :key="month.value.toString()">
+      <CalendarGrid
+        v-for="month in grid"
+        :key="month.value.toString()"
+      >
         <CalendarGridHead>
           <CalendarGridRow>
-            <CalendarHeadCell v-for="day in weekDays" :key="day">
+            <CalendarHeadCell
+              v-for="day in weekDays"
+              :key="day"
+            >
               {{ day }}
             </CalendarHeadCell>
           </CalendarGridRow>
         </CalendarGridHead>
         <CalendarGridBody>
-          <CalendarGridRow v-for="(weekDates, index) in month.rows" :key="`weekDate-${index}`" class="mt-2 w-full">
-            <CalendarCell v-for="weekDate in weekDates" :key="weekDate.toString()" :date="weekDate">
-              <CalendarCellTrigger :day="weekDate" :month="month.value">
-                <slot name="cell" :day="weekDate" :month="month.value">
+          <CalendarGridRow
+            v-for="(weekDates, index) in month.rows"
+            :key="`weekDate-${index}`"
+            class="mt-2 w-full"
+          >
+            <CalendarCell
+              v-for="weekDate in weekDates"
+              :key="weekDate.toString()"
+              :date="weekDate"
+            >
+              <CalendarCellTrigger
+                :day="weekDate"
+                :month="month.value"
+              >
+                <slot
+                  name="cell"
+                  :day="weekDate"
+                  :month="month.value"
+                >
                   {{ weekDate.day }}
                 </slot>
               </CalendarCellTrigger>

@@ -27,23 +27,32 @@ const pending = [
   { email: 'tom.bauer@acme.com', role: 'Admin', invitedBy: 'Marcus Rivera', expires: 'in 6 days' },
 ]
 
-const initials = (n: string) => n.split(' ').map((p) => p[0]).join('').toUpperCase()
+const initials = (n: string) => n.split(' ').map(p => p[0]).join('').toUpperCase()
 </script>
 
 <template>
   <div class="space-y-6">
     <header class="flex items-end justify-between gap-4">
       <div class="space-y-1">
-        <h1 class="text-2xl font-semibold tracking-tight">Team</h1>
-        <p class="text-muted-foreground text-sm">{{ members.length }} members · {{ pending.length }} pending invites · 1 owner</p>
+        <h1 class="text-2xl font-semibold tracking-tight">
+          Team
+        </h1>
+        <p class="text-muted-foreground text-sm">
+          {{ members.length }} members · {{ pending.length }} pending invites · 1 owner
+        </p>
       </div>
-      <Button class="gap-2"><UserPlus class="size-4" /> Invite member</Button>
+      <Button class="gap-2">
+        <UserPlus class="size-4" /> Invite member
+      </Button>
     </header>
 
     <div class="flex items-center gap-2">
       <div class="relative flex-1 max-w-sm">
         <Search class="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2" />
-        <Input placeholder="Search by name or email…" class="pl-8 h-9" />
+        <Input
+          placeholder="Search by name or email…"
+          class="pl-8 h-9"
+        />
       </div>
     </div>
 
@@ -55,35 +64,65 @@ const initials = (n: string) => n.split(' ').map((p) => p[0]).join('').toUpperCa
             <TableHead>Role</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Last active</TableHead>
-            <TableHead class="w-[40px]"></TableHead>
+            <TableHead class="w-[40px]" />
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="m in members" :key="m.id">
+          <TableRow
+            v-for="m in members"
+            :key="m.id"
+          >
             <TableCell>
               <div class="flex items-center gap-3">
-                <Avatar class="size-8"><AvatarFallback :class="['text-[10px] font-semibold', m.color]">{{ initials(m.name) }}</AvatarFallback></Avatar>
+                <Avatar class="size-8">
+                  <AvatarFallback :class="['text-[10px] font-semibold', m.color]">
+                    {{ initials(m.name) }}
+                  </AvatarFallback>
+                </Avatar>
                 <div>
-                  <p class="text-sm font-medium">{{ m.name }}</p>
-                  <p class="text-muted-foreground text-xs">{{ m.email }}</p>
+                  <p class="text-sm font-medium">
+                    {{ m.name }}
+                  </p>
+                  <p class="text-muted-foreground text-xs">
+                    {{ m.email }}
+                  </p>
                 </div>
               </div>
             </TableCell>
-            <TableCell><Badge variant="outline" class="text-[10px]">{{ m.role }}</Badge></TableCell>
+            <TableCell>
+              <Badge
+                variant="outline"
+                class="text-[10px]"
+              >
+                {{ m.role }}
+              </Badge>
+            </TableCell>
             <TableCell>
               <span class="flex items-center gap-1.5 text-xs">
                 <span class="bg-emerald-500 size-1.5 rounded-full" />
                 {{ m.status }}
               </span>
             </TableCell>
-            <TableCell class="text-muted-foreground text-xs">{{ m.lastActive }}</TableCell>
+            <TableCell class="text-muted-foreground text-xs">
+              {{ m.lastActive }}
+            </TableCell>
             <TableCell>
               <DropdownMenu>
-                <DropdownMenuTrigger as-child><Button variant="ghost" size="icon" class="size-7"><MoreHorizontal class="size-3.5" /></Button></DropdownMenuTrigger>
+                <DropdownMenuTrigger as-child>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    class="size-7"
+                  >
+                    <MoreHorizontal class="size-3.5" />
+                  </Button>
+                </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem>Change role…</DropdownMenuItem>
                   <DropdownMenuItem>View activity</DropdownMenuItem>
-                  <DropdownMenuItem class="text-destructive">Remove from workspace</DropdownMenuItem>
+                  <DropdownMenuItem class="text-destructive">
+                    Remove from workspace
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
@@ -94,18 +133,39 @@ const initials = (n: string) => n.split(' ').map((p) => p[0]).join('').toUpperCa
 
     <Card>
       <CardHeader>
-        <CardTitle class="text-base flex items-center gap-2"><Mail class="size-4" /> Pending invites</CardTitle>
+        <CardTitle class="text-base flex items-center gap-2">
+          <Mail class="size-4" /> Pending invites
+        </CardTitle>
         <CardDescription>Resend or revoke invitations that haven't been accepted yet.</CardDescription>
       </CardHeader>
       <CardContent class="divide-y">
-        <div v-for="p in pending" :key="p.email" class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+        <div
+          v-for="p in pending"
+          :key="p.email"
+          class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
+        >
           <div class="space-y-0.5">
-            <p class="text-sm font-medium">{{ p.email }}</p>
-            <p class="text-muted-foreground text-xs">Invited as {{ p.role }} by {{ p.invitedBy }} · expires {{ p.expires }}</p>
+            <p class="text-sm font-medium">
+              {{ p.email }}
+            </p>
+            <p class="text-muted-foreground text-xs">
+              Invited as {{ p.role }} by {{ p.invitedBy }} · expires {{ p.expires }}
+            </p>
           </div>
           <div class="flex items-center gap-2">
-            <Button variant="outline" size="sm">Resend</Button>
-            <Button variant="ghost" size="sm" class="text-destructive">Revoke</Button>
+            <Button
+              variant="outline"
+              size="sm"
+            >
+              Resend
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              class="text-destructive"
+            >
+              Revoke
+            </Button>
           </div>
         </div>
       </CardContent>

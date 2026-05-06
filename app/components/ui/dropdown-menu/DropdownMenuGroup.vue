@@ -6,7 +6,11 @@ const props = defineProps<DropdownMenuGroupProps>()
 </script>
 
 <template>
-  <DropdownMenuGroup data-uipkge data-slot="dropdown-menu-group" v-bind="props">
+  <DropdownMenuGroup
+    data-uipkge
+    data-slot="dropdown-menu-group"
+    v-bind="props"
+  >
     <slot />
   </DropdownMenuGroup>
 </template>

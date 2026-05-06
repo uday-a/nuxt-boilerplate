@@ -13,7 +13,7 @@ withDefaults(
   }>(),
   {
     compact: false,
-  }
+  },
 )
 
 const emit = defineEmits<{
@@ -31,9 +31,20 @@ function submit() {
 </script>
 
 <template>
-  <div v-if="comments.length" :class="compact ? 'space-y-3' : 'space-y-4'">
-    <div v-for="comment in comments" :key="comment.id" :class="compact ? 'flex gap-2.5' : 'flex gap-3'">
-      <UserAvatar :name="comment.author" :color="comment.authorColor" :size="compact ? 'xs' : 'sm'" />
+  <div
+    v-if="comments.length"
+    :class="compact ? 'space-y-3' : 'space-y-4'"
+  >
+    <div
+      v-for="comment in comments"
+      :key="comment.id"
+      :class="compact ? 'flex gap-2.5' : 'flex gap-3'"
+    >
+      <UserAvatar
+        :name="comment.author"
+        :color="comment.authorColor"
+        :size="compact ? 'xs' : 'sm'"
+      />
       <div class="min-w-0 flex-1">
         <div class="flex items-baseline gap-2">
           <span :class="compact ? 'text-[12px] font-semibold' : 'text-[13px] font-semibold'">
@@ -55,7 +66,10 @@ function submit() {
       </div>
     </div>
   </div>
-  <p v-else :class="compact ? 'text-muted-foreground text-[12px]' : 'text-muted-foreground text-sm'">
+  <p
+    v-else
+    :class="compact ? 'text-muted-foreground text-[12px]' : 'text-muted-foreground text-sm'"
+  >
     No comments yet.
   </p>
 

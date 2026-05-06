@@ -1,4 +1,4 @@
-import { H3Event } from 'h3'
+import type { H3Event } from 'h3'
 import { eq } from 'drizzle-orm'
 import { useDb, schema } from '~~/server/db'
 import { ROLES, type Role } from '~~/server/db/schema'
@@ -52,11 +52,13 @@ export async function requireRole(
   let role: Role
   if (lookup.state === 'found') {
     role = lookup.role
-  } else if (lookup.state === 'not-found') {
+  }
+  else if (lookup.state === 'not-found') {
     // User row was deleted while a session cookie was still valid.
     // Never trust the cookie role in this case — they shouldn't exist.
     throw apiError('SESSION_INVALID', 'Account no longer exists')
-  } else {
+  }
+  else {
     // DB unreachable — controlled fallback.
     role = session.user.role
   }
@@ -82,10 +84,10 @@ export function requirePublic(_event: H3Event) {
   // no-op
 }
 
-type RoleLookup =
-  | { state: 'found'; role: Role }
-  | { state: 'not-found' }
-  | { state: 'db-unavailable' }
+type RoleLookup
+  = | { state: 'found', role: Role }
+    | { state: 'not-found' }
+    | { state: 'db-unavailable' }
 
 async function readLiveRole(userGithubId: number | string): Promise<RoleLookup> {
   try {
@@ -103,7 +105,8 @@ async function readLiveRole(userGithubId: number | string): Promise<RoleLookup> 
     // DB has a role string that isn't in the TS Role union — treat as
     // missing rather than trusting an unknown value.
     return { state: 'not-found' }
-  } catch (e) {
+  }
+  catch (e) {
     console.warn('[guards] live role lookup failed, using session role:', (e as Error).message)
     return { state: 'db-unavailable' }
   }

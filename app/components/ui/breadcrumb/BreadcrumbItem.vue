@@ -8,7 +8,11 @@ const props = defineProps<{
 </script>
 
 <template>
-  <li data-uipkge data-slot="breadcrumb-item" :class="cn('inline-flex items-center gap-1.5', props.class)">
+  <li
+    data-uipkge
+    data-slot="breadcrumb-item"
+    :class="cn('inline-flex items-center gap-1.5', props.class)"
+  >
     <slot />
   </li>
 </template>

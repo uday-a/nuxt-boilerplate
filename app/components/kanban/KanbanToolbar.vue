@@ -44,7 +44,11 @@ defineEmits<{
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="outline" size="sm" class="h-8 gap-1.5 text-xs">
+        <Button
+          variant="outline"
+          size="sm"
+          class="h-8 gap-1.5 text-xs"
+        >
           <Filter class="size-3" />
           Priority
           <Badge
@@ -57,19 +61,31 @@ defineEmits<{
           <ChevronDown class="text-muted-foreground size-3" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" class="w-40">
+      <DropdownMenuContent
+        align="start"
+        class="w-40"
+      >
         <DropdownMenuItem
           v-for="(config, key) in priorityConfig"
           :key="key"
           class="gap-2"
           @click="$emit('update:selectedPriority', selectedPriority === key ? null : (key as string))"
         >
-          <component :is="config.icon" :class="['size-3.5', config.class]" />
+          <component
+            :is="config.icon"
+            :class="['size-3.5', config.class]"
+          />
           {{ config.label }}
-          <span v-if="selectedPriority === key" class="bg-primary ml-auto size-1.5 rounded-full" />
+          <span
+            v-if="selectedPriority === key"
+            class="bg-primary ml-auto size-1.5 rounded-full"
+          />
         </DropdownMenuItem>
         <DropdownMenuSeparator v-if="selectedPriority" />
-        <DropdownMenuItem v-if="selectedPriority" @click="$emit('update:selectedPriority', null)">
+        <DropdownMenuItem
+          v-if="selectedPriority"
+          @click="$emit('update:selectedPriority', null)"
+        >
           Clear filter
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -110,7 +126,10 @@ defineEmits<{
 
     <div class="flex items-center">
       <TooltipProvider :delay-duration="300">
-        <Tooltip v-for="(a, key) in assignees" :key="key">
+        <Tooltip
+          v-for="(a, key) in assignees"
+          :key="key"
+        >
           <TooltipTrigger as-child>
             <button
               :class="[
@@ -132,9 +151,15 @@ defineEmits<{
               </Avatar>
             </button>
           </TooltipTrigger>
-          <TooltipContent side="bottom" class="text-xs">
+          <TooltipContent
+            side="bottom"
+            class="text-xs"
+          >
             {{ a.name }}
-            <span v-if="selectedAssignee === a.name" class="text-muted-foreground ml-1">(filtered)</span>
+            <span
+              v-if="selectedAssignee === a.name"
+              class="text-muted-foreground ml-1"
+            >(filtered)</span>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

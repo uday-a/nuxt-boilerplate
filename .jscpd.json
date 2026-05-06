@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/kucherenko/jscpd/master/packages/jscpd/schemas/jscpd.json",
+  "threshold": 2.5,
+  "reporters": ["console", "html", "json"],
+  "output": ".jscpd-report",
+  "ignore": [
+    "**/.nuxt/**",
+    "**/.output/**",
+    "**/.pilot-backup/**",
+    "**/node_modules/**",
+    "app/components/ui/**",
+    "app/composables/kanbanData.ts",
+    "server/db/migrations/**"
+  ],
+  "format": ["vue", "typescript", "javascript"],
+  "minLines": 8,
+  "minTokens": 60
+}

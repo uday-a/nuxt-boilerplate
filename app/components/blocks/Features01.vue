@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
   <section class="bg-background">
     <div class="mx-auto max-w-6xl px-6 py-24">
       <div class="mb-12 max-w-2xl space-y-3">
-        <p class="text-sm font-medium uppercase tracking-widest text-primary">Features</p>
+        <p class="text-sm font-medium uppercase tracking-widest text-primary">
+          Features
+        </p>
         <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
           Everything teams need, nothing they don't.
         </h2>
@@ -21,7 +23,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
             <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Users class="size-5" />
             </div>
-            <CardTitle class="text-base">Employee directory</CardTitle>
+            <CardTitle class="text-base">
+              Employee directory
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-sm text-muted-foreground">
@@ -35,7 +39,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
             <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Wallet class="size-5" />
             </div>
-            <CardTitle class="text-base">Payroll</CardTitle>
+            <CardTitle class="text-base">
+              Payroll
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-sm text-muted-foreground">
@@ -49,7 +55,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
             <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <BarChart3 class="size-5" />
             </div>
-            <CardTitle class="text-base">Performance</CardTitle>
+            <CardTitle class="text-base">
+              Performance
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-sm text-muted-foreground">
@@ -62,7 +70,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
             <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <FileCheck2 class="size-5" />
             </div>
-            <CardTitle class="text-base">Onboarding</CardTitle>
+            <CardTitle class="text-base">
+              Onboarding
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-sm text-muted-foreground">
@@ -76,7 +86,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
             <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Calendar class="size-5" />
             </div>
-            <CardTitle class="text-base">Time off</CardTitle>
+            <CardTitle class="text-base">
+              Time off
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-sm text-muted-foreground">
@@ -89,7 +101,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
             <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <ShieldCheck class="size-5" />
             </div>
-            <CardTitle class="text-base">Compliance</CardTitle>
+            <CardTitle class="text-base">
+              Compliance
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-sm text-muted-foreground">

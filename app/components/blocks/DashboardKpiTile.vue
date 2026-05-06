@@ -28,7 +28,11 @@ defineProps<{
     <CardHeader class="pb-2">
       <CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">
         {{ label }}
-        <component :is="icon" v-if="icon" :class="['size-3', iconClass]" />
+        <component
+          :is="icon"
+          v-if="icon"
+          :class="['size-3', iconClass]"
+        />
       </CardDescription>
     </CardHeader>
     <CardContent class="pb-3">

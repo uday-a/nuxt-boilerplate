@@ -46,12 +46,12 @@ const variantClasses = {
   outline: cn(
     'border border-input bg-transparent text-foreground hover:text-foreground hover:bg-muted/50',
     'data-[state=checked]:border-primary data-[state=checked]:text-primary',
-    'disabled:hover:bg-transparent'
+    'disabled:hover:bg-transparent',
   ),
   solid: cn(
     'border border-input bg-transparent text-foreground hover:text-foreground hover:bg-muted/50',
     'data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
-    'disabled:hover:bg-transparent'
+    'disabled:hover:bg-transparent',
   ),
 }
 
@@ -62,7 +62,7 @@ const groupClasses = computed(() => {
   return cn(
     'rounded-none first:rounded-l-md last:rounded-r-md',
     'border-l-0 first:border-l',
-    '-ml-px first:ml-0'
+    '-ml-px first:ml-0',
   )
 })
 </script>
@@ -82,7 +82,7 @@ const groupClasses = computed(() => {
         sizeClasses[effectiveSize],
         variantClasses[effectiveVariant],
         groupClasses,
-        props.class
+        props.class,
       )
     "
   >

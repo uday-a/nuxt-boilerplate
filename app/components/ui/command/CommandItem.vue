@@ -21,7 +21,8 @@ const groupContext = useCommandGroup()
 const isRender = computed(() => {
   if (!filterState.search) {
     return true
-  } else {
+  }
+  else {
     const filteredCurrentItem = filterState.filtered.items.get(id)
     // If the filtered items is undefined means not in the all times map yet
     // Do the first render to add into the map
@@ -46,7 +47,8 @@ onMounted(() => {
   if (groupId) {
     if (!allGroups.value.has(groupId)) {
       allGroups.value.set(groupId, new Set([id]))
-    } else {
+    }
+    else {
       allGroups.value.get(groupId)?.add(id)
     }
   }
@@ -67,7 +69,7 @@ onUnmounted(() => {
     :class="
       cn(
         'data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground [&_svg:not([class*=\'text-\'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=\'size-\'])]:size-4',
-        props.class
+        props.class,
       )
     "
     @select="

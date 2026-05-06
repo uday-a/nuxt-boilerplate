@@ -76,7 +76,7 @@ export const tabsTriggerVariants = cva(
       size: 'default',
       orientation: 'horizontal',
     },
-  }
+  },
 )
 
 export type TabsListVariants = VariantProps<typeof tabsListVariants>

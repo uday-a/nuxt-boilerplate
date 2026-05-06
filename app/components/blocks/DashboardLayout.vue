@@ -29,7 +29,7 @@ interface Crumb {
 withDefaults(
   defineProps<{
     breadcrumbs?: Crumb[]
-    user?: { name: string; email: string; avatar?: string }
+    user?: { name: string, email: string, avatar?: string }
   }>(),
   {
     breadcrumbs: () => [{ label: 'Dashboard' }],
@@ -39,7 +39,7 @@ withDefaults(
 
 const emit = defineEmits<{
   (e: 'profile-select', key: string): void
-  (e: 'command-select', item: { label: string; hint?: string }): void
+  (e: 'command-select', item: { label: string, hint?: string }): void
 }>()
 
 const { theme, setTheme } = useTheme()
@@ -54,10 +54,16 @@ const { theme, setTheme } = useTheme()
       >
         <div class="flex items-center gap-2">
           <SidebarTrigger class="-ml-1" />
-          <Separator orientation="vertical" class="mr-2 h-4" />
+          <Separator
+            orientation="vertical"
+            class="mr-2 h-4"
+          />
           <Breadcrumb>
             <BreadcrumbList>
-              <template v-for="(crumb, i) in breadcrumbs" :key="i">
+              <template
+                v-for="(crumb, i) in breadcrumbs"
+                :key="i"
+              >
                 <BreadcrumbItem :class="i === 0 ? 'hidden md:block' : ''">
                   <BreadcrumbLink
                     v-if="crumb.href && i < breadcrumbs.length - 1"
@@ -66,9 +72,17 @@ const { theme, setTheme } = useTheme()
                   >
                     <NuxtLink :to="crumb.href">{{ crumb.label }}</NuxtLink>
                   </BreadcrumbLink>
-                  <BreadcrumbPage v-else class="font-medium">{{ crumb.label }}</BreadcrumbPage>
+                  <BreadcrumbPage
+                    v-else
+                    class="font-medium"
+                  >
+                    {{ crumb.label }}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator v-if="i < breadcrumbs.length - 1" :class="i === 0 ? 'hidden md:block' : ''" />
+                <BreadcrumbSeparator
+                  v-if="i < breadcrumbs.length - 1"
+                  :class="i === 0 ? 'hidden md:block' : ''"
+                />
               </template>
             </BreadcrumbList>
           </Breadcrumb>
@@ -76,7 +90,11 @@ const { theme, setTheme } = useTheme()
         <div class="flex items-center gap-1 px-2 sm:gap-3">
           <CommandPalette @select="(item) => emit('command-select', item)" />
           <div class="flex items-center gap-0.5">
-            <ThemeSwitch :model-value="theme" variant="icon-only" @update:model-value="setTheme" />
+            <ThemeSwitch
+              :model-value="theme"
+              variant="icon-only"
+              @update:model-value="setTheme"
+            />
             <NotificationsPopover>
               <template #default="{ unreadCount }">
                 <Button

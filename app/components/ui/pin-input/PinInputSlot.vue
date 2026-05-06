@@ -67,7 +67,7 @@ const statusClasses = computed(() => {
         'disabled:cursor-not-allowed disabled:opacity-50',
         sizeClasses,
         statusClasses,
-        props.class
+        props.class,
       )
     "
   />

@@ -29,7 +29,7 @@ const delegatedProps = reactiveOmit(
   'checkedChildren',
   'unCheckedChildren',
   'loading',
-  'color'
+  'color',
 )
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
@@ -51,11 +51,11 @@ const switchStateBindings = computed(() => {
 
 const hasChildren = computed(() =>
   Boolean(
-    props.checkedChildren ||
-    props.unCheckedChildren ||
-    slots['checked-children'] ||
-    slots['unchecked-children']
-  )
+    props.checkedChildren
+    || props.unCheckedChildren
+    || slots['checked-children']
+    || slots['unchecked-children'],
+  ),
 )
 
 const sizeClasses = computed(() => {
@@ -131,7 +131,7 @@ const trackStyle = computed(() => ({
       cn(
         'peer relative inline-flex shrink-0 items-center overflow-hidden rounded-full border border-transparent shadow-xs transition-[background-color,border-color,box-shadow] duration-150 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:border-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-[var(--switch-checked-bg)] data-[state=unchecked]:bg-input dark:data-[state=unchecked]:bg-input/80',
         sizeClasses,
-        props.class
+        props.class,
       )
     "
     :style="trackStyle"
@@ -165,7 +165,7 @@ const trackStyle = computed(() => ({
         cn(
           'bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none z-10 block rounded-full ring-0 transition-transform duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] data-[state=unchecked]:translate-x-0',
           thumbSizes[size ?? 'default'],
-          thumbTranslate[size ?? 'default']
+          thumbTranslate[size ?? 'default'],
         )
       "
     >
@@ -173,7 +173,11 @@ const trackStyle = computed(() => ({
         v-if="loading"
         :class="[thumbIconSizes[size ?? 'default'], 'animate-spin text-muted-foreground']"
       />
-      <slot v-else name="thumb" v-bind="{ checked }" />
+      <slot
+        v-else
+        name="thumb"
+        v-bind="{ checked }"
+      />
     </SwitchThumb>
   </SwitchRoot>
 </template>

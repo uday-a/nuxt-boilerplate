@@ -8,7 +8,11 @@ const forwardedProps = useForwardProps(props)
 </script>
 
 <template>
-  <Primitive data-uipkge data-slot="pin-input-separator" v-bind="forwardedProps">
+  <Primitive
+    data-uipkge
+    data-slot="pin-input-separator"
+    v-bind="forwardedProps"
+  >
     <slot>
       <Minus />
     </slot>

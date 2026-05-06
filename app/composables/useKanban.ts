@@ -20,8 +20,8 @@ export interface KanbanTask {
   title: string
   description?: string
   priority: 'low' | 'medium' | 'high' | 'urgent'
-  assignee: { name: string; color: string }
-  tags: { label: string; color: string }[]
+  assignee: { name: string, color: string }
+  tags: { label: string, color: string }[]
   dueDate?: string
   parentId?: string
   subtaskIds: string[]
@@ -37,7 +37,7 @@ export interface KanbanColumn {
   tasks: KanbanTask[]
 }
 
-export const priorityConfig: Record<string, { icon: any; class: string; label: string; bg: string }> = {
+export const priorityConfig: Record<string, { icon: any, class: string, label: string, bg: string }> = {
   urgent: { icon: CircleAlert, class: 'text-red-500', label: 'Urgent', bg: 'bg-red-500' },
   high: { icon: ArrowUp, class: 'text-orange-500', label: 'High', bg: 'bg-orange-500' },
   medium: { icon: Minus, class: 'text-yellow-500 dark:text-yellow-400', label: 'Medium', bg: 'bg-yellow-500' },
@@ -76,7 +76,7 @@ export const fileIconMap: Record<string, any> = {
 export function getInitials(name: string) {
   return name
     .split(' ')
-    .map((n) => n[0])
+    .map(n => n[0])
     .join('')
     .toUpperCase()
 }
@@ -105,12 +105,12 @@ export function getAssigneeKey(name: string): keyof typeof assignees {
 
 export function findTaskById(columns: KanbanColumn[], taskId: string): KanbanTask | undefined {
   for (const col of columns) {
-    const task = col.tasks.find((t) => t.id === taskId)
+    const task = col.tasks.find(t => t.id === taskId)
     if (task) return task
   }
   return undefined
 }
 
 export function getTaskColumn(columns: KanbanColumn[], taskId: string): KanbanColumn | undefined {
-  return columns.find((col) => col.tasks.some((t) => t.id === taskId))
+  return columns.find(col => col.tasks.some(t => t.id === taskId))
 }

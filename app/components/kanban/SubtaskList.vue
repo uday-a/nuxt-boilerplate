@@ -22,16 +22,22 @@ const subtasks = computed(() => {
   }[]
 })
 
-const doneCount = computed(() => subtasks.value.filter((s) => s.column?.id === 'done').length)
+const doneCount = computed(() => subtasks.value.filter(s => s.column?.id === 'done').length)
 </script>
 
 <template>
   <div v-if="subtasks.length">
     <div class="mb-2 flex items-center justify-between">
-      <span :class="compact ? 'text-[11px]' : 'text-[13px]'" class="text-muted-foreground tabular-nums">
+      <span
+        :class="compact ? 'text-[11px]' : 'text-[13px]'"
+        class="text-muted-foreground tabular-nums"
+      >
         {{ doneCount }}/{{ subtasks.length }} done
       </span>
-      <span :class="compact ? 'text-[10px]' : 'text-[11px]'" class="text-muted-foreground tabular-nums">
+      <span
+        :class="compact ? 'text-[10px]' : 'text-[11px]'"
+        class="text-muted-foreground tabular-nums"
+      >
         {{ subtasks.length > 0 ? Math.round((doneCount / subtasks.length) * 100) : 0 }}%
       </span>
     </div>
@@ -81,7 +87,10 @@ const doneCount = computed(() => subtasks.value.filter((s) => s.column?.id === '
       </NuxtLink>
     </div>
   </div>
-  <p v-else :class="compact ? 'text-muted-foreground text-[12px]' : 'text-muted-foreground text-sm'">
+  <p
+    v-else
+    :class="compact ? 'text-muted-foreground text-[12px]' : 'text-muted-foreground text-sm'"
+  >
     No subtasks yet.
   </p>
 </template>

@@ -11,7 +11,7 @@ import { chartColors, chartTextColor, chartTooltipBg, chartTooltipBorder, chartT
 use([CanvasRenderer, EChartsFunnelChart, TooltipComponent, LegendComponent])
 
 interface Props {
-  data: { name: string; value: number }[]
+  data: { name: string, value: number }[]
   height?: number | string
   showLabels?: boolean
   showLegend?: boolean
@@ -69,6 +69,10 @@ const mergedOption = computed(() => ({
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', props.class)"
   >
-    <VChart :option="mergedOption" :autoresize="true" class="size-full" />
+    <VChart
+      :option="mergedOption"
+      :autoresize="true"
+      class="size-full"
+    />
   </div>
 </template>

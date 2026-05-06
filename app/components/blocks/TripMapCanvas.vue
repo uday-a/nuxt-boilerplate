@@ -12,7 +12,7 @@ const props = withDefaults(
   defineProps<{
     markers: Marker[]
     height?: string
-    centre?: { lat: number; lng: number }
+    centre?: { lat: number, lng: number }
     zoom?: number
   }>(),
   {
@@ -43,9 +43,9 @@ onMounted(async () => {
   // that prepend; then `mergeOptions` supplies the final URLs directly.
   // Pattern documented at https://github.com/Leaflet/Leaflet/issues/4968.
   const [iconRetina, iconUrl, shadowUrl] = await Promise.all([
-    import('leaflet/dist/images/marker-icon-2x.png?url').then((m) => m.default),
-    import('leaflet/dist/images/marker-icon.png?url').then((m) => m.default),
-    import('leaflet/dist/images/marker-shadow.png?url').then((m) => m.default),
+    import('leaflet/dist/images/marker-icon-2x.png?url').then(m => m.default),
+    import('leaflet/dist/images/marker-icon.png?url').then(m => m.default),
+    import('leaflet/dist/images/marker-shadow.png?url').then(m => m.default),
   ])
   delete (L.Icon.Default.prototype as any)._getIconUrl
   ;(L.Icon.Default as any).mergeOptions({ iconRetinaUrl: iconRetina, iconUrl, shadowUrl })
@@ -67,7 +67,7 @@ function drawMarkers(L: any) {
   if (!map) return
   if (layer) map.removeLayer(layer)
   layer = L.featureGroup(
-    props.markers.map((m) =>
+    props.markers.map(m =>
       L.marker([m.lat, m.lng]).bindPopup(
         `<strong>${escapeHtml(m.label)}</strong>${m.detail ? `<br><span style="opacity:.7">${escapeHtml(m.detail)}</span>` : ''}`,
       ),
@@ -79,7 +79,7 @@ function drawMarkers(L: any) {
 }
 
 function escapeHtml(s: string) {
-  return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string))
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c] as string))
 }
 
 watch(

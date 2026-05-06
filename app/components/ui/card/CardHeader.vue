@@ -8,7 +8,11 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div data-uipkge data-slot="card-header" :class="cn('flex flex-col space-y-1.5 p-6', props.class)">
+  <div
+    data-uipkge
+    data-slot="card-header"
+    :class="cn('flex flex-col space-y-1.5 p-6', props.class)"
+  >
     <slot />
   </div>
 </template>

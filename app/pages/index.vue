@@ -16,15 +16,33 @@ useHead({
   <div class="bg-background text-foreground min-h-screen">
     <Header01 />
     <main class="[&>section]:scroll-mt-20">
-      <section id="top"><Hero01 /></section>
-      <section id="logos"><Logos01 /></section>
-      <section id="features"><Features01 /></section>
-      <section id="bento"><Bento01 /></section>
-      <section id="pricing"><Pricing01 /></section>
-      <section id="customers"><Testimonials01 /></section>
-      <section id="faq"><Faq01 /></section>
-      <section id="contact"><Contact01 /></section>
-      <section id="cta"><Cta01 /></section>
+      <section id="top">
+        <Hero01 />
+      </section>
+      <section id="logos">
+        <Logos01 />
+      </section>
+      <section id="features">
+        <Features01 />
+      </section>
+      <section id="bento">
+        <Bento01 />
+      </section>
+      <section id="pricing">
+        <Pricing01 />
+      </section>
+      <section id="customers">
+        <Testimonials01 />
+      </section>
+      <section id="faq">
+        <Faq01 />
+      </section>
+      <section id="contact">
+        <Contact01 />
+      </section>
+      <section id="cta">
+        <Cta01 />
+      </section>
     </main>
     <Footer01 />
   </div>

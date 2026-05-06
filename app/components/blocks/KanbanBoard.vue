@@ -36,7 +36,7 @@ const emits = defineEmits<{
 
 const columnsRef = computed({
   get: () => props.columns,
-  set: (v) => emits('update:columns', v),
+  set: v => emits('update:columns', v),
 })
 
 const kanbanEl = ref<HTMLElement | null>(null)
@@ -63,7 +63,7 @@ const selectedAssignee = ref<string | null>(null)
 const viewMode = ref<'board' | 'list'>('board')
 
 const filteredColumns = computed(() => {
-  return columnsRef.value.map((col) => ({
+  return columnsRef.value.map(col => ({
     ...col,
     tasks: col.tasks.filter((task) => {
       const q = searchQuery.value.toLowerCase()
@@ -97,10 +97,10 @@ function addComment(task: KanbanTask, text: string) {
 }
 
 function moveTask(task: KanbanTask, targetColumnId: string) {
-  const sourceCol = columnsRef.value.find((c) => c.tasks.some((t) => t.id === task.id))
-  const targetCol = columnsRef.value.find((c) => c.id === targetColumnId)
+  const sourceCol = columnsRef.value.find(c => c.tasks.some(t => t.id === task.id))
+  const targetCol = columnsRef.value.find(c => c.id === targetColumnId)
   if (!sourceCol || !targetCol || sourceCol.id === targetColumnId) return
-  const taskIndex = sourceCol.tasks.findIndex((t) => t.id === task.id)
+  const taskIndex = sourceCol.tasks.findIndex(t => t.id === task.id)
   if (taskIndex === -1) return
   const removed = sourceCol.tasks.splice(taskIndex, 1)
   if (removed[0]) targetCol.tasks.push(removed[0])
@@ -145,14 +145,14 @@ function onDrop() {
   for (let c = 0; c < columnsRef.value.length; c++) {
     const col = columnsRef.value[c]
     if (!col) continue
-    const tIdx = col.tasks.findIndex((t) => t.id === draggedTask.value)
+    const tIdx = col.tasks.findIndex(t => t.id === draggedTask.value)
     if (tIdx !== -1) {
       sourceColIdx = c
       taskIdx = tIdx
       break
     }
   }
-  const targetColIdx = columnsRef.value.findIndex((c) => c.id === dragOverColumn.value)
+  const targetColIdx = columnsRef.value.findIndex(c => c.id === dragOverColumn.value)
   if (sourceColIdx === -1 || targetColIdx === -1) {
     resetDrag()
     return
@@ -205,7 +205,7 @@ function openAddTask(columnId: string) {
 }
 
 function onCreateTask(columnId: string, tasks: KanbanTask[]) {
-  const col = columnsRef.value.find((c) => c.id === columnId)
+  const col = columnsRef.value.find(c => c.id === columnId)
   if (col) col.tasks.push(...tasks)
 }
 </script>
@@ -216,13 +216,27 @@ function onCreateTask(columnId: string, tasks: KanbanTask[]) {
     data-slot="kanban-board"
     class="kanban-page flex h-[calc(100dvh-3.5rem-3rem)] flex-col overflow-hidden lg:h-[calc(100dvh-3.5rem-3rem)]"
   >
-    <div v-if="!hideHeader" class="mb-3 shrink-0">
+    <div
+      v-if="!hideHeader"
+      class="mb-3 shrink-0"
+    >
       <PageHeader>
         <div class="flex items-start justify-between gap-4">
-          <PageHeaderHeading :title="title ?? ''" :description="description ?? ''" />
+          <PageHeaderHeading
+            :title="title ?? ''"
+            :description="description ?? ''"
+          />
           <div class="flex shrink-0 items-center gap-2">
-            <Badge variant="secondary" class="font-mono text-xs tabular-nums">{{ totalTasks }} tasks</Badge>
-            <Button size="sm" @click="openAddTask(defaultColumnId)">
+            <Badge
+              variant="secondary"
+              class="font-mono text-xs tabular-nums"
+            >
+              {{ totalTasks }} tasks
+            </Badge>
+            <Button
+              size="sm"
+              @click="openAddTask(defaultColumnId)"
+            >
               <Plus class="size-4" />
               Add Task
             </Button>

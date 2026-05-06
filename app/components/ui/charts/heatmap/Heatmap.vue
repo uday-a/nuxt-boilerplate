@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const mergedOption = computed(() => {
-  const values = props.data.map((d) => d[2])
+  const values = props.data.map(d => d[2])
   const computedMin = props.min ?? Math.min(...values)
   const computedMax = props.max ?? Math.max(...values)
 
@@ -88,6 +88,10 @@ const mergedOption = computed(() => {
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', props.class)"
   >
-    <VChart :option="mergedOption" :autoresize="true" class="size-full" />
+    <VChart
+      :option="mergedOption"
+      :autoresize="true"
+      class="size-full"
+    />
   </div>
 </template>

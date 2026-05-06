@@ -18,12 +18,12 @@ const props = withDefaults(
   }>(),
   {
     disabled: false,
-  }
+  },
 )
 
 const tabsOrientation = inject<{ value: 'horizontal' | 'vertical' } | 'horizontal' | 'vertical'>(
   Symbol.for('tabsOrientation'),
-  'horizontal'
+  'horizontal',
 )
 const effectiveOrientation = computed(() => {
   if (props.orientation) return props.orientation
@@ -36,7 +36,8 @@ const effectiveOrientation = computed(() => {
     v-slot="slotProps"
     :value="props.value"
     :disabled="props.disabled"
-    data-uipkge data-slot="tabs-trigger"
+    data-uipkge
+    data-slot="tabs-trigger"
     :class="
       cn(
         tabsTriggerVariants({
@@ -44,7 +45,7 @@ const effectiveOrientation = computed(() => {
           variant: props.variant,
           orientation: effectiveOrientation,
         }),
-        props.class
+        props.class,
       )
     "
   >

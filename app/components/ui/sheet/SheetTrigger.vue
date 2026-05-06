@@ -6,7 +6,11 @@ const props = defineProps<DialogTriggerProps>()
 </script>
 
 <template>
-  <DialogTrigger data-uipkge data-slot="sheet-trigger" v-bind="props">
+  <DialogTrigger
+    data-uipkge
+    data-slot="sheet-trigger"
+    v-bind="props"
+  >
     <slot />
   </DialogTrigger>
 </template>

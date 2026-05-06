@@ -26,6 +26,9 @@ logs
 # Playwright MCP screenshots (local debug artifacts)
 .playwright-mcp/
 
+# jscpd duplicate-detection report (local audit artifact)
+.jscpd-report/
+
 # Vercel
 .vercel/
 

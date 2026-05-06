@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { LucideIcon } from "lucide-vue-next"
-import { ChevronRight } from "lucide-vue-next"
+import type { LucideIcon } from 'lucide-vue-next'
+import { ChevronRight } from 'lucide-vue-next'
 import {
   Collapsible,
   CollapsibleContent,
@@ -38,9 +38,17 @@ const { t } = useI18n()
   <SidebarGroup>
     <SidebarGroupLabel>{{ t('nav.groups.platform') }}</SidebarGroupLabel>
     <SidebarMenu>
-      <Collapsible v-for="item in items" :key="item.title" as-child :default-open="item.isActive">
+      <Collapsible
+        v-for="item in items"
+        :key="item.title"
+        as-child
+        :default-open="item.isActive"
+      >
         <SidebarMenuItem>
-          <SidebarMenuButton as-child :tooltip="item.title">
+          <SidebarMenuButton
+            as-child
+            :tooltip="item.title"
+          >
             <NuxtLink :to="item.url">
               <component :is="item.icon" />
               <span>{{ item.title }}</span>
@@ -55,7 +63,10 @@ const { t } = useI18n()
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
+                <SidebarMenuSubItem
+                  v-for="subItem in item.items"
+                  :key="subItem.title"
+                >
                   <SidebarMenuSubButton as-child>
                     <NuxtLink :to="subItem.url">
                       <span>{{ subItem.title }}</span>

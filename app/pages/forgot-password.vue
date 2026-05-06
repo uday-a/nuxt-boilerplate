@@ -12,5 +12,9 @@ function onReset(_password: string) {
 </script>
 
 <template>
-  <AuthPasswordReset sign-in-href="/login" @request="onRequest" @reset="onReset" />
+  <AuthPasswordReset
+    sign-in-href="/login"
+    @request="onRequest"
+    @reset="onReset"
+  />
 </template>

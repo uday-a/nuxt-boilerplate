@@ -15,8 +15,15 @@ const props = defineProps<{
     <CardHeader class="pb-4">
       <div class="flex items-center justify-between">
         <div>
-          <CardTitle class="text-base font-semibold">{{ title }}</CardTitle>
-          <CardDescription v-if="description" class="mt-0.5">{{ description }}</CardDescription>
+          <CardTitle class="text-base font-semibold">
+            {{ title }}
+          </CardTitle>
+          <CardDescription
+            v-if="description"
+            class="mt-0.5"
+          >
+            {{ description }}
+          </CardDescription>
         </div>
         <slot name="header-action" />
       </div>

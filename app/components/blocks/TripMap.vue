@@ -12,7 +12,7 @@ withDefaults(
   defineProps<{
     markers: Marker[]
     height?: string
-    centre?: { lat: number; lng: number }
+    centre?: { lat: number, lng: number }
     zoom?: number
   }>(),
   {
@@ -25,7 +25,12 @@ withDefaults(
 
 <template>
   <ClientOnly>
-    <TripMapCanvas :markers="markers" :height="height" :centre="centre" :zoom="zoom" />
+    <TripMapCanvas
+      :markers="markers"
+      :height="height"
+      :centre="centre"
+      :zoom="zoom"
+    />
     <template #fallback>
       <div
         class="bg-muted/40 text-muted-foreground flex w-full items-center justify-center rounded-lg border text-xs"

@@ -57,7 +57,7 @@ const props = withDefaults(
     included: true,
     size: 'default',
     tooltip: true,
-  }
+  },
 )
 
 const emits = defineEmits<{
@@ -79,11 +79,12 @@ watch(
     if (props.range) {
       const arr = Array.isArray(v) ? v : [v, props.max]
       innerValue.value = [arr[0] ?? props.min, arr[1] ?? props.max]
-    } else {
+    }
+    else {
       innerValue.value = Array.isArray(v) ? v : [v]
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function handleUpdate(val: number[] | undefined) {
@@ -91,10 +92,12 @@ function handleUpdate(val: number[] | undefined) {
   innerValue.value = val
   if (props.range) {
     emits('update:modelValue', [val[0], val[1]] as [number, number])
-  } else if (Array.isArray(props.modelValue)) {
+  }
+  else if (Array.isArray(props.modelValue)) {
     // backward-compat: consumer passed an array, emit an array
     emits('update:modelValue', val)
-  } else {
+  }
+  else {
     emits('update:modelValue', val[0] ?? props.min)
   }
 }
@@ -103,9 +106,11 @@ function handleCommit(val: number[] | undefined) {
   if (!val) return
   if (props.range) {
     emits('valueCommit', [val[0], val[1]] as [number, number])
-  } else if (Array.isArray(props.modelValue)) {
+  }
+  else if (Array.isArray(props.modelValue)) {
     emits('valueCommit', val)
-  } else {
+  }
+  else {
     emits('valueCommit', val[0] ?? props.min)
   }
 }
@@ -121,11 +126,11 @@ const isHorizontal = computed(() => orientation.value === 'horizontal')
 const trackSize = computed(() =>
   props.size === 'small'
     ? isHorizontal.value ? 'h-1' : 'w-1'
-    : isHorizontal.value ? 'h-1.5' : 'w-1.5'
+    : isHorizontal.value ? 'h-1.5' : 'w-1.5',
 )
 
 const thumbSize = computed(() =>
-  props.size === 'small' ? 'size-3' : 'size-4'
+  props.size === 'small' ? 'size-3' : 'size-4',
 )
 
 /* ── marks ── */
@@ -175,7 +180,7 @@ const delegated = reactiveOmit(
   'dots',
   'reverse',
   'included',
-  'size'
+  'size',
 )
 
 const rootProps = computed(() => ({
@@ -206,7 +211,7 @@ const rootProps = computed(() => ({
             isHorizontal
               ? 'w-full items-center'
               : 'h-full min-h-44 flex-col justify-center',
-            props.class
+            props.class,
           )
         "
         v-bind="rootProps"
@@ -220,7 +225,7 @@ const rootProps = computed(() => ({
           :class="
             cn(
               'bg-muted relative grow overflow-hidden rounded-full',
-              trackSize
+              trackSize,
             )
           "
         >
@@ -231,7 +236,7 @@ const rootProps = computed(() => ({
             :class="
               cn(
                 'bg-primary absolute',
-                isHorizontal ? 'h-full' : 'w-full'
+                isHorizontal ? 'h-full' : 'w-full',
               )
             "
           />
@@ -248,19 +253,19 @@ const rootProps = computed(() => ({
                 isHorizontal
                   ? 'top-1/2 size-1.5 -translate-y-1/2'
                   : 'left-1/2 size-1.5 -translate-x-1/2',
-                props.size === 'small' && 'size-1'
+                props.size === 'small' && 'size-1',
               )
             "
             :style="
               isHorizontal
                 ? {
-                    left: `${((dot - min) / (max - min)) * 100}%`,
-                    transform: 'translateX(-50%) translateY(-50%)',
-                  }
+                  left: `${((dot - min) / (max - min)) * 100}%`,
+                  transform: 'translateX(-50%) translateY(-50%)',
+                }
                 : {
-                    bottom: `${((dot - min) / (max - min)) * 100}%`,
-                    transform: 'translateX(-50%) translateY(50%)',
-                  }
+                  bottom: `${((dot - min) / (max - min)) * 100}%`,
+                  transform: 'translateX(-50%) translateY(50%)',
+                }
             "
           />
         </template>
@@ -273,7 +278,7 @@ const rootProps = computed(() => ({
               'pointer-events-none absolute',
               isHorizontal
                 ? 'top-full mt-2.5 h-5 w-full'
-                : 'left-full top-0 ml-3 h-full w-20'
+                : 'left-full top-0 ml-3 h-full w-20',
             )
           "
         >
@@ -293,7 +298,10 @@ const rootProps = computed(() => ({
         </div>
 
         <!-- Thumbs (with tooltips) -->
-        <template v-for="(_, idx) in thumbs" :key="idx">
+        <template
+          v-for="(_, idx) in thumbs"
+          :key="idx"
+        >
           <TooltipRoot
             v-if="showTooltip"
             :delay-duration="0"
@@ -306,7 +314,7 @@ const rootProps = computed(() => ({
                 :class="
                   cn(
                     'block shrink-0 rounded-full border border-primary bg-white shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50',
-                    thumbSize
+                    thumbSize,
                   )
                 "
               />
@@ -333,7 +341,7 @@ const rootProps = computed(() => ({
             :class="
               cn(
                 'block shrink-0 rounded-full border border-primary bg-white shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50',
-                thumbSize
+                thumbSize,
               )
             "
           />

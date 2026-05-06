@@ -23,7 +23,7 @@ export const cardVariants = cva(
     defaultVariants: {
       variant: 'default',
     },
-  }
+  },
 )
 
 export type CardVariants = VariantProps<typeof cardVariants>

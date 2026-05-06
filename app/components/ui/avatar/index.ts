@@ -9,23 +9,23 @@ export { default as AvatarGroup } from './AvatarGroup.vue'
 export const avatarVariants = cva('relative flex shrink-0 overflow-hidden', {
   variants: {
     size: {
-      xs: 'size-4',
-      sm: 'size-6',
-      default: 'size-8',
-      lg: 'size-12',
-      xl: 'size-16',
+      'xs': 'size-4',
+      'sm': 'size-6',
+      'default': 'size-8',
+      'lg': 'size-12',
+      'xl': 'size-16',
       '2xl': 'size-20',
     },
     rounded: {
-      none: 'rounded-none',
-      sm: 'rounded-sm',
-      default: 'rounded-full',
-      md: 'rounded-md',
-      lg: 'rounded-lg',
-      xl: 'rounded-xl',
+      'none': 'rounded-none',
+      'sm': 'rounded-sm',
+      'default': 'rounded-full',
+      'md': 'rounded-md',
+      'lg': 'rounded-lg',
+      'xl': 'rounded-xl',
       '2xl': 'rounded-2xl',
       '3xl': 'rounded-3xl',
-      full: 'rounded-full',
+      'full': 'rounded-full',
     },
     color: {
       default: '',
@@ -66,11 +66,11 @@ export const avatarFallbackVariants = cva(
   {
     variants: {
       size: {
-        xs: 'text-[8px]',
-        sm: 'text-xs',
-        default: 'text-sm',
-        lg: 'text-base',
-        xl: 'text-lg',
+        'xs': 'text-[8px]',
+        'sm': 'text-xs',
+        'default': 'text-sm',
+        'lg': 'text-base',
+        'xl': 'text-lg',
         '2xl': 'text-xl',
       },
       color: {
@@ -89,6 +89,6 @@ export const avatarFallbackVariants = cva(
       size: 'default',
       color: 'default',
     },
-  }
+  },
 )
 export type AvatarFallbackVariants = VariantProps<typeof avatarFallbackVariants>

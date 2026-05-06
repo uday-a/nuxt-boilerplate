@@ -24,7 +24,7 @@ const forwarded = useForwardProps(delegatedProps)
 // computed ref by Tabs.vue so updates propagate.
 const tabsOrientation = inject<{ value: 'horizontal' | 'vertical' } | 'horizontal' | 'vertical'>(
   Symbol.for('tabsOrientation'),
-  'horizontal'
+  'horizontal',
 )
 const effectiveOrientation = computed(() => {
   if (props.orientation) return props.orientation
@@ -40,7 +40,7 @@ const effectiveOrientation = computed(() => {
     :class="
       cn(
         tabsListVariants({ variant, orientation: effectiveOrientation }),
-        props.class
+        props.class,
       )
     "
   >

@@ -26,7 +26,16 @@ const lineWidths = computed(() => {
 </script>
 
 <template>
-  <div data-uipkge data-slot="skeleton-text" :class="cn('space-y-2', props.class)">
-    <div v-for="(width, i) in lineWidths" :key="i" class="bg-primary/10 h-4 animate-pulse rounded" :style="{ width }" />
+  <div
+    data-uipkge
+    data-slot="skeleton-text"
+    :class="cn('space-y-2', props.class)"
+  >
+    <div
+      v-for="(width, i) in lineWidths"
+      :key="i"
+      class="bg-primary/10 h-4 animate-pulse rounded"
+      :style="{ width }"
+    />
   </div>
 </template>

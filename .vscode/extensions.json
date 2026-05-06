@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "Vue.volar",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "antfu.iconify",
+    "nuxt.mdc",
+    "drizzleteam.drizzle-vscode"
+  ],
+  "unwantedRecommendations": [
+    "octref.vetur",
+    "vscode.typescript-language-features"
+  ]
+}

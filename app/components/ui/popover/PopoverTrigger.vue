@@ -6,7 +6,11 @@ const props = defineProps<PopoverTriggerProps>()
 </script>
 
 <template>
-  <PopoverTrigger data-uipkge data-slot="popover-trigger" v-bind="props">
+  <PopoverTrigger
+    data-uipkge
+    data-slot="popover-trigger"
+    v-bind="props"
+  >
     <slot />
   </PopoverTrigger>
 </template>

@@ -51,7 +51,7 @@ const delegatedProps = reactiveOmit(
   'density',
   'labelPosition',
   'loading',
-  'hideIcon'
+  'hideIcon',
 )
 
 const forwardedProps = useForwardProps(delegatedProps)
@@ -100,8 +100,8 @@ const densityClasses = {
 const hasError = computed(() => {
   if (props.error) return true
   if (
-    props.errorMessages &&
-    (typeof props.errorMessages === 'string' ? props.errorMessages : props.errorMessages.length > 0)
+    props.errorMessages
+    && (typeof props.errorMessages === 'string' ? props.errorMessages : props.errorMessages.length > 0)
   )
     return true
   return false
@@ -109,7 +109,10 @@ const hasError = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-start" :class="[densityClasses[density]]">
+  <div
+    class="flex items-start"
+    :class="[densityClasses[density]]"
+  >
     <label
       v-if="label && labelPosition === 'before'"
       :for="id"
@@ -133,18 +136,22 @@ const hasError = computed(() => {
             sizeClasses[size],
             colorClasses[color] || colorClasses.primary,
             hasError && 'border-destructive',
-            props.class
+            props.class,
           )
         "
       >
-        <RadioGroupIndicator data-uipkge data-slot="radio-group-indicator" class="relative flex items-center justify-center">
+        <RadioGroupIndicator
+          data-uipkge
+          data-slot="radio-group-indicator"
+          class="relative flex items-center justify-center"
+        >
           <slot>
             <Circle
               v-if="!hideIcon"
               :class="
                 cn(
                   'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 fill-current text-current',
-                  indicatorSizes[size]
+                  indicatorSizes[size],
                 )
               "
             />
@@ -162,16 +169,29 @@ const hasError = computed(() => {
       </label>
     </div>
 
-    <p v-if="hint && !hasError" class="text-muted-foreground mt-1 ml-6 text-xs">
+    <p
+      v-if="hint && !hasError"
+      class="text-muted-foreground mt-1 ml-6 text-xs"
+    >
       {{ hint }}
     </p>
 
-    <div v-if="hasError" class="mt-1 ml-6 flex flex-col gap-0.5">
-      <p v-if="typeof errorMessages === 'string'" class="text-destructive text-xs">
+    <div
+      v-if="hasError"
+      class="mt-1 ml-6 flex flex-col gap-0.5"
+    >
+      <p
+        v-if="typeof errorMessages === 'string'"
+        class="text-destructive text-xs"
+      >
         {{ errorMessages }}
       </p>
       <template v-else>
-        <p v-for="(msg, i) in errorMessages" :key="i" class="text-destructive text-xs">
+        <p
+          v-for="(msg, i) in errorMessages"
+          :key="i"
+          class="text-destructive text-xs"
+        >
           {{ msg }}
         </p>
       </template>

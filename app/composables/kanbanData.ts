@@ -30,7 +30,7 @@ export function createInitialColumns(): KanbanColumn[] {
               id: 'c2',
               author: 'Alice Chen',
               authorColor: 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
-              text: "Good idea — I'll add it to the draft. Also checking what competitors offer.",
+              text: 'Good idea — I\'ll add it to the draft. Also checking what competitors offer.',
               time: '1h ago',
             },
             {
@@ -148,7 +148,7 @@ export function createInitialColumns(): KanbanColumn[] {
               id: 'c4',
               author: 'Bob Martinez',
               authorColor: 'bg-blue-500/15 text-blue-600 dark:text-blue-400',
-              text: "Thanks Eva. I'll add those to the scorecards.",
+              text: 'Thanks Eva. I\'ll add those to the scorecards.',
               time: '2d ago',
             },
             {
@@ -169,7 +169,7 @@ export function createInitialColumns(): KanbanColumn[] {
               id: 'c7',
               author: 'Alice Chen',
               authorColor: 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
-              text: "All set. Let's sync after the first two interviews.",
+              text: 'All set. Let\'s sync after the first two interviews.',
               time: '5h ago',
             },
           ],
@@ -276,7 +276,7 @@ export function createInitialColumns(): KanbanColumn[] {
               id: 'c2',
               author: 'Frank Lee',
               authorColor: 'bg-cyan-500/15 text-cyan-600 dark:text-cyan-400',
-              text: "GitHub access granted. They're in the eng-new-hires team.",
+              text: 'GitHub access granted. They\'re in the eng-new-hires team.',
               time: '3d ago',
             },
             {
@@ -406,7 +406,7 @@ export function createInitialColumns(): KanbanColumn[] {
               id: 'c1',
               author: 'David Kim',
               authorColor: 'bg-violet-500/15 text-violet-600 dark:text-violet-400',
-              text: "Using last year's template as a starting point. Adding peer review section.",
+              text: 'Using last year\'s template as a starting point. Adding peer review section.',
               time: '3d ago',
             },
             {
@@ -427,7 +427,7 @@ export function createInitialColumns(): KanbanColumn[] {
               id: 'c4',
               author: 'Alice Chen',
               authorColor: 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
-              text: "Please share a preview before we roll out. Last year's had confusing rating scales.",
+              text: 'Please share a preview before we roll out. Last year\'s had confusing rating scales.',
               time: '1d ago',
             },
             {
@@ -493,7 +493,7 @@ export function createInitialColumns(): KanbanColumn[] {
               id: 'c4',
               author: 'Alice Chen',
               authorColor: 'bg-orange-500/15 text-orange-600 dark:text-orange-400',
-              text: "Looks great overall. Let's get legal to sign off.",
+              text: 'Looks great overall. Let\'s get legal to sign off.',
               time: '2d ago',
             },
             {

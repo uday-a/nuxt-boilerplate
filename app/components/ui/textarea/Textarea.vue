@@ -33,7 +33,7 @@ export interface TextareaProps {
   rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'pill' | 'circle' | 'full'
 
   // Auto size (Ant Design API)
-  autoSize?: boolean | { minRows?: number; maxRows?: number }
+  autoSize?: boolean | { minRows?: number, maxRows?: number }
 
   // Legacy auto grow / resize
   autoGrow?: boolean
@@ -142,7 +142,7 @@ const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const autoSizeEnabled = computed(() => props.autoSize !== undefined)
 const anyAutoResize = computed(() => autoSizeEnabled.value || props.autoResize || props.autoGrow)
 
-const autoSizeConfig = computed<{ minRows?: number; maxRows?: number }>(() => {
+const autoSizeConfig = computed<{ minRows?: number, maxRows?: number }>(() => {
   if (typeof props.autoSize === 'object') {
     return props.autoSize
   }
@@ -169,14 +169,16 @@ const measureHeights = () => {
   if (minRows) {
     el.rows = minRows
     minHeightPx.value = el.scrollHeight
-  } else {
+  }
+  else {
     minHeightPx.value = 0
   }
 
   if (maxRows) {
     el.rows = maxRows
     maxHeightPx.value = el.scrollHeight
-  } else {
+  }
+  else {
     maxHeightPx.value = Infinity
   }
 
@@ -242,7 +244,8 @@ const autoResize = () => {
   if (newHeight > maxHeightPx.value) {
     newHeight = maxHeightPx.value
     el.style.overflowY = 'auto'
-  } else {
+  }
+  else {
     el.style.overflowY = 'hidden'
   }
 
@@ -332,10 +335,10 @@ const countText = computed(() => {
 // Allow clear
 const showClear = computed(() => {
   return (
-    props.allowClear &&
-    !props.disabled &&
-    !props.readonly &&
-    String(internalValue.value ?? '').length > 0
+    props.allowClear
+    && !props.disabled
+    && !props.readonly
+    && String(internalValue.value ?? '').length > 0
   )
 })
 
@@ -349,28 +352,28 @@ const variantClasses = computed(() => {
         base,
         'border-2 rounded-lg',
         focused.value ? 'border-primary ring-2 ring-primary/20' : 'border-input',
-        hasError.value && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+        hasError.value && 'border-destructive focus:border-destructive focus:ring-destructive/20',
       )
     case 'filled':
       return cn(
         base,
         'border-b-2 bg-muted/50 rounded-t-lg',
         focused.value ? 'border-primary bg-muted' : 'border-transparent',
-        hasError.value && 'border-destructive'
+        hasError.value && 'border-destructive',
       )
     case 'solo':
       return cn(
         base,
         'rounded-lg shadow-sm',
         focused.value ? 'shadow-md' : 'shadow-sm',
-        'bg-card border border-transparent'
+        'bg-card border border-transparent',
       )
     case 'underlined':
       return cn(
         base,
         'border-b-2 rounded-none border-x-0 border-t-0 px-0',
         focused.value ? 'border-primary' : 'border-muted-foreground/30',
-        hasError.value && 'border-destructive'
+        hasError.value && 'border-destructive',
       )
     case 'plain':
       return cn(base, 'border-0 bg-transparent')
@@ -430,7 +433,10 @@ onMounted(() => {
       ]"
     >
       {{ label }}
-      <span v-if="required" class="text-destructive ml-0.5">*</span>
+      <span
+        v-if="required"
+        class="text-destructive ml-0.5"
+      >*</span>
     </Label>
 
     <!-- Control wrapper -->
@@ -442,7 +448,7 @@ onMounted(() => {
           densityClasses,
           disabled && 'pointer-events-none opacity-50',
           props.readonly && !disabled && 'cursor-default',
-          props.rounded !== 'none' && `rounded-${props.rounded}`
+          props.rounded !== 'none' && `rounded-${props.rounded}`,
         )
       "
       :style="props.bgColor ? { backgroundColor: props.bgColor } : {}"
@@ -486,7 +492,7 @@ onMounted(() => {
             suffix ? 'pr-16' : showClear ? 'pr-10' : 'pr-3',
             showCountEnabled && 'pb-6',
             'py-2',
-            props.inputClass
+            props.inputClass,
           )
         "
         @input="handleInput"
@@ -518,7 +524,10 @@ onMounted(() => {
       </button>
 
       <!-- Loading spinner -->
-      <div v-if="loading" class="absolute top-3 right-3 flex items-center justify-center">
+      <div
+        v-if="loading"
+        class="absolute top-3 right-3 flex items-center justify-center"
+      >
         <Loader class="text-muted-foreground size-4 animate-spin" />
       </div>
 
@@ -529,7 +538,10 @@ onMounted(() => {
       >
         <Check class="size-4" />
       </div>
-      <div v-if="hasError && !loading" class="text-destructive absolute top-3 right-3 flex items-center justify-center">
+      <div
+        v-if="hasError && !loading"
+        class="text-destructive absolute top-3 right-3 flex items-center justify-center"
+      >
         <AlertCircle class="size-4" />
       </div>
 

@@ -77,9 +77,9 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 
 const emits = defineEmits<{
   'update:modelValue': [value: boolean | 'indeterminate']
-  change: [value: boolean | 'indeterminate']
-  focus: [event: FocusEvent]
-  blur: [event: FocusEvent]
+  'change': [value: boolean | 'indeterminate']
+  'focus': [event: FocusEvent]
+  'blur': [event: FocusEvent]
 }>()
 
 const delegatedProps = reactiveOmit(
@@ -107,7 +107,7 @@ const delegatedProps = reactiveOmit(
   'trueValue',
   'falseValue',
   'modelValue',
-  'name'
+  'name',
 )
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
@@ -155,8 +155,8 @@ const densityClasses = {
 const hasError = computed(() => {
   if (props.error) return true
   if (
-    props.errorMessages &&
-    (typeof props.errorMessages === 'string' ? props.errorMessages : props.errorMessages.length > 0)
+    props.errorMessages
+    && (typeof props.errorMessages === 'string' ? props.errorMessages : props.errorMessages.length > 0)
   )
     return true
   return false
@@ -193,16 +193,19 @@ const checkboxClasses = computed(() => {
     'peer border-input data-[state=checked]:text-primary-foreground data-[state=indeterminate]:text-primary-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive shrink-0 rounded-[4px] border shadow-xs transition-all duration-200 outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
     sizeClasses[props.size],
     colorClasses[props.color] || colorClasses.primary,
-    hasError.value &&
-      'border-destructive data-[state=checked]:!bg-destructive data-[state=checked]:!border-destructive data-[state=indeterminate]:!bg-destructive data-[state=indeterminate]:!border-destructive',
+    hasError.value
+    && 'border-destructive data-[state=checked]:!bg-destructive data-[state=checked]:!border-destructive data-[state=indeterminate]:!bg-destructive data-[state=indeterminate]:!border-destructive',
     props.flat && 'shadow-none',
-    props.class
+    props.class,
   )
 })
 </script>
 
 <template>
-  <div class="flex items-start" :class="[densityClasses[density], inline ? 'inline-flex' : 'flex-col']">
+  <div
+    class="flex items-start"
+    :class="[densityClasses[density], inline ? 'inline-flex' : 'flex-col']"
+  >
     <label
       v-if="label && labelPosition === 'before'"
       :for="id"
@@ -230,9 +233,18 @@ const checkboxClasses = computed(() => {
           :force-mount="isIndeterminate || hideIcon"
         >
           <slot v-bind="slotProps">
-            <Loader2 v-if="loading" :class="[iconSizes[size], 'animate-spin']" />
-            <Minus v-else-if="isIndeterminate" :class="iconSizes[size]" />
-            <Check v-else-if="!hideIcon" :class="iconSizes[size]" />
+            <Loader2
+              v-if="loading"
+              :class="[iconSizes[size], 'animate-spin']"
+            />
+            <Minus
+              v-else-if="isIndeterminate"
+              :class="iconSizes[size]"
+            />
+            <Check
+              v-else-if="!hideIcon"
+              :class="iconSizes[size]"
+            />
           </slot>
         </CheckboxIndicator>
       </CheckboxRoot>
@@ -247,16 +259,29 @@ const checkboxClasses = computed(() => {
       </label>
     </div>
 
-    <p v-if="hint && !hasError" class="text-muted-foreground mt-1 text-xs">
+    <p
+      v-if="hint && !hasError"
+      class="text-muted-foreground mt-1 text-xs"
+    >
       {{ hint }}
     </p>
 
-    <div v-if="hasError" class="mt-1 flex flex-col gap-0.5">
-      <p v-if="typeof errorMessages === 'string'" class="text-destructive text-xs">
+    <div
+      v-if="hasError"
+      class="mt-1 flex flex-col gap-0.5"
+    >
+      <p
+        v-if="typeof errorMessages === 'string'"
+        class="text-destructive text-xs"
+      >
         {{ errorMessages }}
       </p>
       <template v-else>
-        <p v-for="(msg, i) in errorMessages" :key="i" class="text-destructive text-xs">
+        <p
+          v-for="(msg, i) in errorMessages"
+          :key="i"
+          class="text-destructive text-xs"
+        >
           {{ msg }}
         </p>
       </template>

@@ -8,7 +8,12 @@ const props = defineProps<{
 </script>
 
 <template>
-  <li data-uipkge data-slot="sidebar-menu-item" data-sidebar="menu-item" :class="cn('group/menu-item relative', props.class)">
+  <li
+    data-uipkge
+    data-slot="sidebar-menu-item"
+    data-sidebar="menu-item"
+    :class="cn('group/menu-item relative', props.class)"
+  >
     <slot />
   </li>
 </template>

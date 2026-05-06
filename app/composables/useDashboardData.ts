@@ -12,8 +12,8 @@ const RANGE_LABEL: Record<Range, string> = {
   '24h': 'Last 24 hours',
   '7d': 'Last 7 days',
   '30d': 'Last 30 days',
-  qtd: 'Quarter to date',
-  ytd: 'Year to date',
+  'qtd': 'Quarter to date',
+  'ytd': 'Year to date',
 }
 
 // Deterministic spark generator -- no Math.random() so SSR + client
@@ -95,7 +95,7 @@ const KPI_BY_RANGE: Record<Range, KpiBlock> = {
       latency: spark(30, 395, 412, 5, 37),
     },
   },
-  qtd: {
+  'qtd': {
     mrr: { delta: '+24.1%' },
     users: { delta: '+18.3%' },
     rpm: { delta: '+18.8%' },
@@ -110,7 +110,7 @@ const KPI_BY_RANGE: Record<Range, KpiBlock> = {
       latency: spark(12, 388, 412, 7, 59),
     },
   },
-  ytd: {
+  'ytd': {
     mrr: { delta: '+58.6%' },
     users: { delta: '+42.5%' },
     rpm: { delta: '+28.4%' },
@@ -134,7 +134,7 @@ const KPI_BY_RANGE: Record<Range, KpiBlock> = {
 // activities, quota gauge) are intentionally NOT range-aware -- they
 // own their own intrinsic period.
 
-interface RevenuePoint { x: string; revenue: number; expenses: number }
+interface RevenuePoint { x: string, revenue: number, expenses: number }
 
 // Smooth deterministic generator for medium-length series.
 function genSeries(len: number, rStart: number, rEnd: number, eStart: number, eEnd: number, seed: number): RevenuePoint[] {
@@ -164,8 +164,8 @@ const revenueByRange: Record<Range, RevenuePoint[]> = {
     { x: 'Sun', revenue: 3680, expenses: 2820 },
   ],
   '30d': genSeries(30, 4180, 4720, 3000, 3380, 17),
-  qtd: genSeries(12, 28000, 33000, 20000, 23000, 41).map((p, i) => ({ ...p, x: `W${i + 1}` })),
-  ytd: [
+  'qtd': genSeries(12, 28000, 33000, 20000, 23000, 41).map((p, i) => ({ ...p, x: `W${i + 1}` })),
+  'ytd': [
     { x: 'Jan', revenue: 184000, expenses: 108000 },
     { x: 'Feb', revenue: 172000, expenses: 112000 },
     { x: 'Mar', revenue: 198000, expenses: 118000 },
@@ -177,7 +177,7 @@ const revenueByRange: Record<Range, RevenuePoint[]> = {
 interface RequestsBlock {
   title: string
   subtitle: string
-  data: { x: string; y: number }[]
+  data: { x: string, y: number }[]
 }
 
 const requestsByRange: Record<Range, RequestsBlock> = {
@@ -206,7 +206,7 @@ const requestsByRange: Record<Range, RequestsBlock> = {
       y: Math.round(26000 + Math.sin(i * 0.7) * 3800 + ((i * 17) % 2400)),
     })),
   },
-  qtd: {
+  'qtd': {
     title: 'Requests by week',
     subtitle: 'Quarter to date · UTC',
     data: Array.from({ length: 12 }, (_, i) => ({
@@ -214,7 +214,7 @@ const requestsByRange: Record<Range, RequestsBlock> = {
       y: Math.round(180000 + Math.sin(i * 0.9) * 24000 + i * 2400),
     })),
   },
-  ytd: {
+  'ytd': {
     title: 'Requests by month',
     subtitle: 'Year to date · UTC',
     data: ['Jan', 'Feb', 'Mar', 'Apr', 'May'].map((m, i) => ({
@@ -244,8 +244,8 @@ const VISITORS_BY_RANGE: Record<Range, number> = {
   '24h': 820,
   '7d': 5740,
   '30d': 24850,
-  qtd: 74600,
-  ytd: 124200,
+  'qtd': 74600,
+  'ytd': 124200,
 }
 
 // Top products: identity stays constant, only the change% varies per
@@ -262,8 +262,8 @@ const PRODUCT_CHANGE_BY_RANGE: Record<Range, string[]> = {
   '24h': ['+0.4%', '+0.3%', '+0.7%', '+0.1%', '-0.1%'],
   '7d': ['+2.8%', '+1.8%', '+4.9%', '+0.8%', '-0.5%'],
   '30d': ['+12.4%', '+8.1%', '+22.0%', '+3.8%', '-2.4%'],
-  qtd: ['+24.1%', '+18.3%', '+38.2%', '+8.4%', '-4.2%'],
-  ytd: ['+58.6%', '+42.5%', '+74.1%', '+18.7%', '-8.9%'],
+  'qtd': ['+24.1%', '+18.3%', '+38.2%', '+8.4%', '-4.2%'],
+  'ytd': ['+58.6%', '+42.5%', '+74.1%', '+18.7%', '-8.9%'],
 }
 
 // ── Remaining static data ───────────────────────────────────────────
@@ -340,7 +340,7 @@ export function useDashboardData(range: Ref<Range> = ref<Range>('30d')) {
         color: '#fff',
         fontSize: 12,
         fontWeight: 600,
-        formatter: (p: { name: string; value: number; data?: { realValue?: number } }) =>
+        formatter: (p: { name: string, value: number, data?: { realValue?: number } }) =>
           `${p.name}\n${(p.data?.realValue ?? p.value).toLocaleString()}`,
       },
       labelLine: { length: 8, lineStyle: { width: 1, type: 'solid' } },
@@ -407,7 +407,7 @@ export function useDashboardData(range: Ref<Range> = ref<Range>('30d')) {
   ]
 
   const topProducts = computed<Product[]>(() =>
-    PRODUCT_BASE.map((p, i) => ({ ...p, change: PRODUCT_CHANGE_BY_RANGE[range.value][i]! }))
+    PRODUCT_BASE.map((p, i) => ({ ...p, change: PRODUCT_CHANGE_BY_RANGE[range.value][i]! })),
   )
 
   const alerts: Alert[] = [
@@ -462,9 +462,9 @@ export function useDashboardData(range: Ref<Range> = ref<Range>('30d')) {
   const totalDeploys = calendarData.reduce((s, [, v]) => s + v, 0)
 
   const statusTone: Record<Customer['status'], string> = {
-    healthy: 'bg-emerald-500',
+    'healthy': 'bg-emerald-500',
     'at-risk': 'bg-amber-500',
-    churned: 'bg-rose-500',
+    'churned': 'bg-rose-500',
   }
 
   function formatK(n: number) {
