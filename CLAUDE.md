@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project skills
+
+This repo ships agent skills at `.claude/skills/` that enforce the boilerplate's conventions. They activate automatically based on the trigger phrases in their `description:` frontmatter — invoke them when the trigger matches:
+
+- **`uipkge-first`** — before adding any UI primitive. Routes to `npx shadcn-vue add @uipkge/<name>` over hand-rolling.
+- **`add-page`** — when creating any `app/pages/**/*.vue`. Picks layout, middleware, useHead correctly.
+- **`auth-gating-check`** — when touching `server/api/**`, `server/routes/**`, `app/pages/**`, or `app/middleware/**`. Verifies auth posture.
+- **`secret-exposure-check`** — before commit when env / runtimeConfig / logs changed. Catches the four canonical Nuxt leak vectors.
+- **`shipping-check`** — when the user signals "done" / "ready to commit". Runs lint + typecheck + knip + jscpd + boundary check.
+
+See `.claude/skills/README.md` for the rationale and how the skills relate to the tool-side enforcement (lefthook, commitlint, knip, jscpd, zod env).
+
 ## Commands
 
 - `npm run dev` — Nuxt dev server on http://localhost:3000 (reuse if already running; do not kill).
