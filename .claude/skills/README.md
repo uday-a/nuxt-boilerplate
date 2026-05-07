@@ -15,6 +15,8 @@ Skills are loaded by Claude Code from `.claude/skills/<name>/SKILL.md` in the wo
 | [`logger-conventions`](./logger-conventions/SKILL.md) | Any log statement added or modified in `server/**` | Enforces dot-namespaced event names, structured fields, no PII, no `console.log` surviving to prod. |
 | [`response-envelope`](./response-envelope/SKILL.md) | Any new or modified `server/api/**` handler | Forces `apiHandler` wrapper + `ok()` / `apiError(code, msg)` over raw `defineEventHandler` and `createError`. |
 | [`error-handling`](./error-handling/SKILL.md) | Any try/catch, throw, rethrow, or error-pathing logic added or modified | Enforces typed errors, no silent swallow, no leaked stack traces, no logging raw `Error` instances. |
+| [`i18n-keys`](./i18n-keys/SKILL.md) | Adding or modifying a `t('…')` / `$t('…')` call | Enforces key parity across `i18n/locales/en.json` and `es.json` so missing translations don't render the namespace path. |
+| [`db-migration`](./db-migration/SKILL.md) | Editing `server/db/schema.ts` (table / column / enum changes) | Forces `npx drizzle-kit generate` to emit a migration file, surfaces destructive operations, calls out two-step migrations for NOT NULL adds. |
 | [`shipping-check`](./shipping-check/SKILL.md) | User signals "done", "ready to commit", "ship it" | Runs the full quality gate: lint, typecheck, knip, jscpd, `nuxi prepare`, staged-files boundary. Surfaces PASS/FAIL per check before committing. |
 
 ## How they relate to the boilerplate's other guardrails

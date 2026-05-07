@@ -2,6 +2,7 @@ import type { H3Event } from 'h3'
 import { eq } from 'drizzle-orm'
 import { useDb, schema } from '~~/server/db'
 import { ROLES, type Role } from '~~/server/db/schema'
+import { logger } from './logger'
 import { apiError } from './response'
 
 /**
@@ -33,7 +34,7 @@ export async function requireAuth(event: H3Event) {
  *                                       exists; hard deny, never fall back
  *                                       to the cookie role)
  *   - DB unreachable                 -> fall back to cookie role with a
- *                                       console.warn so adopters notice
+ *                                       logger.warn so adopters notice
  *                                       the staleness risk
  *
  * Accepts a single role, a rest list, or an array:
@@ -107,7 +108,9 @@ async function readLiveRole(userGithubId: number | string): Promise<RoleLookup> 
     return { state: 'not-found' }
   }
   catch (e) {
-    console.warn('[guards] live role lookup failed, using session role:', (e as Error).message)
+    logger.warn('guards.live_role_lookup_failed', {
+      error: (e as Error).message,
+    })
     return { state: 'db-unavailable' }
   }
 }

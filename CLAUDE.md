@@ -13,6 +13,8 @@ This repo ships agent skills at `.claude/skills/` that enforce the boilerplate's
 - **`logger-conventions`** — any log statement in `server/**`. Enforces dot-namespaced event names, structured fields, no PII.
 - **`response-envelope`** — any new/modified `server/api/**` handler. Forces `apiHandler` + `ok()` / `apiError()` over raw responses.
 - **`error-handling`** — any try/catch, throw, or rethrow. Enforces typed errors, no silent swallow, no leaked stack traces.
+- **`i18n-keys`** — any `t('…')` / `$t('…')` call added/modified. Enforces key parity across en.json and es.json.
+- **`db-migration`** — when `server/db/schema.ts` changes. Forces `drizzle-kit generate` and surfaces destructive ops.
 - **`shipping-check`** — when the user signals "done" / "ready to commit". Runs lint + typecheck + knip + jscpd + boundary check.
 
 See `.claude/skills/README.md` for the rationale and how the skills relate to the tool-side enforcement (lefthook, commitlint, knip, jscpd, zod env).
