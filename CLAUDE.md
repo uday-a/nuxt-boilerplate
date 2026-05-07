@@ -10,6 +10,9 @@ This repo ships agent skills at `.claude/skills/` that enforce the boilerplate's
 - **`add-page`** — when creating any `app/pages/**/*.vue`. Picks layout, middleware, useHead correctly.
 - **`auth-gating-check`** — when touching `server/api/**`, `server/routes/**`, `app/pages/**`, or `app/middleware/**`. Verifies auth posture.
 - **`secret-exposure-check`** — before commit when env / runtimeConfig / logs changed. Catches the four canonical Nuxt leak vectors.
+- **`logger-conventions`** — any log statement in `server/**`. Enforces dot-namespaced event names, structured fields, no PII.
+- **`response-envelope`** — any new/modified `server/api/**` handler. Forces `apiHandler` + `ok()` / `apiError()` over raw responses.
+- **`error-handling`** — any try/catch, throw, or rethrow. Enforces typed errors, no silent swallow, no leaked stack traces.
 - **`shipping-check`** — when the user signals "done" / "ready to commit". Runs lint + typecheck + knip + jscpd + boundary check.
 
 See `.claude/skills/README.md` for the rationale and how the skills relate to the tool-side enforcement (lefthook, commitlint, knip, jscpd, zod env).

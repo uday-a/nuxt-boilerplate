@@ -12,6 +12,9 @@ Skills are loaded by Claude Code from `.claude/skills/<name>/SKILL.md` in the wo
 | [`add-page`](./add-page/SKILL.md) | User creates a file under `app/pages/**` | Picks the right page bucket (authenticated, public, auth-entry, dynamic), sets `definePageMeta`, `useHead`, and i18n correctly. |
 | [`auth-gating-check`](./auth-gating-check/SKILL.md) | Diff touches `server/api/**`, `server/routes/**`, `app/pages/**`, or `app/middleware/**` | Verifies every protected page declares `middleware: 'auth'` and every protected API route calls `requireUserSession` / `requireRole`. Surfaces unguarded endpoints. |
 | [`secret-exposure-check`](./secret-exposure-check/SKILL.md) | Before commit/push when env, runtimeConfig, logs, or error responses changed | Catches `process.env` in client code, secrets in `runtimeConfig.public`, sensitive context in error envelopes, session/token data in logs. |
+| [`logger-conventions`](./logger-conventions/SKILL.md) | Any log statement added or modified in `server/**` | Enforces dot-namespaced event names, structured fields, no PII, no `console.log` surviving to prod. |
+| [`response-envelope`](./response-envelope/SKILL.md) | Any new or modified `server/api/**` handler | Forces `apiHandler` wrapper + `ok()` / `apiError(code, msg)` over raw `defineEventHandler` and `createError`. |
+| [`error-handling`](./error-handling/SKILL.md) | Any try/catch, throw, rethrow, or error-pathing logic added or modified | Enforces typed errors, no silent swallow, no leaked stack traces, no logging raw `Error` instances. |
 | [`shipping-check`](./shipping-check/SKILL.md) | User signals "done", "ready to commit", "ship it" | Runs the full quality gate: lint, typecheck, knip, jscpd, `nuxi prepare`, staged-files boundary. Surfaces PASS/FAIL per check before committing. |
 
 ## How they relate to the boilerplate's other guardrails
