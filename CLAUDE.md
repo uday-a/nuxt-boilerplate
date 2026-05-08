@@ -99,6 +99,24 @@ The boilerplate is designed so a fresh `git clone` + `npm run dev` works without
 
 Rule when adding a new external integration: it must follow the same pattern — optional env, graceful no-op when absent, fail-loud when partially configured.
 
+### Gating modules and plugins on env
+
+Any module or plugin tied to an external service must **only activate when its env key is present**. Three concrete patterns are in use; pick the one that fits the integration:
+
+1. **Conditional module registration** in `nuxt.config.ts` — for build-time Nuxt modules whose mere presence has cost (extra build hooks, extra dep loaded).
+   ```ts
+   modules: [
+     '@nuxtjs/i18n',
+     ...(process.env.I18NOW_PROJECT_ID ? ['@i18now/nuxt'] : []),
+   ]
+   ```
+2. **Early-return in Nitro plugins** — when the plugin registers a hook that's a no-op without the service. See `server/plugins/logger.ts`: skips `nitroApp.hooks.hook('close', ...)` when `hasAxiom` is false.
+3. **Dynamic `import()` of the SDK** — when the cost is bundle weight / cold-start latency. See `server/utils/logger.ts`: `@axiomhq/js` is `import('@axiomhq/js')` inside a lazy `getAxiom()` so it never resolves when the token is absent.
+
+Anti-pattern: registering a module unconditionally and relying on it to "do nothing" without its key. Some modules (e.g. `nuxt-og-image`) crash at boot when their dependencies aren't installed; some bloat the bundle measurably; some inject runtime work even when idle. Gate at registration time, not inside the module.
+
+When adopting Sentry, PostHog, or any future integration: follow pattern (1) at minimum; add (3) if the SDK is heavy.
+
 ## Notable gotchas
 
 - `pathPrefix: false` means two components with the same filename in different subfolders **collide** — rename one.
