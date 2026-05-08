@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ApiResponse } from '~~/server/utils/response'
 import {
   ChevronLeft, ChevronRight, Plus, Clock, MapPin, Users, Video,
   CheckCircle2, Circle, AlertCircle, Search, CalendarDays, Plane,
@@ -40,7 +41,14 @@ const eventOpen = ref(false)
 const selectedEvent = ref<CalendarEvent | null>(null)
 const search = ref('')
 
-const { data: events, pending: loading } = useFetch<CalendarEvent[]>('/api/mock/events')
+// `/api/mock/events` is wrapped with apiHandler() so it returns the
+// standard `{ ok, data }` envelope (see server/utils/response.ts and the
+// response-envelope skill). Unwrap to the bare event array on success;
+// fall back to [] on failure so the calendar still renders.
+const { data: eventsRes, pending: loading } = useFetch<ApiResponse<CalendarEvent[]>>('/api/mock/events')
+const events = computed<CalendarEvent[]>(() =>
+  eventsRes.value?.ok ? eventsRes.value.data : [],
+)
 
 // Headless month-grid + range-select state and handlers.
 const {
