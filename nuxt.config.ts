@@ -10,7 +10,11 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     'nuxt-auth-utils',
     '@nuxtjs/i18n',
+    // Gated on env per the CLAUDE.md "Gating modules and plugins on env"
+    // convention. Each conditional module is a no-op (and not loaded at
+    // all) when its service isn't configured.
     ...(process.env.I18NOW_PROJECT_ID ? ['@i18now/nuxt'] : []),
+    ...(process.env.NUXT_PUBLIC_SENTRY_DSN ? ['@sentry/nuxt/module'] : []),
   ],
   components: [
     { path: '~/components', pathPrefix: false, extensions: ['.vue'] },
@@ -36,6 +40,11 @@ export default defineNuxtConfig({
         || (process.env.NUXT_DEMO_MODE !== 'false'
           && !process.env.NUXT_OAUTH_GITHUB_CLIENT_ID
           && process.env.NODE_ENV !== 'production'),
+      // Sentry DSN is a public value by design — it's how the SDK reaches
+      // sentry.io. The module reads from this slot if present.
+      sentry: {
+        dsn: process.env.NUXT_PUBLIC_SENTRY_DSN ?? '',
+      },
     },
   },
   compatibilityDate: '2025-07-15',
