@@ -40,6 +40,13 @@ const Env = z.object({
   AXIOM_DATASET: z.string().optional(),
   AXIOM_ORG_ID: z.string().optional(),
 
+  // PostHog — optional product analytics. Both env values are public by
+  // design (PostHog's client SDK reads them in the browser). When the
+  // key is unset, the client plugin no-ops and posthog-js is never
+  // imported into the bundle (see app/plugins/posthog.client.ts).
+  NUXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
+  NUXT_PUBLIC_POSTHOG_HOST: z.string().url().default('https://us.i.posthog.com'),
+
   // Demo mode: lets the /login page mint a session for a fake user so a
   // fresh fork is fully clickable without a GitHub OAuth app or DB.
   //   - 'true'  → always on (even in prod — useful for public previews)
@@ -78,6 +85,9 @@ if (env.AXIOM_TOKEN && !env.AXIOM_DATASET) {
 if (env.AXIOM_DATASET && !env.AXIOM_TOKEN) {
   throw new Error('AXIOM_DATASET is set but AXIOM_TOKEN is not. Set both, or unset both.')
 }
+
+// Convenience flag: PostHog is on when a project key is set.
+export const hasPostHog = Boolean(env.NUXT_PUBLIC_POSTHOG_KEY)
 
 // Demo mode resolves to:
 //   - explicit 'true'/'false' if set
