@@ -17,6 +17,12 @@ export default withNuxt(
       '.nuxt/**',
       '.output/**',
       'dist/**',
+      // External skills pulled from skills.sh (antfu/skills, onmax/nuxt-skills,
+      // etc.) are vendored reference material — not project code. Don't lint
+      // their tooling scripts; their style isn't ours to enforce.
+      '.claude/skills/nuxt/**',
+      '.claude/skills/vue/**',
+      '.claude/skills/reka-ui/**',
     ],
   },
   {

@@ -29,6 +29,14 @@ logs
 # jscpd duplicate-detection report (local audit artifact)
 .jscpd-report/
 
+# skills.sh CLI working directories. Other-agent copies of skills the
+# CLI auto-generated. Claude Code reads `.claude/skills/` directly;
+# these dirs duplicate the same content for other agents. Regenerate
+# with `npx skills experimental_install` if you use Cursor / Codex /
+# Junie / etc.
+.agents/
+.junie/
+
 # Vercel
 .vercel/
 

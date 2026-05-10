@@ -19,6 +19,32 @@ Skills are loaded by Claude Code from `.claude/skills/<name>/SKILL.md` in the wo
 | [`db-migration`](./db-migration/SKILL.md) | Editing `server/db/schema.ts` (table / column / enum changes) | Forces `npx drizzle-kit generate` to emit a migration file, surfaces destructive operations, calls out two-step migrations for NOT NULL adds. |
 | [`shipping-check`](./shipping-check/SKILL.md) | User signals "done", "ready to commit", "ship it" | Runs the full quality gate: lint, typecheck, knip, jscpd, `nuxi prepare`, staged-files boundary. Surfaces PASS/FAIL per check before committing. |
 
+## External skills (pulled from skills.sh)
+
+These skills are not project-authored — they're community-maintained framework references installed via the [skills.sh](https://skills.sh) CLI. The installed versions are pinned in `skills-lock.json` at the repo root.
+
+| Skill | Source | Why we picked it |
+|---|---|---|
+| [`nuxt`](./nuxt/SKILL.md) | `antfu/skills@nuxt` | Generated from the official Nuxt docs by Anthony Fu (Nuxt core team). Authoritative Nuxt 3/4 reference covering auto-imports, file-based routing, `useFetch` vs `$fetch`, Nitro server routes, hybrid rendering. |
+| [`vue`](./vue/SKILL.md) | `antfu/skills@vue` | Generated from the Vue 3 docs by Anthony Fu. Covers Composition API, script setup macros, reactivity, `<Transition>` / `<Teleport>` / `<Suspense>` / `<KeepAlive>`. |
+| [`reka-ui`](./reka-ui/SKILL.md) | `onmax/nuxt-skills@reka-ui` | Headless Vue primitives that shadcn-vue (and our `@uipkge` registry) is built on top of. Covers the `asChild` composition pattern, controlled vs uncontrolled state, accessibility patterns. |
+
+### Updating external skills
+
+To pull newer versions of an installed skill:
+
+```bash
+npx skills update <skill-name>
+```
+
+To restore the full set on a fresh clone (pulls each pinned version from `skills-lock.json`):
+
+```bash
+npx skills experimental_install
+```
+
+The CLI also writes copies to `.agents/skills/` and other agent-specific dirs (Cursor, Codex, Junie, etc.) so the same skills work across multiple AI agents. Those dirs are gitignored — only the `.claude/skills/` copies are tracked, plus the lockfile.
+
 ## How they relate to the boilerplate's other guardrails
 
 Skills are the *agent-side* of the same quality bar that the boilerplate enforces *tool-side*. The toolchain is real; the skills make sure the next AI session running on a fork knows when to invoke it.

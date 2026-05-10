@@ -17,6 +17,12 @@ This repo ships agent skills at `.claude/skills/` that enforce the boilerplate's
 - **`db-migration`** — when `server/db/schema.ts` changes. Forces `drizzle-kit generate` and surfaces destructive ops.
 - **`shipping-check`** — when the user signals "done" / "ready to commit". Runs lint + typecheck + knip + jscpd + boundary check.
 
+Plus three external skills pulled from [skills.sh](https://skills.sh) and pinned in `skills-lock.json`:
+
+- **`nuxt`** — `antfu/skills@nuxt`. Generated from the Nuxt docs.
+- **`vue`** — `antfu/skills@vue`. Vue 3 Composition API reference.
+- **`reka-ui`** — `onmax/nuxt-skills@reka-ui`. Headless Vue primitives that shadcn-vue is built on.
+
 See `.claude/skills/README.md` for the rationale and how the skills relate to the tool-side enforcement (lefthook, commitlint, knip, jscpd, zod env).
 
 ## Commands
