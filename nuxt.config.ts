@@ -45,6 +45,13 @@ export default defineNuxtConfig({
       sentry: {
         dsn: process.env.NUXT_PUBLIC_SENTRY_DSN ?? '',
       },
+      // PostHog — read by app/plugins/posthog.client.ts. The key is public
+      // (that's how PostHog's client SDK works); the plugin no-ops and
+      // never imports posthog-js when the key is empty.
+      posthog: {
+        key: process.env.NUXT_PUBLIC_POSTHOG_KEY ?? '',
+        host: process.env.NUXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com',
+      },
     },
   },
   compatibilityDate: '2025-07-15',
