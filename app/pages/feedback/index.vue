@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Send, ThumbsUp, MessageCircle, Sparkles, Bug, Lightbulb } from 'lucide-vue-next'
+import { Send, ThumbsUp, MessageCircle, Sparkles, Bug, Lightbulb, CheckCircle2, AlertCircle } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -8,13 +8,38 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import type { ApiResponse } from '~~/server/utils/response'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 useHead({ title: 'Feedback' })
 
-const category = ref('idea')
+const category = ref<'idea' | 'bug' | 'praise'>('idea')
 const subject = ref('')
 const message = ref('')
+
+type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'sent', delivered: boolean } | { kind: 'error', message: string }
+const status = ref<Status>({ kind: 'idle' })
+
+async function onSend() {
+  status.value = { kind: 'sending' }
+  const res = await $fetch<ApiResponse<{ delivered: boolean, id: string | null }>>('/api/feedback', {
+    method: 'POST',
+    body: { category: category.value, subject: subject.value, message: message.value },
+  }).catch((err) => {
+    // $fetch throws on non-2xx; surface the envelope's error message.
+    const data = (err as { data?: { error?: { message?: string } } }).data
+    return { ok: false, error: { code: 'INTERNAL', message: data?.error?.message ?? 'Failed to send feedback' } } as const
+  })
+
+  if (!res.ok) {
+    status.value = { kind: 'error', message: res.error.message }
+    return
+  }
+
+  status.value = { kind: 'sent', delivered: res.data.delivered }
+  subject.value = ''
+  message.value = ''
+}
 
 const recent = [
   { kind: 'bug', author: 'Marcus R.', summary: 'Sparkline tooltip flickers when crossing zero', upvotes: 8, status: 'in-progress', age: '2d ago' },
@@ -121,12 +146,35 @@ const kindColor: Record<string, string> = {
             </p>
           </div>
 
+          <div
+            v-if="status.kind === 'sent'"
+            class="flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-400"
+          >
+            <CheckCircle2 class="size-4" />
+            {{ status.delivered ? 'Thanks — we got it.' : 'Sent (dev mode — printed to server log).' }}
+          </div>
+          <div
+            v-else-if="status.kind === 'error'"
+            class="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
+            <AlertCircle class="size-4" />
+            {{ status.message }}
+          </div>
+
           <div class="flex justify-end gap-2">
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              :disabled="status.kind === 'sending'"
+            >
               Save draft
             </Button>
-            <Button class="gap-2">
-              <Send class="size-4" />Send
+            <Button
+              class="gap-2"
+              :disabled="status.kind === 'sending' || subject.length < 3 || message.length < 10"
+              @click="onSend"
+            >
+              <Send class="size-4" />
+              {{ status.kind === 'sending' ? 'Sending…' : 'Send' }}
             </Button>
           </div>
         </CardContent>

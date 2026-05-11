@@ -56,6 +56,16 @@ const Env = z.object({
   NUXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
   NUXT_PUBLIC_POSTHOG_HOST: z.string().url().default('https://us.i.posthog.com'),
 
+  // Resend — transactional email. Without a key the mailer no-ops:
+  // it consola-prints the rendered email so dev flows still work, but
+  // nothing is sent. The from-address must be a verified domain on
+  // Resend; for local dev `onboarding@resend.dev` is allowed.
+  RESEND_API_KEY: z.string().startsWith('re_').optional(),
+  EMAIL_FROM: z.string().email().default('onboarding@resend.dev'),
+  // Where outbound app emails (feedback, ops alerts) should land.
+  // Defaults to EMAIL_FROM so unconfigured prod doesn't ping randoms.
+  EMAIL_OPS: z.string().email().optional(),
+
   // Demo mode: lets the /login page mint a session for a fake user so a
   // fresh fork is fully clickable without a GitHub OAuth app or DB.
   //   - 'true'  → always on (even in prod — useful for public previews)
@@ -102,6 +112,10 @@ export const hasSentry = Boolean(env.NUXT_PUBLIC_SENTRY_DSN)
 
 // Convenience flag: PostHog is on when a project key is set.
 export const hasPostHog = Boolean(env.NUXT_PUBLIC_POSTHOG_KEY)
+
+// Convenience flag: Resend is on when an API key is set. The mailer
+// otherwise consola-prints emails instead of sending them.
+export const hasResend = Boolean(env.RESEND_API_KEY)
 
 // Demo mode resolves to:
 //   - explicit 'true'/'false' if set

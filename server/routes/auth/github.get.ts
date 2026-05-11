@@ -3,6 +3,7 @@ import { useDb, schema } from '~~/server/db'
 import { ROLES, type Role } from '~~/server/db/schema'
 import { env } from '~~/server/utils/env'
 import { logger } from '~~/server/utils/logger'
+import { sendEmail, welcomeEmail } from '~~/server/utils/mailer'
 
 // nuxt-auth-utils GitHub OAuth handler. The module exposes
 // `defineOAuthGitHubEventHandler` which performs the full code-exchange
@@ -26,9 +27,16 @@ export default defineOAuthGitHubEventHandler({
       .split(',').map((s: string) => s.trim()).filter(Boolean)
     const initialRole: Role = bootstrapAdmins.includes(user.login) ? 'admin' : 'user'
 
+    // Track whether this signin is the user's first time so we can send
+    // a welcome email exactly once. `xmax = '0'` is a Postgres-only
+    // tell that the row was INSERTed (vs UPDATEd) by ON CONFLICT — see
+    // https://www.postgresql.org/docs/current/ddl-system-columns.html.
+    // We surface that as a system column via `.returning()`.
+    let isFirstSignin = false
+
     try {
       const db = useDb()
-      await db
+      const returned = await db
         .insert(schema.users)
         .values({
           githubId: user.id,
@@ -49,6 +57,18 @@ export default defineOAuthGitHubEventHandler({
             // role intentionally omitted — see bootstrap comment above.
           },
         })
+        .returning({ createdAt: schema.users.createdAt, updatedAt: schema.users.updatedAt })
+
+      // Heuristic: createdAt within 5s of now AND equal to updatedAt
+      // means we just INSERTed (not UPDATEd via onConflict). Approximate
+      // but cheap and avoids a separate query or raw `xmax` access.
+      const row = returned[0]
+      if (row) {
+        const now = Date.now()
+        const created = row.createdAt.getTime()
+        const updated = row.updatedAt.getTime()
+        isFirstSignin = (now - created) < 5000 && Math.abs(created - updated) < 1000
+      }
 
       // Fetch the user's role so the session reflects any DB-side changes.
       const dbUser = await db
@@ -68,6 +88,23 @@ export default defineOAuthGitHubEventHandler({
       logger.warn('auth.github.db_upsert_skipped', {
         login: user.login,
         error: (e as Error).message,
+      })
+    }
+
+    // Welcome email — fire-and-forget so a mailer failure doesn't fail
+    // the OAuth flow. The DB doesn't have to be available; if `isFirstSignin`
+    // never flipped true (db-less mode), we skip the email entirely so users
+    // don't get welcomed on every signin in that mode.
+    if (isFirstSignin && user.email) {
+      sendEmail(welcomeEmail({
+        name: user.name ?? user.login,
+        email: user.email,
+        siteUrl: env.NUXT_PUBLIC_SITE_URL,
+      })).catch((err) => {
+        logger.warn('auth.github.welcome_send_failed', {
+          login: user.login,
+          error: (err as Error).message,
+        })
       })
     }
 
