@@ -8,6 +8,13 @@
       "when": 1778941790331,
       "tag": "0000_wise_prima",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779021261922,
+      "tag": "0001_tan_swordsman",
+      "breakpoints": true
     }
   ]
 }

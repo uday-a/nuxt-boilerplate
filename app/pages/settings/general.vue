@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -7,19 +7,64 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
+import type { ApiResponse } from '~~/server/utils/response'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 useHead({ title: 'General · Settings' })
 
+interface Profile {
+  name: string | null
+  bio: string | null
+  timezone: string
+  locale: string
+  notifyEmail: boolean
+  notifyInApp: boolean
+}
+
+const { data: profileRes, refresh } = await useFetch<ApiResponse<{ profile: Profile }>>('/api/me/profile')
+
+// Timezone + locale are user-scoped (live on `users` table) and persist
+// via /api/me/profile. The workspace-level fields below (name, slug,
+// brand color, SSO requirements) need a `workspaces` table; until you
+// add one they're visual-only — kept in this page so the form shows
+// the full settings UX, but Save only ships the user-scoped fields.
+const timezone = ref('UTC')
+const locale = ref('en')
+watchEffect(() => {
+  if (profileRes.value?.ok) {
+    timezone.value = profileRes.value.data.profile.timezone
+    locale.value = profileRes.value.data.profile.locale
+  }
+})
+
+// Workspace-level state. UI shells until you add a workspaces table.
 const workspaceName = ref('Acme Inc')
 const workspaceUrl = ref('acme-inc')
 const supportEmail = ref('support@acme.com')
-const timezone = ref('America/New_York')
-const locale = ref('en-US')
 const brandColor = ref('#5B6FE6')
 const allowExternalShares = ref(true)
 const requireSso = ref(false)
 const sendWeeklyDigest = ref(true)
+
+type Status = { kind: 'idle' } | { kind: 'saving' } | { kind: 'saved', demo?: boolean } | { kind: 'error', message: string }
+const status = ref<Status>({ kind: 'idle' })
+
+async function save() {
+  status.value = { kind: 'saving' }
+  const res = await $fetch<ApiResponse<{ profile: Profile, demo?: boolean }>>('/api/me/profile', {
+    method: 'PUT',
+    body: { timezone: timezone.value, locale: locale.value },
+  }).catch((err) => {
+    const data = (err as { data?: { error?: { message?: string } } }).data
+    return { ok: false, error: { code: 'INTERNAL', message: data?.error?.message ?? 'Failed to save' } } as const
+  })
+  if (!res.ok) {
+    status.value = { kind: 'error', message: res.error.message }
+    return
+  }
+  status.value = { kind: 'saved', demo: res.data.demo }
+  await refresh()
+}
 </script>
 
 <template>
@@ -86,6 +131,9 @@ const sendWeeklyDigest = ref(true)
           <Select v-model="timezone">
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
+              <SelectItem value="UTC">
+                UTC
+              </SelectItem>
               <SelectItem value="America/Los_Angeles">
                 America/Los_Angeles · UTC-8
               </SelectItem>
@@ -112,26 +160,17 @@ const sendWeeklyDigest = ref(true)
           <Select v-model="locale">
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="en-US">
-                English (US)
+              <SelectItem value="en">
+                English
               </SelectItem>
-              <SelectItem value="en-GB">
-                English (UK)
-              </SelectItem>
-              <SelectItem value="fr-FR">
-                Français
-              </SelectItem>
-              <SelectItem value="de-DE">
-                Deutsch
-              </SelectItem>
-              <SelectItem value="ja-JP">
-                日本語
-              </SelectItem>
-              <SelectItem value="ko-KR">
-                한국어
+              <SelectItem value="es">
+                Español
               </SelectItem>
             </SelectContent>
           </Select>
+          <p class="text-muted-foreground text-xs">
+            Add more options in <code>i18n/locales/</code> + the <code>i18n</code> module config.
+          </p>
         </div>
       </CardContent>
     </Card>
@@ -220,11 +259,34 @@ const sendWeeklyDigest = ref(true)
       </CardContent>
     </Card>
 
-    <div class="flex justify-end gap-2">
+    <div class="flex items-center justify-end gap-3">
+      <div
+        v-if="status.kind === 'saved'"
+        class="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400"
+      >
+        <CheckCircle2 class="size-4" />
+        {{ status.demo ? 'Saved (demo — not persisted)' : 'Saved' }}
+      </div>
+      <div
+        v-else-if="status.kind === 'error'"
+        class="text-destructive flex items-center gap-2 text-sm"
+      >
+        <AlertCircle class="size-4" />
+        {{ status.message }}
+      </div>
       <Button variant="outline">
         Cancel
       </Button>
-      <Button>Save changes</Button>
+      <Button
+        :disabled="status.kind === 'saving'"
+        @click="save"
+      >
+        <Loader2
+          v-if="status.kind === 'saving'"
+          class="size-4 animate-spin"
+        />
+        Save changes
+      </Button>
     </div>
   </div>
 </template>
