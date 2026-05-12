@@ -22,6 +22,13 @@
       "when": 1779023146450,
       "tag": "0002_chief_swordsman",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1779033172100,
+      "tag": "0003_dark_microchip",
+      "breakpoints": true
     }
   ]
 }

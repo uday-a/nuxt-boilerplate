@@ -66,6 +66,20 @@ const Env = z.object({
   // Defaults to EMAIL_FROM so unconfigured prod doesn't ping randoms.
   EMAIL_OPS: z.string().email().optional(),
 
+  // Polar — billing / checkout / subscriptions.
+  // Without a token the SDK is never imported and all /api/billing/*
+  // endpoints return INTERNAL with an instructive message.
+  // Webhook secret pairs with the access token; we validate every
+  // /api/webhooks/polar request with it. Boot fails if only one is set.
+  // The product IDs are slot env vars — one per plan tier. Add more
+  // (e.g. POLAR_ENTERPRISE_PRODUCT_ID) as your plans grow.
+  POLAR_ACCESS_TOKEN: z.string().optional(),
+  POLAR_WEBHOOK_SECRET: z.string().optional(),
+  POLAR_SERVER: z.enum(['sandbox', 'production']).default('production'),
+  POLAR_PRO_PRODUCT_ID: z.string().optional(),
+  POLAR_TEAM_PRODUCT_ID: z.string().optional(),
+  POLAR_ENTERPRISE_PRODUCT_ID: z.string().optional(),
+
   // Demo mode: lets the /login page mint a session for a fake user so a
   // fresh fork is fully clickable without a GitHub OAuth app or DB.
   //   - 'true'  → always on (even in prod — useful for public previews)
@@ -116,6 +130,18 @@ export const hasPostHog = Boolean(env.NUXT_PUBLIC_POSTHOG_KEY)
 // Convenience flag: Resend is on when an API key is set. The mailer
 // otherwise consola-prints emails instead of sending them.
 export const hasResend = Boolean(env.RESEND_API_KEY)
+
+// Convenience flag: Polar billing requires BOTH the API token AND the
+// webhook secret (the webhook is the source of truth for subscription
+// state — without it, we can't reliably know a payment succeeded). Boot
+// fails if only one is set so misconfiguration surfaces immediately.
+export const hasPolar = Boolean(env.POLAR_ACCESS_TOKEN && env.POLAR_WEBHOOK_SECRET)
+if (env.POLAR_ACCESS_TOKEN && !env.POLAR_WEBHOOK_SECRET) {
+  throw new Error('POLAR_ACCESS_TOKEN is set but POLAR_WEBHOOK_SECRET is not. Set both, or unset both.')
+}
+if (env.POLAR_WEBHOOK_SECRET && !env.POLAR_ACCESS_TOKEN) {
+  throw new Error('POLAR_WEBHOOK_SECRET is set but POLAR_ACCESS_TOKEN is not. Set both, or unset both.')
+}
 
 // Demo mode resolves to:
 //   - explicit 'true'/'false' if set

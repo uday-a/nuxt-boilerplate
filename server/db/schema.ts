@@ -64,6 +64,36 @@ export const projects = pgTable('projects', {
 export type Project = typeof projects.$inferSelect
 export type NewProject = typeof projects.$inferInsert
 
+// Subscription / plan status mirrored from Polar.
+//
+// Polar is the source of truth — we never compute a plan locally. The
+// webhook handler updates this row on subscription.* events; the app
+// reads it to gate features. There's a 1:1 between users and
+// subscriptions (one active sub per user); we upsert by userId.
+//
+// `status` mirrors Polar's union — keep it loose-string here rather
+// than a pgEnum so a new Polar status doesn't require a migration.
+export const subscriptions = pgTable('subscriptions', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }).unique(),
+  // Polar customer + subscription identifiers — opaque strings.
+  polarCustomerId: varchar('polar_customer_id', { length: 64 }).notNull(),
+  polarSubscriptionId: varchar('polar_subscription_id', { length: 64 }).notNull().unique(),
+  // The Polar product ID this subscription was created against. Maps
+  // to one of POLAR_*_PRODUCT_ID env vars.
+  productId: varchar('product_id', { length: 64 }).notNull(),
+  // 'active' | 'canceled' | 'past_due' | 'incomplete' | 'trialing' …
+  status: varchar('status', { length: 32 }).notNull(),
+  currentPeriodEnd: timestamp('current_period_end'),
+  cancelAtPeriodEnd: boolean('cancel_at_period_end').notNull().default(false),
+  canceledAt: timestamp('canceled_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+
+export type Subscription = typeof subscriptions.$inferSelect
+export type NewSubscription = typeof subscriptions.$inferInsert
+
 // One-time-use tokens for the magic-link sign-in flow.
 //
 // We store the SHA-256 hash of the token, never the raw value, so a DB

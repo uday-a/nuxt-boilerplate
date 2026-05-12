@@ -1,21 +1,77 @@
 <script setup lang="ts">
-import { CheckCircle2, Download, CreditCard, ExternalLink } from 'lucide-vue-next'
+import { CheckCircle2, Download, CreditCard, ExternalLink, AlertCircle, Loader2 } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import type { ApiResponse } from '~~/server/utils/response'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 useHead({ title: 'Billing · Settings' })
 
-const plan = {
-  name: 'Pro',
-  price: 49,
-  seats: 8,
-  seatPrice: 12,
-  cycle: 'monthly',
-  renews: '2026-06-01',
+interface SubscriptionRow {
+  status: string
+  productId: string
+  currentPeriodEnd: string | null
+  cancelAtPeriodEnd: boolean
+  canceledAt: string | null
+  plan: 'pro' | 'team' | 'enterprise' | null
 }
+
+const route = useRoute()
+const justCheckedOut = computed(() => route.query.status === 'success')
+
+const { data: subRes, pending: subLoading, refresh: refreshSub } = await useFetch<ApiResponse<{ subscription: SubscriptionRow | null }>>('/api/me/subscription')
+
+const subscription = computed<SubscriptionRow | null>(() =>
+  subRes.value?.ok ? subRes.value.data.subscription : null,
+)
+const hasActiveSub = computed(() => subscription.value && ['active', 'trialing', 'past_due'].includes(subscription.value.status))
+
+// Derive the displayed plan label from the real subscription, falling
+// back to a "Free" presentation when the user hasn't checked out yet.
+const plan = computed(() => {
+  if (!subscription.value) return { name: 'Free', price: 0, cycle: '—', renews: null as string | null }
+  const label = subscription.value.plan ? subscription.value.plan[0]!.toUpperCase() + subscription.value.plan.slice(1) : 'Subscribed'
+  return {
+    name: label,
+    price: 0,
+    cycle: '—',
+    renews: subscription.value.currentPeriodEnd,
+  }
+})
+
+const portalState = ref<'idle' | 'opening' | 'error'>('idle')
+const portalError = ref<string | null>(null)
+
+async function openPortal() {
+  portalState.value = 'opening'
+  portalError.value = null
+  const res = await $fetch<ApiResponse<{ url: string }>>('/api/billing/portal', { method: 'POST' })
+    .catch((err) => {
+      const data = (err as { data?: { error?: { message?: string } } }).data
+      return { ok: false, error: { code: 'INTERNAL', message: data?.error?.message ?? 'Could not open portal' } } as const
+    })
+  if (!res.ok) {
+    portalError.value = res.error.message
+    portalState.value = 'error'
+    return
+  }
+  window.location.href = res.data.url
+}
+
+// If the user just landed back from a successful checkout, poll the
+// subscription endpoint a few times — the webhook fires async on Polar's
+// side and the row may not exist yet on first read.
+onMounted(() => {
+  if (!justCheckedOut.value) return
+  let attempts = 0
+  const interval = setInterval(async () => {
+    attempts++
+    await refreshSub()
+    if (hasActiveSub.value || attempts >= 6) clearInterval(interval)
+  }, 1500)
+})
 
 const usageThisCycle = [
   { label: 'API calls', used: 482300, limit: 1000000, unit: '' },
@@ -61,32 +117,65 @@ const fmt = (n: number, unit: string) => `${n.toLocaleString()}${unit}`
               </CardTitle>
             </div>
             <Badge
+              v-if="plan.renews"
               variant="secondary"
               class="text-[10px]"
             >
-              Renews {{ plan.renews }}
+              Renews {{ new Date(plan.renews).toLocaleDateString() }}
             </Badge>
           </div>
         </CardHeader>
         <CardContent class="space-y-3">
-          <div class="flex items-baseline gap-1">
-            <span class="text-3xl font-semibold tabular-nums">${{ plan.price + plan.seats * plan.seatPrice }}</span>
-            <span class="text-muted-foreground text-sm">/ {{ plan.cycle }}</span>
+          <div
+            v-if="justCheckedOut && !hasActiveSub"
+            class="border-primary/30 bg-primary/5 flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+          >
+            <Loader2 class="text-primary size-4 animate-spin" />
+            Finalising your subscription… (Polar's webhook usually arrives in a second or two.)
           </div>
-          <p class="text-muted-foreground text-xs">
-            Base ${{ plan.price }} + {{ plan.seats }} seats × ${{ plan.seatPrice }}/seat. Billed in advance, prorated on seat changes.
-          </p>
+          <div
+            v-else-if="subscription"
+            class="flex items-baseline gap-1"
+          >
+            <span class="text-3xl font-semibold tabular-nums capitalize">{{ subscription.status }}</span>
+          </div>
+          <div
+            v-else
+            class="text-muted-foreground text-sm"
+          >
+            You're on the free tier. Upgrade for more seats, integrations, and priority support.
+          </div>
           <div class="flex flex-wrap gap-2 pt-2">
-            <Button>Upgrade to Enterprise</Button>
-            <Button variant="outline">
-              Change plan
-            </Button>
-            <Button
-              variant="ghost"
-              class="text-muted-foreground"
-            >
-              Cancel subscription
-            </Button>
+            <template v-if="hasActiveSub">
+              <Button
+                :disabled="portalState === 'opening'"
+                @click="openPortal"
+              >
+                <Loader2
+                  v-if="portalState === 'opening'"
+                  class="size-4 animate-spin"
+                />
+                <CreditCard
+                  v-else
+                  class="size-4"
+                />
+                Manage subscription
+              </Button>
+            </template>
+            <template v-else>
+              <Button as-child>
+                <NuxtLink to="/pricing">
+                  View plans
+                </NuxtLink>
+              </Button>
+            </template>
+          </div>
+          <div
+            v-if="portalError"
+            class="text-destructive flex items-center gap-2 text-sm"
+          >
+            <AlertCircle class="size-4" />
+            {{ portalError }}
           </div>
         </CardContent>
       </Card>

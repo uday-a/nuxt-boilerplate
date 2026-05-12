@@ -14,7 +14,16 @@ import {
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 type Cycle = 'monthly' | 'yearly'
+type Plan = 'pro' | 'team' | 'enterprise'
+
 const cycle = ref<Cycle>('monthly')
+
+// Plan keys match `Plan` in server/utils/polar.ts so the parent page
+// can pass them straight to /api/billing/checkout.
+const emit = defineEmits<{
+  subscribe: [plan: Plan, cycle: Cycle]
+  contactSales: []
+}>()
 </script>
 
 <template>
@@ -91,6 +100,7 @@ const cycle = ref<Cycle>('monthly')
             <Button
               class="w-full"
               variant="outline"
+              @click="emit('subscribe', 'pro', cycle)"
             >
               Start free
             </Button>
@@ -139,7 +149,10 @@ const cycle = ref<Cycle>('monthly')
               </ul>
             </CardContent>
             <CardFooter>
-              <Button class="w-full">
+              <Button
+                class="w-full"
+                @click="emit('subscribe', 'team', cycle)"
+              >
                 Start 14-day trial
               </Button>
             </CardFooter>
@@ -184,6 +197,7 @@ const cycle = ref<Cycle>('monthly')
             <Button
               class="w-full"
               variant="outline"
+              @click="emit('contactSales')"
             >
               Talk to sales
             </Button>
