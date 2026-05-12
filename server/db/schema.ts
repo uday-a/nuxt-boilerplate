@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
 
 // Application roles. Backed by a Postgres ENUM so the DB rejects unknown
 // values — a free-text varchar would let a typo like 'admin ' silently
@@ -8,10 +8,11 @@ export const userRole = pgEnum('user_role', ['user', 'admin', 'editor'])
 export type Role = (typeof userRole.enumValues)[number]
 export const ROLES: readonly Role[] = userRole.enumValues
 
-// Authoritative app-side mirror of the OAuth user. nuxt-auth-utils stores
-// the session client-side (encrypted cookie); this row is where you hang
-// app-owned data (preferences, ownership of records, etc.) keyed off
-// GitHub's stable user id.
+// Authoritative app-side mirror of every signed-in account.
+//
+// Email is the user's identity (UNIQUE, NOT NULL). `githubId` is now
+// nullable — present for GitHub OAuth signins, NULL for magic-link
+// signins. Add other provider columns (googleId, etc.) the same way.
 //
 // Profile fields (bio, timezone, locale, notification prefs) live here
 // rather than in a separate `user_preferences` table to keep the common
@@ -19,10 +20,13 @@ export const ROLES: readonly Role[] = userRole.enumValues
 // table only if preferences grow past ~15 columns.
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  githubId: integer('github_id').notNull().unique(),
+  email: varchar('email', { length: 256 }).notNull(),
+  // OAuth provider IDs. Nullable so users can exist without OAuth
+  // (magic-link only). Unique when present so collisions can't dedupe
+  // separate accounts.
+  githubId: integer('github_id').unique(),
   login: varchar('login', { length: 64 }).notNull(),
   name: varchar('name', { length: 128 }),
-  email: varchar('email', { length: 256 }),
   avatarUrl: text('avatar_url'),
   role: userRole('role').notNull().default('user'),
   // Profile.
@@ -35,7 +39,7 @@ export const users = pgTable('users', {
   notifyInApp: boolean('notify_in_app').notNull().default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
+}, t => [uniqueIndex('users_email_unique').on(t.email)])
 
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
@@ -59,3 +63,26 @@ export const projects = pgTable('projects', {
 
 export type Project = typeof projects.$inferSelect
 export type NewProject = typeof projects.$inferInsert
+
+// One-time-use tokens for the magic-link sign-in flow.
+//
+// We store the SHA-256 hash of the token, never the raw value, so a DB
+// snapshot leak can't be used to sign in. The raw token is emitted into
+// the email link and discarded server-side immediately.
+//
+// `usedAt` enforces single-use: a valid token transitions usedAt from
+// null to a timestamp on first verify, and subsequent verifies fail
+// (`token already used`). `expiresAt` enforces TTL (15 minutes by
+// convention; see the magic-link handler).
+//
+// `email` carries the requested identity. The verify path either
+// updates an existing users row (matched by email) or inserts a fresh
+// one. This is the data path that doesn't require GitHub OAuth.
+export const magicLinkTokens = pgTable('magic_link_tokens', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 256 }).notNull(),
+  tokenHash: varchar('token_hash', { length: 64 }).notNull().unique(),
+  expiresAt: timestamp('expires_at').notNull(),
+  usedAt: timestamp('used_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})

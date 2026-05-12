@@ -34,6 +34,14 @@ export default defineOAuthGitHubEventHandler({
     // We surface that as a system column via `.returning()`.
     let isFirstSignin = false
 
+    // Email is NOT NULL on the users table (it's the unique identity).
+    // GitHub usually returns it because `emailRequired: true` is set
+    // above, but a user without a public email scope still slips
+    // through; synthesize a stable fallback rather than failing the
+    // signin. `<login>@users.noreply.github.com` is GitHub's own
+    // documented no-reply address pattern.
+    const userEmail = user.email ?? `${user.login}@users.noreply.github.com`
+
     try {
       const db = useDb()
       const returned = await db
@@ -42,7 +50,7 @@ export default defineOAuthGitHubEventHandler({
           githubId: user.id,
           login: user.login,
           name: user.name ?? user.login,
-          email: user.email,
+          email: userEmail,
           avatarUrl: user.avatar_url,
           role: initialRole,
         })
@@ -51,7 +59,7 @@ export default defineOAuthGitHubEventHandler({
           set: {
             login: user.login,
             name: user.name ?? user.login,
-            email: user.email,
+            email: userEmail,
             avatarUrl: user.avatar_url,
             updatedAt: new Date(),
             // role intentionally omitted — see bootstrap comment above.

@@ -15,6 +15,13 @@
       "when": 1779021261922,
       "tag": "0001_tan_swordsman",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779023146450,
+      "tag": "0002_chief_swordsman",
+      "breakpoints": true
     }
   ]
 }
