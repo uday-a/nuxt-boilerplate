@@ -14,7 +14,7 @@
 
 import type { PostHog } from 'posthog-js'
 
-export default defineNuxtPlugin(async (nuxtApp) => {
+export default defineNuxtPlugin(async () => {
   const { key, host } = useRuntimeConfig().public.posthog as { key: string, host: string }
 
   if (!key) {

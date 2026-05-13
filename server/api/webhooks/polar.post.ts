@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm'
 import { useDb, schema } from '~~/server/db'
 import { env, hasPolar } from '~~/server/utils/env'
 import { logger } from '~~/server/utils/logger'
