@@ -42,3 +42,5 @@ logs
 
 # Pilot scratch (moved pages awaiting registry-driven rebuild)
 .pilot-backup/
+.vercel
+.env*.local
