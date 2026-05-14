@@ -333,6 +333,14 @@ Nitro is hosting-agnostic — anywhere Node, Edge, or Workers runs.
 
 ### Vercel *(recommended for fastest setup)*
 
+**One-click deploy:**
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/uday-a/nuxt-boilerplate&env=NUXT_SESSION_PASSWORD&envDescription=32%2B%20char%20random%20string%20for%20session%20cookie%20encryption.%20Generate%20with%20openssl%20rand%20-base64%2032&envLink=https://github.com/uday-a/nuxt-boilerplate%232-environment&project-name=nuxt-boilerplate&repository-name=nuxt-boilerplate)
+
+Forks the repo into your GitHub, imports it as a Vercel project, prompts for `NUXT_SESSION_PASSWORD`, deploys. Every subsequent `git push` to `main` re-deploys automatically.
+
+**Or via CLI:**
+
 ```bash
 npm i -g vercel
 vercel link
@@ -340,7 +348,7 @@ vercel env add NUXT_SESSION_PASSWORD production    # paste a 32+ char value
 vercel --prod
 ```
 
-Zero config — Nitro auto-detects the `vercel` preset. Node runtime supports `postgres-js` TCP out of the box.
+Either path: zero config — Nitro auto-detects the `vercel` preset. Node runtime supports `postgres-js` TCP out of the box.
 
 ### Cloudflare Workers
 
