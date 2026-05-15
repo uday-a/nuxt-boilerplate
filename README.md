@@ -1,6 +1,16 @@
 # 🚀 Nuxt 4 Boilerplate
 
-A production-grade [Nuxt 4](https://nuxt.com) starter for SaaS — auth, database, billing, email, analytics, error monitoring, i18n, structured logging, and a `shadcn-vue` design system. **Every external integration is gated on env** so cloning gives you a working app *today*; configuring services flips them on. No accounts required to start.
+A production-grade [Nuxt 4](https://nuxt.com) starter for SaaS — auth, database, billing, email, analytics, error monitoring, i18n, structured logging, and a **full design system** powered by [`@uipkge`](https://uipkge.dev). **Every external integration is gated on env** so cloning gives you a working app *today*; configuring services flips them on. No accounts required to start.
+
+> ### 🎨 Powered by [UIPKGE](https://uipkge.dev) — the design system that makes this boilerplate *look* like a product, not a starter
+>
+> Every UI element, block, and chart in this repo comes from the **`@uipkge`** registry — a curated shadcn-vue distribution with **elements** (button, dialog, command, combobox, date-picker, ...), **blocks** (auth cards, dashboard sidebars, kanban boards, pricing tables, hero sections, ...), **charts** (area, bar, line, pie, radar, sparkline — themed light + dark via `vue-echarts`), **forms** (TanStack-Form-wrapped, validated, accessible), **tables** (TanStack-Table-powered, sortable, virtualized), and a **Tiptap-based rich editor** — all using the same design tokens, same theming, same Tailwind v4 setup. One CLI command:
+>
+> ```bash
+> npx shadcn-vue add @uipkge/<name>
+> ```
+>
+> The component source is copied into your project — **fully owned, fully editable, no runtime dependency, no lock-in.** [Browse the catalog →](https://uipkge.dev) · [Jump to the full UIPKGE section ↓](#-uipkge--ready-to-use-elements-blocks--charts)
 
 🌟 **Live demo**: [nuxt-boilerplate-three.vercel.app](https://nuxt-boilerplate-three.vercel.app) — click *"Continue as demo user"* on `/login` to explore the protected app shell without signing up for anything.
 
