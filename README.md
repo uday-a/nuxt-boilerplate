@@ -33,7 +33,7 @@ That's it. The boilerplate runs in **demo mode** with no DB, no OAuth app, no AP
 ### Frontend
 
 - ✅ **Tailwind v4** via the official `@tailwindcss/vite` plugin
-- ✅ **shadcn-vue** primitives (`new-york` / `neutral`) consumed via the [`@uipkge`](https://uipkge.com) registry — add components with `npx shadcn-vue add @uipkge/<name>`
+- ✅ **[`@uipkge`](https://uipkge.dev) registry** — the entire shadcn-vue surface (primitives + blocks + charts) installable with one CLI command. See [§ UIPKGE](#-uipkge--ready-to-use-elements-blocks--charts) below.
 - ✅ **Reka UI** — the headless layer shadcn-vue is built on
 - ✅ **Three-state theme** (`light` / `dark` / `system`) — persisted to **cookie** (not localStorage) + SSR inline script. **Zero FOUC**.
 - ✅ **TanStack Form** + **TanStack Table** + **vue-echarts** + **Tiptap** + **lucide-vue-next**
@@ -143,6 +143,49 @@ Additional auth modes already wired:
 - ✅ **10 project-level skills** at `.claude/skills/` that enforce boilerplate conventions in real time — `response-envelope`, `auth-gating-check`, `secret-exposure-check`, `db-migration`, `i18n-keys`, `logger-conventions`, `shipping-check`, `add-page`, `error-handling`, `uipkge-first`
 - ✅ **3 external skills** pinned via `skills-lock.json` — `nuxt`, `vue`, `reka-ui` (sourced from [skills.sh](https://skills.sh))
 - ✅ Skills route Claude to the right primitives, prevent ad-hoc auth bypasses, enforce env-var safety, and verify migrations before commit
+
+---
+
+## 🎨 UIPKGE — ready-to-use elements, blocks & charts
+
+This boilerplate is wired to the [**`@uipkge`**](https://uipkge.dev) registry — a curated shadcn-vue distribution that goes well beyond raw primitives. Everything is installable with the standard shadcn-vue CLI, drops directly into `app/components/ui/`, and is yours to edit (no runtime dependency, no lock-in).
+
+```bash
+npx shadcn-vue add @uipkge/<name>
+```
+
+### What's in it
+
+| Category | Examples |
+|---|---|
+| **Elements** | `button`, `input`, `textarea`, `select`, `checkbox`, `radio-group`, `switch`, `slider`, `combobox`, `command`, `date-picker`, `dropdown-menu`, `popover`, `dialog`, `sheet`, `drawer`, `tooltip`, `toast`, `alert`, `badge`, `avatar`, `tabs`, `accordion`, `breadcrumb`, `pagination`, `progress`, `skeleton`, `separator`, ... |
+| **Blocks** | Sign-in / sign-up cards, magic-link forms, dashboard sidebars (collapsible), kanban boards, command palettes, pricing tables, hero sections, CTA bands, feature grids, FAQ accordions, settings shells, onboarding stepper, team switcher, profile menus, breadcrumbs, ... |
+| **Charts** | Area, bar (stacked + grouped), line, pie, donut, radial, radar, scatter, sparkline — themed for both light + dark, powered by `vue-echarts` |
+| **Forms** | TanStack-Form-wrapped field components — validated, accessible, themed |
+| **Tables** | TanStack-Table-powered data tables — sortable, filterable, paginated, virtualized variants |
+| **Editor** | Tiptap-based rich-text editor (links, placeholders, task lists, text-align, underline) |
+
+### Registry config
+
+Already wired in [`components.json`](./components.json):
+
+```json
+{
+  "registries": {
+    "@uipkge": "https://uipkge.dev/r/{name}.json"
+  }
+}
+```
+
+This means `npx shadcn-vue add @uipkge/<name>` resolves to the UIPKGE distribution instead of (or alongside) the upstream shadcn-vue source. Each addition copies the source into your project — fully owned, fully editable.
+
+### Why this matters
+
+The shadcn-vue philosophy is *"copy the component, don't depend on a package."* UIPKGE extends that with curated, production-grade compositions on top of the primitives — so you get *blocks* (full UI sections like "sign-in card with magic-link fallback") *and* charts *and* tables *and* forms, all using the same design tokens, same theming, same Tailwind v4 setup. No multi-library Frankenstein.
+
+The `.claude/skills/uipkge-first` skill routes Claude Code to `npx shadcn-vue add @uipkge/<name>` over hand-rolling a primitive — so when you ask for "a date picker", the agent installs the right component instead of inventing one from scratch.
+
+> 🔗 Browse the full catalog at **[uipkge.dev](https://uipkge.dev)**
 
 ---
 
@@ -437,6 +480,6 @@ MIT — see [LICENSE](./LICENSE).
 
 - [Nuxt](https://nuxt.com) team for the framework
 - [`nuxt-auth-utils`](https://github.com/atinux/nuxt-auth-utils) by [@atinux](https://github.com/atinux) for the 44-provider auth layer
-- [shadcn-vue](https://www.shadcn-vue.com) + [`@uipkge`](https://uipkge.com) for the component system
+- [shadcn-vue](https://www.shadcn-vue.com) + [`@uipkge`](https://uipkge.dev) for the component system
 - [Drizzle](https://orm.drizzle.team) for the ORM
 - [ixartz/Next-js-Boilerplate](https://github.com/ixartz/Next-js-Boilerplate) for the format inspiration
