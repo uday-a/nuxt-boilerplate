@@ -4,7 +4,17 @@ A production-grade [Nuxt 4](https://nuxt.com) starter for SaaS — auth, databas
 
 > ### 🎨 Powered by [UIPKGE](https://uipkge.dev) — the design system that makes this boilerplate *look* like a product, not a starter
 >
-> Every UI element, block, and chart in this repo comes from the **`@uipkge`** registry — a curated shadcn-vue distribution with **elements** (button, dialog, command, combobox, date-picker, ...), **blocks** (auth cards, dashboard sidebars, kanban boards, pricing tables, hero sections, ...), **charts** (area, bar, line, pie, radar, sparkline — themed light + dark via `vue-echarts`), **forms** (TanStack-Form-wrapped, validated, accessible), **tables** (TanStack-Table-powered, sortable, virtualized), and a **Tiptap-based rich editor** — all using the same design tokens, same theming, same Tailwind v4 setup. One CLI command:
+> Every UI element, block, and chart in this repo comes from the **`@uipkge`** registry — a curated shadcn-vue distribution that ships **the entire shape of a SaaS app**:
+>
+> - 🔐 **Full auth UI** — sign-in, sign-up, magic-link, forgot-password, MFA, invite-by-token, onboarding stepper
+> - 🌐 **Full public / marketing UI** — hero sections, feature grids, CTA bands, pricing tables, FAQ accordions, testimonials, footer + header navs, terms / privacy shells
+> - 🔒 **Full private / dashboard UI** (protected routes) — collapsible sidebar, breadcrumbs, command palette, team switcher, profile menu, settings shell, kanban board, project CRUD screens
+> - 📈 **Charts** — area, bar, line, pie, radar, sparkline (themed light + dark via `vue-echarts`)
+> - 📋 **Forms + tables** — TanStack-Form-wrapped fields + TanStack-Table data grids (sortable, virtualized)
+> - ✏️ **Rich editor** — Tiptap with links, placeholders, task lists, text-align
+> - 🧱 **Elements** — button, dialog, command, combobox, date-picker, drawer, sheet, tooltip, toast, ... (the full shadcn-vue surface)
+>
+> All using the same design tokens, same theming, same Tailwind v4 setup. One CLI command:
 >
 > ```bash
 > npx shadcn-vue add @uipkge/<name>
