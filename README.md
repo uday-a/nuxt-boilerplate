@@ -2,6 +2,33 @@
 
 A production-grade [Nuxt 4](https://nuxt.com) starter for SaaS — auth, database, billing, email, analytics, error monitoring, i18n, structured logging, and a **full design system** powered by [`@uipkge`](https://uipkge.dev). **Every external integration is gated on env** so cloning gives you a working app *today*; configuring services flips them on. No accounts required to start.
 
+![Dashboard preview](./.github/assets/dashboard.png)
+
+<details>
+<summary><b>📸 More screenshots — 6 pages</b></summary>
+
+### Kanban board (`/dashboard/kanban`)
+
+![Kanban board](./.github/assets/kanban.png)
+
+### Data table (`/dashboard/data-table`)
+
+![Data table](./.github/assets/data-table.png)
+
+### Calendar (`/dashboard/calendar`)
+
+![Calendar](./.github/assets/calendar.png)
+
+### Public landing (`/`)
+
+![Landing page](./.github/assets/landing.png)
+
+### Sign-in (`/login` — demo mode active)
+
+![Login page](./.github/assets/login.png)
+
+</details>
+
 > ### 🎨 Powered by [UIPKGE](https://uipkge.dev) — the design system that makes this boilerplate *look* like a product, not a starter
 >
 > Every UI element, block, and chart in this repo comes from the **`@uipkge`** registry — a curated shadcn-vue distribution that ships **the entire shape of a SaaS app**:
@@ -396,11 +423,19 @@ Nitro is hosting-agnostic — anywhere Node, Edge, or Workers runs.
 
 ### Vercel *(recommended for fastest setup)*
 
-**One-click deploy:**
+**One-click deploy** — two steps, ~60 seconds:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/uday-a/nuxt-boilerplate&env=NUXT_SESSION_PASSWORD&envDescription=32%2B%20char%20random%20string%20for%20session%20cookie%20encryption.%20Generate%20with%20openssl%20rand%20-base64%2032&envLink=https://github.com/uday-a/nuxt-boilerplate%232-environment&project-name=nuxt-boilerplate&repository-name=nuxt-boilerplate)
+**Step 1.** Generate a session password in your terminal (the only required env var) and copy the output:
 
-Forks the repo into your GitHub, imports it as a Vercel project, prompts for `NUXT_SESSION_PASSWORD`, deploys. Every subsequent `git push` to `main` re-deploys automatically.
+```bash
+openssl rand -base64 32
+```
+
+**Step 2.** Click the button → paste the value into the `NUXT_SESSION_PASSWORD` prompt → deploy:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/uday-a/nuxt-boilerplate&env=NUXT_SESSION_PASSWORD&envDescription=Paste%20the%20output%20of%3A%20openssl%20rand%20-base64%2032&envLink=https://github.com/uday-a/nuxt-boilerplate%23-getting-started&project-name=nuxt-boilerplate&repository-name=nuxt-boilerplate)
+
+Vercel forks the repo into your GitHub, imports it as a project, prompts for `NUXT_SESSION_PASSWORD`, builds + deploys. Every subsequent `git push` to `main` re-deploys automatically.
 
 **Or via CLI:**
 

@@ -38,7 +38,7 @@
     "drizzle-orm": "^0.45.2",
     "echarts": "^6.0.0",
     "lucide-vue-next": "^1.0.0",
-    "nuxt": "^4.4.5",
+    "nuxt": "^4.4.6",
     "nuxt-auth-utils": "^0.5.29",
     "postgres": "^3.4.9",
     "posthog-js": "^1.373.5",

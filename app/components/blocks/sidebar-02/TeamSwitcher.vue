@@ -2,8 +2,8 @@
 // Edit teams + activeTeam below to match your tenant model. The dropdown
 // is the full team switcher pattern -- avatar tile, label, kbd shortcut,
 // and a "Add team" footer row. Wire setActive() to your tenant API.
-import { ref } from 'vue'
-import { AudioWaveform, Check, ChevronsUpDown, Command, GalleryVerticalEnd, Plus } from 'lucide-vue-next'
+import { h, ref } from 'vue'
+import { AudioWaveform, Check, ChevronsUpDown, Command, Plus } from 'lucide-vue-next'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,8 +20,20 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 
+// Inline Nuxt mark — the official green chevron. Functional component so
+// it slots into the same <component :is="..."> pattern lucide icons use.
+const NuxtLogo = () => h('svg', {
+  xmlns: 'http://www.w3.org/2000/svg',
+  viewBox: '0 0 32 32',
+  fill: 'currentColor',
+}, [
+  h('path', {
+    d: 'M18.392 23.586h11.615c.369 0 .732-.096 1.052-.278.32-.182.586-.444.768-.76a1.516 1.516 0 0 0 0-1.517L24.025 8.28a1.524 1.524 0 0 0-.768-.76 1.539 1.539 0 0 0-1.052-.279c-.37 0-.733.097-1.053.279-.32.182-.585.444-.767.76l-1.993 3.443-3.895-6.736a1.524 1.524 0 0 0-.768-.76 1.539 1.539 0 0 0-1.053-.278c-.369 0-.732.096-1.052.278-.32.183-.586.444-.768.76L1.183 21.031a1.516 1.516 0 0 0 0 1.517c.182.316.448.578.768.76.32.182.683.278 1.052.278h7.293c2.89 0 5.022-1.27 6.488-3.738l3.562-6.13 1.907-3.282 5.723 9.873h-7.63l-1.954 3.277ZM10.176 20.3l-5.09-.001 7.633-13.156 3.81 6.578-2.551 4.403c-.973 1.604-2.078 2.176-3.802 2.176Z',
+  }),
+])
+
 const teams = [
-  { name: 'Acme Inc', logo: GalleryVerticalEnd, plan: 'Enterprise' },
+  { name: 'Nuxt', logo: NuxtLogo, plan: 'v4' },
   { name: 'Acme Corp.', logo: AudioWaveform, plan: 'Startup' },
   { name: 'Evil Corp.', logo: Command, plan: 'Free' },
 ]
