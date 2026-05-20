@@ -49,7 +49,7 @@ A production-grade [Nuxt 4](https://nuxt.com) starter for SaaS — auth, databas
 >
 > The component source is copied into your project — **fully owned, fully editable, no runtime dependency, no lock-in.** [Browse the catalog →](https://uipkge.dev) · [Jump to the full UIPKGE section ↓](#-uipkge--ready-to-use-elements-blocks--charts)
 
-🌟 **Live demo**: [nuxt-boilerplate-three.vercel.app](https://nuxt-boilerplate-three.vercel.app) — click *"Continue as demo user"* on `/login` to explore the protected app shell without signing up for anything.
+🌟 **Live demo**: [nuxt-boilerplate.uipkge.dev](https://nuxt-boilerplate.uipkge.dev) — click *"Continue as demo user"* on `/login` to explore the protected app shell without signing up for anything.
 
 ```bash
 git clone https://github.com/uday-a/nuxt-boilerplate my-app
