@@ -50,6 +50,12 @@ const emits = defineEmits<{
 const slots = useSlots()
 const attrs = useAttrs()
 
+// Hoisted out of the template: a bare `|` union in a `:binding` expression
+// trips vue/no-deprecated-filter (it reads the pipe as a Vue 2 filter).
+const ariaInvalid = computed(
+  () => attrs['aria-invalid'] as 'true' | 'false' | 'grammar' | 'spelling' | undefined,
+)
+
 const modelValue = useVModel(props, 'modelValue', emits, {
   passive: true,
   defaultValue: props.defaultValue,
@@ -75,7 +81,9 @@ const hasRightConfig = computed(() => {
 const currentLength = computed(() => String(modelValue.value ?? '').length)
 
 const showClear = computed(() => {
-  return props.allowClear && !!modelValue.value && (focused.value || hovered.value) && !props.disabled && !props.readonly
+  return (
+    props.allowClear && !!modelValue.value && (focused.value || hovered.value) && !props.disabled && !props.readonly
+  )
 })
 
 const showPasswordToggleBtn = computed(() => {
@@ -116,18 +124,15 @@ const wrapperClasses = computed(() => {
   const variantClass = variantMap[props.variant]
 
   const statusMap = {
-    error: 'border-destructive focus-within:border-destructive focus-within:ring-destructive/20 dark:focus-within:ring-destructive/40',
+    error:
+      'border-destructive focus-within:border-destructive focus-within:ring-destructive/20 dark:focus-within:ring-destructive/40',
     warning: 'border-[var(--warning)] focus-within:border-[var(--warning)] focus-within:ring-[var(--warning)]/20',
   }
   const statusClass = props.status ? statusMap[props.status] : ''
 
-  const focusClass = !props.status
-    ? 'focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]'
-    : ''
+  const focusClass = !props.status ? 'focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]' : ''
 
-  const disabledClass = props.disabled
-    ? 'pointer-events-none opacity-50 cursor-not-allowed bg-muted/30'
-    : ''
+  const disabledClass = props.disabled ? 'pointer-events-none opacity-50 cursor-not-allowed bg-muted/30' : ''
 
   const ariaInvalidClass
     = 'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
@@ -147,9 +152,7 @@ const wrapperClasses = computed(() => {
 
 function addonClasses(position: 'before' | 'after') {
   const roundedClass
-    = position === 'before'
-      ? 'rounded-l-md rounded-r-none border-r-0'
-      : 'rounded-r-md rounded-l-none border-l-0'
+    = position === 'before' ? 'rounded-l-md rounded-r-none border-r-0' : 'rounded-r-md rounded-l-none border-l-0'
   return cn(
     'flex items-center bg-muted px-3 text-sm text-muted-foreground border border-input',
     roundedClass,
@@ -160,10 +163,8 @@ function addonClasses(position: 'before' | 'after') {
 const inputPadding = computed(() => {
   const hasLeft = hasPrefix.value
   const hasRight = hasSuffix.value || hasRightConfig.value
-  const leftPad
-    = props.size === 'small' ? 'pl-2' : props.size === 'large' ? 'pl-3' : 'pl-2.5'
-  const rightPad
-    = props.size === 'small' ? 'pr-2' : props.size === 'large' ? 'pr-3' : 'pr-2.5'
+  const leftPad = props.size === 'small' ? 'pl-2' : props.size === 'large' ? 'pl-3' : 'pl-2.5'
+  const rightPad = props.size === 'small' ? 'pr-2' : props.size === 'large' ? 'pr-3' : 'pr-2.5'
 
   if (!hasLeft && !hasRight) return cn(leftPad, rightPad)
   if (hasLeft && !hasRight) return cn('pl-0', rightPad)
@@ -199,7 +200,7 @@ function togglePassword() {
       :class="wrapperClasses"
       data-uipkge
       data-slot="input"
-      :aria-invalid="(attrs['aria-invalid'] as 'true' | 'false' | 'grammar' | 'spelling' | undefined)"
+      :aria-invalid="ariaInvalid"
       @mouseenter="hovered = true"
       @mouseleave="hovered = false"
       @click="inputRef?.focus()"
@@ -215,6 +216,7 @@ function togglePassword() {
             :is="prefixIcon"
             v-if="prefixIcon"
             class="size-4"
+            aria-hidden="true"
           />
           <template v-else>{{ prefix }}</template>
         </slot>
@@ -234,7 +236,7 @@ function togglePassword() {
         :placeholder="placeholder"
         :class="
           cn(
-            'w-full flex-1 min-w-0 bg-transparent outline-none',
+            'w-full min-w-0 flex-1 bg-transparent outline-none',
             'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground',
             'file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium',
             'disabled:cursor-not-allowed',
@@ -249,39 +251,47 @@ function togglePassword() {
            count) render first, then the user's suffix slot so the slotted
            content is always the rightmost element in the row. -->
       <div
-        class="flex items-center gap-1 shrink-0"
+        class="flex shrink-0 items-center gap-1"
         :class="props.size === 'small' ? 'pr-2' : props.size === 'large' ? 'pr-3' : 'pr-2.5'"
       >
         <button
           v-if="showClear"
           type="button"
-          class="text-muted-foreground hover:text-foreground shrink-0 rounded p-0.5 transition-colors"
+          aria-label="Clear input"
+          class="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 shrink-0 rounded p-0.5 transition-colors focus-visible:ring-1 focus-visible:outline-none"
           @mousedown.prevent="handleClear"
+          @click="handleClear"
         >
-          <X class="size-4" />
+          <X
+            class="size-4"
+            aria-hidden="true"
+          />
         </button>
 
         <button
           v-if="showPasswordToggleBtn"
           type="button"
-          class="text-muted-foreground hover:text-foreground shrink-0 rounded p-0.5 transition-colors"
           :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
           :aria-pressed="passwordVisible"
+          class="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 shrink-0 rounded p-0.5 transition-colors focus-visible:ring-1 focus-visible:outline-none"
           @mousedown.prevent="togglePassword"
+          @click="togglePassword"
         >
           <Eye
             v-if="passwordVisible"
             class="size-4"
+            aria-hidden="true"
           />
           <EyeOff
             v-else
             class="size-4"
+            aria-hidden="true"
           />
         </button>
 
         <span
           v-if="showCountDisplay"
-          class="text-muted-foreground pointer-events-none select-none text-xs"
+          class="text-muted-foreground pointer-events-none text-xs select-none"
         >
           {{ currentLength }}/{{ maxlength }}
         </span>
@@ -295,6 +305,7 @@ function togglePassword() {
               :is="suffixIcon"
               v-if="suffixIcon"
               class="size-4"
+              aria-hidden="true"
             />
             <template v-else>{{ suffix }}</template>
           </slot>

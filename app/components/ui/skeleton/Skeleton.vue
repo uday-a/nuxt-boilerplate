@@ -60,8 +60,12 @@ const variantStyles = computed(() => {
   animation: skeleton-shimmer 1.8s linear infinite;
 }
 @keyframes skeleton-shimmer {
-  from { background-position: 200% 0; }
-  to   { background-position: -200% 0; }
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .skeleton-shimmer {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { HTMLAttributes, Ref } from 'vue'
-import { defaultDocument, useEventListener, useMediaQuery, useVModel } from '@vueuse/core'
+import type { HTMLAttributes } from 'vue'
+import { useEventListener, useMediaQuery } from '@vueuse/core'
 import { TooltipProvider } from 'reka-ui'
 import { computed, onMounted, ref } from 'vue'
 import { cn } from '@/lib/utils'
@@ -13,17 +13,11 @@ import {
   SIDEBAR_WIDTH_ICON,
 } from './utils'
 
-const props = withDefaults(
-  defineProps<{
-    defaultOpen?: boolean
-    open?: boolean
-    class?: HTMLAttributes['class']
-  }>(),
-  {
-    defaultOpen: !defaultDocument?.cookie.includes(`${SIDEBAR_COOKIE_NAME}=false`),
-    open: undefined,
-  },
-)
+const props = defineProps<{
+  defaultOpen?: boolean
+  open?: boolean
+  class?: HTMLAttributes['class']
+}>()
 
 const emits = defineEmits<{
   'update:open': [open: boolean]
@@ -45,14 +39,16 @@ const emits = defineEmits<{
 // no clean way to know the viewport on the server.
 const mediaMobile = useMediaQuery('(max-width: 768px)')
 const mounted = ref(false)
-onMounted(() => { mounted.value = true })
+onMounted(() => {
+  mounted.value = true
+})
 const isMobile = computed(() => mounted.value && mediaMobile.value)
 const openMobile = ref(false)
 
-const open = useVModel(props, 'open', emits, {
-  defaultValue: props.defaultOpen ?? false,
-  passive: (props.open === undefined) as false,
-}) as Ref<boolean>
+// useVModel with passive:true returns a ref that appears writable but
+// doesn't actually update when no parent v-model is bound. Fall back to
+// a plain ref so toggleSidebar / setOpen work reliably.
+const open = ref<boolean>(true)
 
 function setOpen(value: boolean) {
   open.value = value // emits('update:open', value)

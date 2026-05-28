@@ -106,3 +106,14 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
     </div>
   </div>
 </template>
+
+<style>
+/* Push any OverlayScroll thumb inside a sidebar 10px in from the right
+   edge so it clears SidebarRail's 8px inside-zone. The CSS variable
+   cascades to every descendant, so consumers wrapping their nav in
+   OverlayScroll (a common pattern when nav items overflow viewport
+   height) get this for free -- no per-call thumb-offset config. */
+[data-slot='sidebar'] {
+  --ovs-thumb-right: 10px;
+}
+</style>
