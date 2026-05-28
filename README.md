@@ -219,7 +219,7 @@ Already wired in [`components.json`](./components.json):
 ```json
 {
   "registries": {
-    "@uipkge": "https://uipkge.dev/r/{name}.json"
+    "@uipkge": "https://uipkge.dev/r/nuxt/{name}.json"
   }
 }
 ```
