@@ -143,10 +143,13 @@ if (env.POLAR_WEBHOOK_SECRET && !env.POLAR_ACCESS_TOKEN) {
   throw new Error('POLAR_WEBHOOK_SECRET is set but POLAR_ACCESS_TOKEN is not. Set both, or unset both.')
 }
 
-// Demo mode resolves to:
-//   - explicit 'true'/'false' if set
-//   - otherwise: ON when OAuth isn't configured AND we're not in production.
-// The intent: a fresh `git clone` + `npm run dev` should let you click
-// through every protected page without signing up for anything.
+// Demo mode is ON BY DEFAULT in development and auto-OFF in production; set
+// NUXT_DEMO_MODE explicitly to override either way. A fresh `git clone` +
+// `npm run dev` is fully clickable with no GitHub OAuth app or DB, while a
+// production deploy stays locked down by default.
+//
+// SECURITY: while on, anyone who POSTs /auth/demo gets a logged-in session —
+// a deliberate auth bypass. It is forced off in production unless you set
+// NUXT_DEMO_MODE=true; only do that for throwaway public previews.
 export const isDemoMode = env.NUXT_DEMO_MODE === 'true'
-  || (env.NUXT_DEMO_MODE !== 'false' && !hasGithubOAuth && env.NODE_ENV !== 'production')
+  || (env.NUXT_DEMO_MODE !== 'false' && env.NODE_ENV !== 'production')

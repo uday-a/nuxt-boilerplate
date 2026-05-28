@@ -35,10 +35,10 @@ export default defineNuxtConfig({
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
       // Mirrors `isDemoMode` from server/utils/env.ts so the client UI
       // (e.g. /login's "Continue as demo" button) can decide whether to
-      // surface demo affordances without an extra round-trip.
+      // surface demo affordances without an extra round-trip. ON by default
+      // in dev, auto-OFF in production; NUXT_DEMO_MODE overrides either way.
       demoMode: process.env.NUXT_DEMO_MODE === 'true'
         || (process.env.NUXT_DEMO_MODE !== 'false'
-          && !process.env.NUXT_OAUTH_GITHUB_CLIENT_ID
           && process.env.NODE_ENV !== 'production'),
       // Sentry DSN is a public value by design — it's how the SDK reaches
       // sentry.io. The module reads from this slot if present.
