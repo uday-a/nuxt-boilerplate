@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input'
+import { OverlayScroll } from '@/components/ui/overlay-scroll'
 import {
   ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
   ContextMenuShortcut, ContextMenuTrigger, ContextMenuLabel,
@@ -609,7 +610,7 @@ function cellRangeClass(key: string, inMonth: boolean) {
               </div>
             </div>
           </div>
-          <div class="max-h-[420px] overflow-y-auto p-3">
+          <OverlayScroll class="max-h-[420px] p-3">
             <template v-if="loading">
               <div
                 v-for="i in 3"
@@ -712,7 +713,7 @@ function cellRangeClass(key: string, inMonth: boolean) {
                 </ContextMenuContent>
               </ContextMenu>
             </template>
-          </div>
+          </OverlayScroll>
         </div>
 
         <!-- Range summary -->
@@ -755,7 +756,7 @@ function cellRangeClass(key: string, inMonth: boolean) {
               </div>
             </div>
           </div>
-          <div class="max-h-[420px] overflow-y-auto">
+          <OverlayScroll class="max-h-[420px]">
             <template v-if="rangeEvents.length === 0">
               <p class="px-4 py-8 text-center text-xs text-muted-foreground">
                 No events in range.
@@ -786,7 +787,7 @@ function cellRangeClass(key: string, inMonth: boolean) {
                 </span>
               </div>
             </template>
-          </div>
+          </OverlayScroll>
         </div>
 
         <!-- Upcoming -->

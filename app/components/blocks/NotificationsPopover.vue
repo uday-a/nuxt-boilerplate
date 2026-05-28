@@ -4,6 +4,7 @@ import { UserPlus, Calendar, CreditCard, FileText, GraduationCap, Target, X, Bel
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { OverlayScroll } from '@/components/ui/overlay-scroll'
 
 type NotificationCategory = 'hr' | 'payroll' | 'timeoff' | 'performance' | 'training' | 'system'
 
@@ -234,7 +235,7 @@ function dismissNotification(id: string) {
         </div>
       </div>
 
-      <div class="notification-scroll max-h-[420px] overflow-y-auto">
+      <OverlayScroll class="max-h-[420px]">
         <div
           v-if="filteredNotifications.length === 0"
           class="flex flex-col items-center justify-center py-14 text-center"
@@ -375,7 +376,11 @@ function dismissNotification(id: string) {
             </div>
           </template>
         </template>
-      </div>
+        <div
+          aria-hidden="true"
+          class="pointer-events-none sticky bottom-0 -mt-6 h-6 bg-gradient-to-b from-transparent to-popover"
+        />
+      </OverlayScroll>
 
       <div class="border-t px-4 py-2.5">
         <a
@@ -392,23 +397,6 @@ function dismissNotification(id: string) {
 </template>
 
 <style scoped>
-.notification-panel {
-  --scrollbar-size: 4px;
-}
-
-.notification-scroll::-webkit-scrollbar {
-  width: var(--scrollbar-size);
-}
-
-.notification-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.notification-scroll::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 2px;
-}
-
 .notification-item {
   cursor: pointer;
   transition: background-color 0.15s ease;
@@ -428,22 +416,5 @@ function dismissNotification(id: string) {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.notification-scroll {
-  position: relative;
-}
-
-.notification-scroll::after {
-  content: '';
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: block;
-  height: 24px;
-  margin-top: -24px;
-  background: linear-gradient(to bottom, transparent, var(--popover));
-  pointer-events: none;
 }
 </style>

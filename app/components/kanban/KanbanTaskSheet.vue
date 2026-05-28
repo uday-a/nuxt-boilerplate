@@ -10,6 +10,7 @@ import SubtaskList from './SubtaskList.vue'
 import { Sheet, SheetContent, SheetTitle, SheetDescription, SheetFooter, SheetClose } from '@/components/ui/sheet'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { OverlayScroll } from '@/components/ui/overlay-scroll'
 import { Clock, Download, ExternalLink } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -108,7 +109,7 @@ const columnIdForTask = computed(() => {
 
         <div class="bg-border mx-5 h-px" />
 
-        <div class="flex-1 overflow-y-auto">
+        <OverlayScroll class="flex-1">
           <div class="space-y-4 px-5 py-3">
             <div class="flex items-center gap-3">
               <UserAvatar
@@ -241,7 +242,7 @@ const columnIdForTask = computed(() => {
               </p>
             </div>
           </div>
-        </div>
+        </OverlayScroll>
 
         <SheetFooter class="shrink-0 border-t px-5 py-3">
           <div class="flex w-full items-center gap-2">
