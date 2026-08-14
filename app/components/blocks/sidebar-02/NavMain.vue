@@ -48,6 +48,7 @@ const { t } = useI18n()
           <SidebarMenuButton
             as-child
             :tooltip="item.title"
+            :is-active="item.isActive"
           >
             <NuxtLink :to="item.url">
               <component :is="item.icon" />
@@ -67,7 +68,10 @@ const { t } = useI18n()
                   v-for="subItem in item.items"
                   :key="subItem.title"
                 >
-                  <SidebarMenuSubButton as-child>
+                  <SidebarMenuSubButton
+                    as-child
+                    :is-active="subItem.isActive"
+                  >
                     <NuxtLink :to="subItem.url">
                       <span>{{ subItem.title }}</span>
                     </NuxtLink>

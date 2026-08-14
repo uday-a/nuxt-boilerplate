@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { h } from 'vue'
 import { Bell } from 'lucide-vue-next'
 import Sidebar02 from '@/components/blocks/sidebar-02/Sidebar02.vue'
 import CommandPalette from '@/components/blocks/CommandPalette.vue'
@@ -21,6 +22,18 @@ import {
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useTheme } from '@/composables/useTheme'
 
+const GithubIcon = (props: { class?: string }) =>
+  h('svg', {
+    'class': props.class,
+    'viewBox': '0 0 24 24',
+    'fill': 'currentColor',
+    'aria-hidden': 'true',
+  }, [
+    h('path', {
+      d: 'M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 016 0C17 4.7 18 5 18 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z',
+    }),
+  ])
+
 interface Crumb {
   label: string
   href?: string
@@ -33,7 +46,6 @@ withDefaults(
   }>(),
   {
     breadcrumbs: () => [{ label: 'Dashboard' }],
-    user: () => ({ name: 'Alex Morgan', email: 'alex@example.com' }),
   },
 )
 
@@ -54,7 +66,11 @@ function onThemeChange(next: 'light' | 'dark' | 'system' | 'black') {
 
 <template>
   <SidebarProvider>
-    <Sidebar02 />
+    <Sidebar02
+      :user="user"
+      @logout="emit('profile-select', 'logout')"
+      @profile-select="(key) => emit('profile-select', key)"
+    />
     <SidebarInset>
       <header
         class="bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30 flex h-14 w-full shrink-0 items-center justify-between border-b px-4 backdrop-blur-xl transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
@@ -95,6 +111,15 @@ function onThemeChange(next: 'light' | 'dark' | 'system' | 'black') {
           </Breadcrumb>
         </div>
         <div class="flex items-center gap-1 px-2 sm:gap-3">
+          <a
+            href="https://github.com/uipkge/nuxt-boilerplate"
+            target="_blank"
+            rel="noreferrer"
+            class="border-border/80 bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors sm:inline-flex"
+          >
+            <GithubIcon class="size-3.5" />
+            <span>Nuxt.js Starter</span>
+          </a>
           <CommandPalette @select="(item) => emit('command-select', item)" />
           <div class="flex items-center gap-0.5">
             <ThemeSwitch

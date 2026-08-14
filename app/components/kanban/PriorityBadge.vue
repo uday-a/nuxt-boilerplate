@@ -28,6 +28,6 @@ const config = computed(() => priorityConfig[props.priority as Priority])
       :is="config.icon"
       :class="[iconSize, config.class]"
     />
-    <span :class="['text-[11px] font-semibold', config.class]">{{ config.label }}</span>
+    <span :class="['text-xs font-semibold', config.class]">{{ config.label }}</span>
   </div>
 </template>

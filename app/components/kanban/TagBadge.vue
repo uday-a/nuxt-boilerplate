@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <span :class="cn('rounded-md px-1.5 py-0.5 text-[11px] font-medium ring-1 ring-inset', color, $props.class)">
+  <span :class="cn('rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset', color, $props.class)">
     {{ label }}
   </span>
 </template>

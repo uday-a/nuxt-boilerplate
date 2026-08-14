@@ -15,14 +15,14 @@ const isComplete = computed(() => props.done === props.total && props.total > 0)
 <template>
   <div v-if="total > 0">
     <div class="mb-1 flex items-center justify-between">
-      <span class="text-muted-foreground text-[11px]">
+      <span class="text-muted-foreground text-xs">
         <CheckCircle2
           v-if="isComplete"
           class="mr-0.5 inline size-3 text-emerald-500"
         />
         {{ done }}/{{ total }} subtasks
       </span>
-      <span class="text-muted-foreground text-[11px] font-medium tabular-nums">{{ percent }}%</span>
+      <span class="text-muted-foreground text-xs font-medium tabular-nums">{{ percent }}%</span>
     </div>
     <div :class="['bg-muted overflow-hidden rounded-full', barHeight ?? 'h-1.5']">
       <div

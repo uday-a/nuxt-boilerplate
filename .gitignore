@@ -9,6 +9,11 @@ dist
 # Node dependencies
 node_modules
 
+# Test output artifacts
+/test-results/
+/playwright-report/
+/blob-report/
+
 # Logs
 logs
 *.log

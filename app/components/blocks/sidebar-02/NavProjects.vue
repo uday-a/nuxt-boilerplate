@@ -29,6 +29,7 @@ defineProps<{
     name: string
     url: string
     icon: LucideIcon
+    isActive?: boolean
   }[]
 }>()
 
@@ -50,7 +51,10 @@ const { t } = useI18n()
         v-for="item in projects"
         :key="item.name"
       >
-        <SidebarMenuButton as-child>
+        <SidebarMenuButton
+          as-child
+          :is-active="item.isActive"
+        >
           <NuxtLink :to="item.url">
             <component :is="item.icon" />
             <span>{{ item.name }}</span>

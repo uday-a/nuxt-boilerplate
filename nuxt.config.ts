@@ -20,6 +20,21 @@ export default defineNuxtConfig({
     { path: '~/components', pathPrefix: false, extensions: ['.vue'] },
   ],
   devtools: { enabled: true },
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'en',
+      },
+      bodyAttrs: {
+        class: 'bg-background text-foreground min-h-dvh font-sans antialiased',
+      },
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap' },
+      ],
+    },
+  },
   css: ['~/assets/css/tailwind.css'],
   // @nuxtjs/seo is an umbrella module — it composes nuxt-sitemap,
   // nuxt-robots, nuxt-og-image, nuxt-schema-org, nuxt-link-checker, and
@@ -31,6 +46,13 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
   },
   runtimeConfig: {
+    session: {
+      name: 'nuxt-session',
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      },
+    },
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
       // Mirrors `isDemoMode` from server/utils/env.ts so the client UI

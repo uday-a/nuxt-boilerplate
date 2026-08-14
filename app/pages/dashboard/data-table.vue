@@ -432,7 +432,7 @@ function timelineFor(c: Customer): TimelineEvent[] {
                   <Badge
                     v-if="statusFilter.size"
                     variant="secondary"
-                    class="ml-1 h-4 px-1 text-[10px]"
+                    class="ml-1 h-4 px-1.5 text-xs"
                   >
                     {{ statusFilter.size }}
                   </Badge>
@@ -478,7 +478,7 @@ function timelineFor(c: Customer): TimelineEvent[] {
                   <Badge
                     v-if="planFilter.size"
                     variant="secondary"
-                    class="ml-1 h-4 px-1 text-[10px]"
+                    class="ml-1 h-4 px-1.5 text-xs"
                   >
                     {{ planFilter.size }}
                   </Badge>
@@ -739,7 +739,7 @@ function timelineFor(c: Customer): TimelineEvent[] {
                   >
                     <Badge
                       variant="outline"
-                      :class="['gap-1 px-2 text-[10px] font-medium uppercase tracking-wide', statusTone[c.status]]"
+                      :class="['gap-1 px-2 text-xs font-medium uppercase tracking-wide', statusTone[c.status]]"
                     >
                       {{ c.status }}
                     </Badge>
@@ -935,15 +935,15 @@ function timelineFor(c: Customer): TimelineEvent[] {
                   <div class="flex items-center gap-1.5 pt-1">
                     <Badge
                       variant="outline"
-                      :class="['gap-1 px-1.5 py-0 text-[10px] font-medium uppercase tracking-wide', statusTone[detailCustomer.status]]"
+                      :class="['gap-1 px-2 py-0.5 text-xs font-medium uppercase tracking-wide', statusTone[detailCustomer.status]]"
                     >
                       <span :class="['size-1.5 rounded-full', detailCustomer.status === 'active' ? 'bg-emerald-500' : detailCustomer.status === 'trial' ? 'bg-blue-500' : detailCustomer.status === 'invited' ? 'bg-amber-500' : 'bg-rose-500']" />
                       {{ detailCustomer.status }}
                     </Badge>
-                    <span :class="['rounded-full px-2 py-0.5 text-[10px] font-medium', planChipTone[detailCustomer.plan]]">
+                    <span :class="['rounded-full px-2 py-0.5 text-xs font-medium', planChipTone[detailCustomer.plan]]">
                       {{ detailCustomer.plan }}
                     </span>
-                    <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px]">
+                    <span class="text-muted-foreground inline-flex items-center gap-1 text-xs">
                       <MapPin class="size-3" />{{ detailCustomer.country }}
                     </span>
                   </div>
@@ -954,43 +954,43 @@ function timelineFor(c: Customer): TimelineEvent[] {
             <div class="flex-1 overflow-y-auto">
               <div class="grid grid-cols-3 gap-px border-b bg-border">
                 <div class="bg-background flex flex-col gap-1 px-4 py-3">
-                  <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
+                  <span class="text-muted-foreground inline-flex items-center gap-1 text-xs uppercase tracking-wide">
                     <CreditCard class="size-3" />MRR
                   </span>
                   <span class="text-base font-semibold tabular-nums">{{ formatMoney(detailCustomer.mrr) }}</span>
                   <span
                     v-if="detailCustomer.mrr > 0"
-                    class="text-emerald-600 inline-flex items-center gap-0.5 text-[10px] font-medium dark:text-emerald-400"
+                    class="text-emerald-600 inline-flex items-center gap-0.5 text-xs font-medium dark:text-emerald-400"
                   >
                     <ArrowUpRight class="size-2.5" />{{ Math.round(detailCustomer.mrr * 12 / 1000) }}k ARR
                   </span>
                   <span
                     v-else
-                    class="text-muted-foreground text-[10px]"
+                    class="text-muted-foreground text-xs"
                   >No revenue</span>
                 </div>
                 <div class="bg-background flex flex-col gap-1 px-4 py-3">
-                  <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
+                  <span class="text-muted-foreground inline-flex items-center gap-1 text-xs uppercase tracking-wide">
                     <Users class="size-3" />Seats
                   </span>
                   <span class="text-base font-semibold tabular-nums">{{ detailCustomer.seats || 0 }}</span>
                   <span
                     v-if="detailCustomer.seats"
-                    class="text-muted-foreground tabular-nums text-[10px]"
+                    class="text-muted-foreground tabular-nums text-xs"
                   >
                     ${{ Math.round(detailCustomer.mrr / detailCustomer.seats) }}/seat
                   </span>
                   <span
                     v-else
-                    class="text-muted-foreground text-[10px]"
+                    class="text-muted-foreground text-xs"
                   >No seats</span>
                 </div>
                 <div class="bg-background flex flex-col gap-1 px-4 py-3">
-                  <span class="text-muted-foreground inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
+                  <span class="text-muted-foreground inline-flex items-center gap-1 text-xs uppercase tracking-wide">
                     <Building2 class="size-3" />Tier
                   </span>
                   <span class="text-base font-semibold">{{ detailCustomer.plan }}</span>
-                  <span class="text-muted-foreground text-[10px]">{{ detailCustomer.status === 'active' ? 'Renews monthly' : detailCustomer.status === 'trial' ? 'Trial period' : detailCustomer.status === 'invited' ? 'Awaiting accept' : 'Cancelled' }}</span>
+                  <span class="text-muted-foreground text-xs">{{ detailCustomer.status === 'active' ? 'Renews monthly' : detailCustomer.status === 'trial' ? 'Trial period' : detailCustomer.status === 'invited' ? 'Awaiting accept' : 'Cancelled' }}</span>
                 </div>
               </div>
 
@@ -1030,7 +1030,7 @@ function timelineFor(c: Customer): TimelineEvent[] {
               </dl>
 
               <div class="border-t px-5 py-4">
-                <div class="text-muted-foreground mb-3 inline-flex items-center gap-1 text-[10px] uppercase tracking-wide">
+                <div class="text-muted-foreground mb-3 inline-flex items-center gap-1 text-xs uppercase tracking-wide">
                   <Activity class="size-3" />Recent activity
                 </div>
                 <ol class="relative space-y-3 pl-5">
@@ -1049,7 +1049,7 @@ function timelineFor(c: Customer): TimelineEvent[] {
                     <div class="text-xs font-medium leading-tight">
                       {{ ev.title }}
                     </div>
-                    <div class="text-muted-foreground tabular-nums text-[10px]">
+                    <div class="text-muted-foreground tabular-nums text-xs">
                       {{ ev.meta }}
                     </div>
                   </li>

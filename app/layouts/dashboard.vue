@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { breadcrumbSegmentLabel } from '@/lib/breadcrumb-labels'
 
 const route = useRoute()
 const router = useRouter()
@@ -9,16 +10,16 @@ const breadcrumbs = computed(() => {
   const parts = route.path.split('/').filter(Boolean)
   if (parts.length === 0) return [{ label: 'Dashboard' }]
   return parts.map((p, i) => ({
-    label: p.charAt(0).toUpperCase() + p.slice(1),
+    label: breadcrumbSegmentLabel(p),
     href: i < parts.length - 1 ? '/' + parts.slice(0, i + 1).join('/') : undefined,
   }))
 })
 
 const { user: sessionUser, clear } = useUserSession()
 const user = computed(() => {
-  const u = sessionUser.value as { firstName?: string, lastName?: string, email?: string, profilePictureUrl?: string } | undefined
+  const u = sessionUser.value as { firstName?: string, lastName?: string, email?: string, profilePictureUrl?: string, name?: string, login?: string } | undefined
   if (!u) return { name: 'Guest', email: '', avatar: '' }
-  const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.email || 'Guest'
+  const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.name || u.login || u.email || 'Guest'
   return { name, email: u.email ?? '', avatar: u.profilePictureUrl ?? '' }
 })
 

@@ -184,6 +184,7 @@ defineExpose({
       ref="thumbEl"
       data-slot="overlay-scroll-thumb"
       class="overlay-scroll__thumb"
+      aria-hidden="true"
       :class="{
         'overlay-scroll__thumb--visible': showThumb,
         'overlay-scroll__thumb--dragging': isDragging,
@@ -191,7 +192,11 @@ defineExpose({
       }"
       :style="{
         width: `${thumbWidth}px`,
-        right: `${thumbOffset}px`,
+        /* Read the right offset from --ovs-thumb-right when an ancestor
+           sets it (e.g. Sidebar pushes the thumb away from SidebarRail),
+           otherwise fall back to the prop. Lets the same primitive sit
+           flush in a card AND clear a rail without per-call config. */
+        right: `var(--ovs-thumb-right, ${thumbOffset}px)`,
         height: `${thumbHeight}px`,
         transform: `translateY(${thumbTop}px)`,
       }"
@@ -204,6 +209,11 @@ defineExpose({
 .overlay-scroll__inner {
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Stop wheel events from chaining to the page once the inner scroller
+     hits its top/bottom. Without this, scrolling a long activity feed
+     past its last item keeps scrolling the surrounding page — confusing
+     when the inner region is a clearly bounded card. */
+  overscroll-behavior: contain;
 }
 .overlay-scroll__inner::-webkit-scrollbar {
   display: none;
@@ -220,7 +230,10 @@ defineExpose({
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
-  transition: opacity 0.2s ease, background-color 0.15s, width 0.12s ease;
+  transition:
+    opacity 0.2s ease,
+    background-color 0.15s,
+    width 0.12s ease;
   will-change: transform, opacity;
 }
 .overlay-scroll__thumb--draggable {

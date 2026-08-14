@@ -7,7 +7,10 @@
 // server/utils/env.ts → isDemoMode and server/routes/auth/demo.post.ts.
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  const { loggedIn } = useUserSession()
+  const { loggedIn, fetch: fetchSession } = useUserSession()
+  if (!loggedIn.value) {
+    await fetchSession()
+  }
   if (!loggedIn.value) {
     return navigateTo(`/login?next=${encodeURIComponent(to.fullPath)}`)
   }

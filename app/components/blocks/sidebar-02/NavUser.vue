@@ -6,7 +6,11 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  Monitor,
+  Moon,
+  Palette,
   Sparkles,
+  Sun,
 } from 'lucide-vue-next'
 
 import {
@@ -20,7 +24,12 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
@@ -29,6 +38,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { useTheme } from '@/composables/useTheme'
 
 const props = defineProps<{
   user: {
@@ -40,10 +50,12 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'logout'): void
+  (e: 'profile-select', key: string): void
 }>()
 
 const { isMobile } = useSidebar()
 const { t } = useI18n()
+const { theme, setTheme } = useTheme()
 
 const initials = computed(() => {
   const parts = props.user.name.trim().split(/\s+/).slice(0, 2)
@@ -110,19 +122,43 @@ const initials = computed(() => {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem @select="emit('profile-select', 'account')">
               <BadgeCheck />
               {{ t('nav.user.account') }}
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem @select="emit('profile-select', 'billing')">
               <CreditCard />
               {{ t('nav.user.billing') }}
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem @select="emit('profile-select', 'notifications')">
               <Bell />
               {{ t('nav.user.notifications') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Palette />
+              Theme
+              <span class="text-muted-foreground ml-auto text-xs capitalize">{{ theme }}</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent class="min-w-36">
+              <DropdownMenuRadioGroup
+                :model-value="theme"
+                @update:model-value="(v) => setTheme(v as any)"
+              >
+                <DropdownMenuRadioItem value="light">
+                  <Sun /> Light
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="dark">
+                  <Moon /> Dark
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="system">
+                  <Monitor /> System
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
           <DropdownMenuSeparator />
           <DropdownMenuItem @select="emit('logout')">
             <LogOut />

@@ -26,21 +26,21 @@ defineProps<{
 <template>
   <Card>
     <CardHeader class="pb-2">
-      <CardDescription class="text-[10px] uppercase tracking-wider flex items-center justify-between">
+      <CardDescription class="text-xs font-medium uppercase tracking-wider flex items-center justify-between">
         {{ label }}
         <component
           :is="icon"
           v-if="icon"
-          :class="['size-3', iconClass]"
+          :class="['size-4 text-muted-foreground', iconClass]"
         />
       </CardDescription>
     </CardHeader>
     <CardContent class="pb-3">
-      <div class="flex items-baseline gap-1.5">
-        <span class="text-xl font-semibold tabular-nums">{{ value }}</span>
+      <div class="flex items-baseline gap-2">
+        <span class="text-2xl font-bold tracking-tight tabular-nums">{{ value }}</span>
         <span
           v-if="delta"
-          :class="['text-[11px] font-medium', deltaTone === 'negative' ? 'text-rose-600' : 'text-emerald-600']"
+          :class="['text-xs font-semibold', deltaTone === 'negative' ? 'text-rose-600' : 'text-emerald-600']"
         >
           {{ delta }}
         </span>

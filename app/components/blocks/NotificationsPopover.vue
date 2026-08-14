@@ -22,23 +22,23 @@ interface Notification {
 const categoryConfig: Record<NotificationCategory, { icon: any, accent: string, bg: string }> = {
   hr: {
     icon: UserPlus,
-    accent: 'bg-emerald-500',
-    bg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+    accent: 'bg-success',
+    bg: 'bg-success/10 text-success',
   },
   payroll: {
     icon: CreditCard,
-    accent: 'bg-blue-500',
-    bg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+    accent: 'bg-info',
+    bg: 'bg-info/10 text-info',
   },
   timeoff: {
     icon: Calendar,
-    accent: 'bg-violet-500',
-    bg: 'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+    accent: 'bg-chart-3',
+    bg: 'bg-chart-3/10 text-chart-3',
   },
   performance: {
     icon: Target,
-    accent: 'bg-amber-500',
-    bg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+    accent: 'bg-warning',
+    bg: 'bg-warning/10 text-warning',
   },
   training: {
     icon: GraduationCap,

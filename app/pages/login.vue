@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import { safeRedirectPath } from '@/lib/utils'
 import { Sparkles, Mail, AlertCircle, CheckCircle2 } from 'lucide-vue-next'
 import type { ApiResponse } from '~~/server/utils/response'
 
@@ -10,7 +11,7 @@ const { loggedIn, fetch: refreshSession } = useUserSession()
 if (loggedIn.value) await navigateTo('/dashboard')
 
 const route = useRoute()
-const next = computed(() => (typeof route.query.next === 'string' ? route.query.next : '/dashboard'))
+const next = computed(() => safeRedirectPath(typeof route.query.next === 'string' ? route.query.next : '/dashboard'))
 
 // Show an explanatory error banner when the magic-link verify endpoint
 // bounces a bad/expired/used token. Map the short ?error= code from the
@@ -38,9 +39,13 @@ const demoLoading = ref(false)
 async function signInAsDemo() {
   demoLoading.value = true
   try {
-    await $fetch('/auth/demo', { method: 'POST' })
+    const res = await $fetch('/auth/demo', { method: 'POST' })
+    console.log('DEMO_SIGNIN_SUCCESS', res)
     await refreshSession()
     await navigateTo(next.value)
+  }
+  catch (err) {
+    console.error('DEMO_SIGNIN_ERROR', err)
   }
   finally {
     demoLoading.value = false
@@ -71,60 +76,56 @@ async function onSubmit(payload: { email: string, password: string, remember: bo
   linkState.value = { kind: 'sent', email: payload.email }
 }
 
-function onOAuth(provider: 'github' | 'google') {
+function onOauth(provider: 'github' | 'google') {
   if (provider !== 'github') {
     alert('Only GitHub OAuth is wired right now.')
     return
   }
+  // Hard navigation so the browser follows the OAuth redirect to GitHub.
   window.location.href = `/auth/github?next=${encodeURIComponent(next.value)}`
 }
 </script>
 
 <template>
-  <div class="relative">
-    <AuthSignIn
-      sign-up-href="/sign-up"
-      forgot-password-href="/forgot-password"
-      :oauth-providers="['github']"
-      @submit="onSubmit"
-      @oauth="onOAuth"
-    />
+  <div class="bg-background relative flex min-h-svh items-center justify-center p-6 md:p-10">
+    <div class="w-full max-w-sm">
+      <AuthSignIn
+        forgot-password-href="/forgot-password"
+        sign-up-href="/sign-up"
+        :oauth-providers="['github']"
+        @submit="onSubmit"
+        @oauth="onOauth"
+      />
 
-    <!-- Magic-link UX overlay. The AuthSignIn block has a password field
-         that's currently inert; the form's "Sign in" submit triggers
-         /auth/magic-link instead. Surface that state here rather than
-         modifying the registry block. -->
-    <div
-      v-if="errorBanner || linkState.kind !== 'idle'"
-      class="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4"
-    >
+      <!-- Top toast overlays -- error banner on bad magic link, confirmation on send -->
       <div
         v-if="errorBanner"
-        class="pointer-events-auto border-destructive/30 bg-background/95 text-destructive flex items-center gap-2 rounded-full border px-4 py-2 text-sm shadow-lg backdrop-blur"
+        class="fixed top-6 right-6 z-50 max-w-sm"
       >
-        <AlertCircle class="size-4" />
-        {{ errorBanner }}
+        <div class="bg-destructive/10 text-destructive flex items-center gap-2 rounded-lg border border-destructive/20 p-4 text-sm shadow-lg">
+          <AlertCircle class="size-4 shrink-0" />
+          <span>{{ errorBanner }}</span>
+        </div>
       </div>
+
       <div
-        v-else-if="linkState.kind === 'sent'"
-        class="pointer-events-auto flex items-center gap-2 rounded-full border border-emerald-500/30 bg-background/95 px-4 py-2 text-sm text-emerald-700 shadow-lg backdrop-blur dark:text-emerald-400"
+        v-if="linkState.kind === 'sent'"
+        class="fixed top-6 right-6 z-50 max-w-sm"
       >
-        <CheckCircle2 class="size-4" />
-        Sign-in link sent to <strong>{{ linkState.email }}</strong>. Check your inbox.
+        <div class="bg-primary/10 text-primary flex items-center gap-2 rounded-lg border border-primary/20 p-4 text-sm shadow-lg">
+          <Mail class="size-4 shrink-0" />
+          <span>Sign-in link sent to <strong>{{ linkState.email }}</strong>. Check your inbox.</span>
+        </div>
       </div>
+
       <div
-        v-else-if="linkState.kind === 'error'"
-        class="pointer-events-auto border-destructive/30 bg-background/95 text-destructive flex items-center gap-2 rounded-full border px-4 py-2 text-sm shadow-lg backdrop-blur"
+        v-if="linkState.kind === 'error'"
+        class="fixed top-6 right-6 z-50 max-w-sm"
       >
-        <AlertCircle class="size-4" />
-        {{ linkState.message }}
-      </div>
-      <div
-        v-else-if="linkState.kind === 'sending'"
-        class="pointer-events-auto bg-background/95 ring-border/60 flex items-center gap-2 rounded-full border px-4 py-2 text-sm shadow-lg backdrop-blur ring-1"
-      >
-        <Mail class="size-4 animate-pulse" />
-        Sending sign-in link…
+        <div class="bg-destructive/10 text-destructive flex items-center gap-2 rounded-lg border border-destructive/20 p-4 text-sm shadow-lg">
+          <AlertCircle class="size-4 shrink-0" />
+          <span>{{ linkState.message }}</span>
+        </div>
       </div>
     </div>
 
@@ -133,9 +134,9 @@ function onOAuth(provider: 'github' | 'google') {
          form's layout, and explicit about being a demo (not a real path). -->
     <div
       v-if="demoMode"
-      class="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center px-4"
+      class="fixed inset-x-0 bottom-6 z-40 flex justify-center px-4"
     >
-      <div class="pointer-events-auto bg-background/95 ring-border/60 flex items-center gap-3 rounded-full border px-4 py-2 shadow-lg backdrop-blur ring-1">
+      <div class="bg-background/95 ring-border/60 flex items-center gap-3 rounded-full border px-4 py-2 shadow-lg backdrop-blur ring-1">
         <Sparkles class="text-primary size-4" />
         <span class="text-muted-foreground text-sm">
           No GitHub OAuth configured.

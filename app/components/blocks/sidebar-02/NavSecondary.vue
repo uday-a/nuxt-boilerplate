@@ -14,6 +14,7 @@ const props = defineProps<{
     title: string
     url: string
     icon: LucideIcon
+    isActive?: boolean
   }[]
 }>()
 </script>
@@ -29,6 +30,7 @@ const props = defineProps<{
           <SidebarMenuButton
             as-child
             size="sm"
+            :is-active="item.isActive"
           >
             <NuxtLink :to="item.url">
               <component :is="item.icon" />
