@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from '@tailwindcss/vite'
+import { resolveDemoMode } from './shared/demo-mode'
 
 export default defineNuxtConfig({
   // @i18now/nuxt only loads when a project id is configured. Without env
@@ -41,7 +42,7 @@ export default defineNuxtConfig({
   // nuxt-seo-utils. `site.url` here flows through to all of them.
   site: {
     url: process.env.NUXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
-    name: 'Acme',
+    name: 'UIPKGE',
     description: 'A Nuxt 4 boilerplate with shadcn-vue, auth, i18n, and SEO baked in.',
     defaultLocale: 'en',
   },
@@ -49,19 +50,17 @@ export default defineNuxtConfig({
     session: {
       name: 'nuxt-session',
       cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        // Secure unless explicitly in development — an unset NODE_ENV is prod.
+        secure: process.env.NODE_ENV !== 'development',
         sameSite: 'lax',
       },
     },
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
-      // Mirrors `isDemoMode` from server/utils/env.ts so the client UI
-      // (e.g. /login's "Continue as demo" button) can decide whether to
-      // surface demo affordances without an extra round-trip. ON by default
-      // in dev, auto-OFF in production; NUXT_DEMO_MODE overrides either way.
-      demoMode: process.env.NUXT_DEMO_MODE === 'true'
-        || (process.env.NUXT_DEMO_MODE !== 'false'
-          && process.env.NODE_ENV !== 'production'),
+      // Build-time default only: server/plugins/demo-mode.ts overwrites it
+      // per request with the server's runtime `isDemoMode`, so /login's
+      // "Continue as demo" button always agrees with POST /auth/demo.
+      demoMode: resolveDemoMode(process.env.NUXT_DEMO_MODE, process.env.NODE_ENV),
       // Sentry DSN is a public value by design — it's how the SDK reaches
       // sentry.io. The module reads from this slot if present.
       sentry: {
@@ -118,4 +117,8 @@ export default defineNuxtConfig({
         },
       }
     : {}),
+  // Sitemap auto-discovers pages — keep authenticated surfaces out.
+  sitemap: {
+    exclude: ['/dashboard/**', '/settings/**', '/projects/**', '/onboarding/**', '/admin/**', '/invite/**', '/mfa'],
+  },
 })

@@ -54,11 +54,11 @@ const mergedOption = computed(() => {
       textStyle: { color: chartTooltipText.value, fontSize: 12 },
       formatter: (params: any) => `${params.seriesName}<br/>${props.xField}: ${params.value[0]}<br/>${props.yField}: ${params.value[1]}`,
     },
-    legend: categories.length > 1 ? { bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8, textStyle: { fontSize: 11, color: chartTextColor.value } } : undefined,
+    legend: categories.length > 1 ? { bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8, textStyle: { fontSize: 12, color: chartTextColor.value } } : undefined,
     xAxis: {
       type: 'value',
       splitLine: { lineStyle: { color: chartSplitLineColor.value } },
-      axisLabel: { color: chartTextColor.value, fontSize: 11 },
+      axisLabel: { color: chartTextColor.value, fontSize: 12 },
       axisLine: { lineStyle: { color: chartAxisColor.value } },
       axisTick: { show: false },
       scale: true,
@@ -66,7 +66,7 @@ const mergedOption = computed(() => {
     yAxis: {
       type: 'value',
       splitLine: { lineStyle: { color: chartSplitLineColor.value } },
-      axisLabel: { color: chartTextColor.value, fontSize: 11 },
+      axisLabel: { color: chartTextColor.value, fontSize: 12 },
       axisLine: { show: false },
       axisTick: { show: false },
       scale: true,

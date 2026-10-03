@@ -6,7 +6,7 @@ import { HeatmapChart as EChartsHeatmap } from 'echarts/charts'
 import { GridComponent, TooltipComponent, VisualMapComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { cn } from '@/lib/utils'
-import { chartTooltipBg, chartTooltipBorder, chartTooltipText } from '../useChartTheme'
+import { chartColors, chartSurfaceColor, chartTextColor, chartTooltipBg, chartTooltipBorder, chartTooltipText } from '../useChartTheme'
 
 use([CanvasRenderer, EChartsHeatmap, GridComponent, TooltipComponent, VisualMapComponent])
 
@@ -17,12 +17,15 @@ interface Props {
   height?: number | string
   min?: number
   max?: number
+  /** Unit appended to tooltip values (Rule56), e.g. 'sessions'. */
+  unit?: string
   option?: any
   class?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   height: 300,
+  unit: '',
 })
 
 const mergedOption = computed(() => {
@@ -37,20 +40,22 @@ const mergedOption = computed(() => {
       backgroundColor: chartTooltipBg.value,
       borderColor: chartTooltipBorder.value,
       textStyle: { color: chartTooltipText.value, fontSize: 12 },
-      formatter: (params: any) => `${props.yLabels[params.value[1]]} / ${props.xLabels[params.value[0]]}: ${params.value[2]}`,
+      // WHY (Rule56): values without units read as bare numbers. The unit
+      // rides in the formatter so the default tooltip always carries it.
+      formatter: (params: any) => `${props.yLabels[params.value[1]]} / ${props.xLabels[params.value[0]]}: ${params.value[2]}${props.unit ? ` ${props.unit}` : ''}`,
     },
     xAxis: {
       type: 'category',
       data: props.xLabels,
       splitArea: { show: true },
-      axisLabel: { fontSize: 11 },
+      axisLabel: { fontSize: 12 },
       axisTick: { show: false },
     },
     yAxis: {
       type: 'category',
       data: props.yLabels,
       splitArea: { show: true },
-      axisLabel: { fontSize: 11 },
+      axisLabel: { fontSize: 12 },
       axisTick: { show: false },
     },
     visualMap: {
@@ -63,18 +68,20 @@ const mergedOption = computed(() => {
       itemWidth: 12,
       itemHeight: 80,
       inRange: {
-        color: ['#e0f2fe', '#3b82f6', '#1e3a8a'],
+        color: [`${chartColors.value[0]}1a`, `${chartColors.value[0]}80`, chartColors.value[0]],
       },
-      textStyle: { fontSize: 10 },
+      textStyle: { fontSize: 12, color: chartTextColor.value },
     },
     series: [
       {
         type: 'heatmap',
         data: props.data,
         label: { show: false },
-        itemStyle: { borderRadius: 3, borderColor: '#fff', borderWidth: 1 },
+        itemStyle: { borderRadius: 3, borderColor: chartSurfaceColor.value, borderWidth: 1 },
+        // WHY (Rule51): flat highlight instead of a drop-shadow hover --
+        // shadows lift the cell off the surface; a border reads as selection.
         emphasis: {
-          itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.2)' },
+          itemStyle: { borderColor: chartTextColor.value, borderWidth: 2 },
         },
       },
     ],

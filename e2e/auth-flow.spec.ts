@@ -20,6 +20,7 @@ test.describe('Authentication and demo user session (Nuxt)', () => {
     await demoBtn.click()
 
     await expect(page).toHaveURL(/.*dashboard/, { timeout: 15000 })
-    await expect(page.getByText('Demo User')).toBeVisible()
+    // Demo session user is John Doe (server/routes/auth/demo.post.ts).
+    await expect(page.getByText('John Doe').first()).toBeVisible()
   })
 })

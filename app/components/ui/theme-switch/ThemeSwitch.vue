@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ChevronDown, Monitor, Moon, Palette, Sparkles, Sun } from 'lucide-vue-next'
+import { ChevronDown, Monitor, Moon, Palette, Sparkles, Sun } from '@/lib/icon-pack'
 import { SectionCard } from '@/components/ui/section-card'
 import {
   DropdownMenu,
@@ -206,7 +206,7 @@ function cycle() {
   >
     <span
       aria-hidden
-      class="pointer-events-none absolute top-0.5 bottom-0.5 left-0.5 rounded-full bg-primary transition-transform duration-300 ease-out"
+      class="pointer-events-none absolute top-0.5 bottom-0.5 left-0.5 rounded-full bg-primary transition-transform duration-200 ease-out"
       :style="indicatorStyle"
     />
     <button
@@ -216,7 +216,7 @@ function cycle() {
       role="radio"
       :aria-checked="modelValue === t"
       :aria-label="LABELS[t]"
-      class="relative z-[1] flex-1 inline-flex items-center justify-center gap-1.5 h-7 px-3 rounded-full text-xs font-medium transition-colors"
+      class="relative z-[1] flex-1 inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-full text-xs font-medium transition-colors"
       :class="
         modelValue === t
           ? 'text-primary-foreground'
@@ -240,23 +240,22 @@ function cycle() {
     :aria-checked="modelValue === 'dark'"
     :aria-label="LABELS[modelValue]"
     :class="[
-      'relative inline-flex w-16 h-8 items-center rounded-full border border-border transition-colors',
-      modelValue === 'dark' ? 'bg-zinc-900' : 'bg-amber-100',
+      'relative inline-flex w-16 h-8 items-center rounded-full border border-border bg-muted transition-colors',
       $props.class,
     ]"
     @click="set(modelValue === 'dark' ? 'light' : 'dark')"
   >
     <Sun
-      class="absolute left-1.5 size-4 text-amber-500 transition-opacity"
+      class="absolute left-1.5 size-4 text-foreground transition-opacity"
       :class="modelValue === 'dark' ? 'opacity-30' : 'opacity-100'"
     />
     <Moon
-      class="absolute right-1.5 size-4 text-zinc-300 transition-opacity"
+      class="absolute right-1.5 size-4 text-foreground transition-opacity"
       :class="modelValue === 'light' ? 'opacity-30' : 'opacity-100'"
     />
     <span
       aria-hidden
-      class="absolute size-6 rounded-full bg-card shadow border border-border transition-transform duration-300 ease-out"
+      class="absolute size-6 rounded-full bg-card shadow border border-border transition-transform duration-200 ease-out"
       :style="{ transform: `translateX(${modelValue === 'dark' ? '36px' : '4px'})` }"
     />
   </button>

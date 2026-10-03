@@ -2,7 +2,7 @@
 import type { ContextMenuSubTriggerProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
-import { ChevronRight } from 'lucide-vue-next'
+import { ChevronRight } from '@/lib/icon-pack'
 import { ContextMenuSubTrigger, useForwardProps } from 'reka-ui'
 import { cn } from '@/lib/utils'
 

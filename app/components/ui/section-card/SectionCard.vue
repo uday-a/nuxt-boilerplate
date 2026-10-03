@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from '@/lib/utils'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardAction, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 
 const props = defineProps<{
   title: string
@@ -12,21 +12,16 @@ const props = defineProps<{
 
 <template>
   <Card :class="cn('flex flex-col', props.class)">
-    <CardHeader class="pb-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <CardTitle class="text-base font-semibold">
-            {{ title }}
-          </CardTitle>
-          <CardDescription
-            v-if="description"
-            class="mt-0.5"
-          >
-            {{ description }}
-          </CardDescription>
-        </div>
+    <CardHeader>
+      <CardTitle class="text-base font-semibold">
+        {{ title }}
+      </CardTitle>
+      <CardDescription v-if="description">
+        {{ description }}
+      </CardDescription>
+      <CardAction v-if="$slots['header-action']">
         <slot name="header-action" />
-      </div>
+      </CardAction>
     </CardHeader>
     <CardContent :class="cn('flex-1', props.contentClass)">
       <slot />

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, type Component } from 'vue'
-import { LayoutDashboard, FileText, Inbox, Settings, Users, KanbanSquare, Search } from 'lucide-vue-next'
+import { LayoutDashboard, FileText, Inbox, Settings, Users, KanbanSquare, Search } from '@/lib/icon-pack'
 import {
   CommandDialog,
   CommandEmpty,
@@ -34,7 +34,7 @@ const props = withDefaults(
   }>(),
   {
     placeholder: 'Search pages, commands…',
-    triggerLabel: 'Search pages, commands…',
+    triggerLabel: 'Search…',
     showTrigger: true,
     groups: () => [
       {
@@ -103,14 +103,14 @@ defineExpose({ show, hide, toggle })
   <button
     v-if="showTrigger"
     type="button"
-    class="bg-secondary/50 hover:bg-secondary text-muted-foreground focus-visible:ring-ring relative hidden h-8 w-full items-center gap-2 rounded-lg border border-transparent px-2.5 text-sm shadow-none transition-colors focus-visible:ring-1 focus-visible:outline-none sm:flex md:w-[220px] lg:w-[300px]"
+    class="bg-background border-input hover:bg-accent hover:text-foreground text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 relative hidden h-8 w-full items-center gap-2 rounded-lg border px-2.5 text-sm shadow-xs transition-colors outline-none focus-visible:ring-[3px] sm:flex md:w-[180px] lg:w-[240px]"
     aria-label="Open command palette"
     @click="show"
   >
     <Search class="size-3.5 shrink-0" />
     <span class="flex-1 truncate text-left">{{ triggerLabel }}</span>
     <kbd
-      class="bg-muted/80 text-muted-foreground pointer-events-none flex h-5 items-center justify-center rounded-md border px-1.5 font-mono text-[10px] font-medium"
+      class="bg-muted/80 text-muted-foreground pointer-events-none flex h-5 items-center justify-center rounded-md border px-1.5 font-mono text-xs font-medium"
     >
       <span>{{ triggerShortcut }}</span>
     </kbd>
@@ -143,7 +143,7 @@ defineExpose({ show, hide, toggle })
             <span>{{ item.label }}</span>
             <CommandShortcut
               v-if="item.hint"
-              class="text-muted-foreground/70"
+              class="text-muted-foreground"
             >
               {{ item.hint }}
             </CommandShortcut>

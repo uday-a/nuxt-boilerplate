@@ -8,7 +8,10 @@ const props = defineProps<{
 </script>
 
 <template>
-  <main
+  <!-- Deliberately a <div>, not <main>: the dashboard shell renders its own
+    <main id="main-content"> inside (the skip-link target). A <main> here
+    would nest landmarks — exactly one <main> per page. -->
+  <div
     data-uipkge
     data-slot="sidebar-inset"
     :class="
@@ -23,5 +26,5 @@ const props = defineProps<{
     "
   >
     <slot />
-  </main>
+  </div>
 </template>

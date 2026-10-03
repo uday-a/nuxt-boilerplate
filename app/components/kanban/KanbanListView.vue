@@ -10,7 +10,7 @@ import SubtaskProgress from './SubtaskProgress.vue'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { MessageSquare, Paperclip, ExternalLink, ArrowUpDown, ChevronDown, ChevronRight } from 'lucide-vue-next'
+import { MessageSquare, Paperclip, ExternalLink, ArrowUpDown, ChevronDown, ChevronRight } from '@/lib/icon-pack'
 
 const props = defineProps<{
   columns: KanbanColumn[]
@@ -38,6 +38,12 @@ function toggleSort(field: SortField) {
     sortField.value = field
     sortDir.value = 'asc'
   }
+}
+
+// WHY (Rule85): sort buttons announce their state like the data table's.
+function ariaSort(field: SortField): 'ascending' | 'descending' | 'none' {
+  if (sortField.value !== field) return 'none'
+  return sortDir.value === 'asc' ? 'ascending' : 'descending'
 }
 
 const groupByStatus = ref(true)
@@ -121,51 +127,57 @@ function subtasksDone(task: KanbanTask): number {
 </script>
 
 <template>
-  <div class="kanban-list flex min-h-0 flex-1 flex-col overflow-auto pb-3">
+  <div class="[scrollbar-width:thin] [scrollbar-color:var(--border)_transparent] flex min-h-0 flex-1 flex-col overflow-auto pb-3">
     <div
-      class="bg-muted/50 sticky top-0 z-10 grid grid-cols-[60px_1fr_100px_110px_130px_100px_80px] items-center gap-2 rounded-t-lg border px-3 py-2 text-[11px] font-semibold tracking-wider uppercase"
+      class="bg-muted sticky top-0 z-10 grid grid-cols-[60px_1fr_100px_110px_130px_100px_80px] items-center gap-2 rounded-t-lg border px-3 py-2 text-xs font-medium text-muted-foreground tracking-wider uppercase"
     >
       <button
-        class="flex items-center gap-1 text-left"
+        class="focus-visible:ring-ring flex items-center gap-1 rounded-sm text-left focus-visible:ring-2 focus-visible:outline-none"
+        :aria-sort="ariaSort('id')"
         @click="toggleSort('id')"
       >
         ID
-        <ArrowUpDown :class="['size-3', sortField === 'id' ? 'text-foreground' : 'text-muted-foreground/50']" />
+        <ArrowUpDown :class="['size-3', sortField === 'id' ? 'text-foreground' : 'text-muted-foreground']" />
       </button>
       <button
-        class="flex items-center gap-1 text-left"
+        class="focus-visible:ring-ring flex items-center gap-1 rounded-sm text-left focus-visible:ring-2 focus-visible:outline-none"
+        :aria-sort="ariaSort('title')"
         @click="toggleSort('title')"
       >
         Task
-        <ArrowUpDown :class="['size-3', sortField === 'title' ? 'text-foreground' : 'text-muted-foreground/50']" />
+        <ArrowUpDown :class="['size-3', sortField === 'title' ? 'text-foreground' : 'text-muted-foreground']" />
       </button>
       <button
-        class="flex items-center gap-1 text-left"
+        class="focus-visible:ring-ring flex items-center gap-1 rounded-sm text-left focus-visible:ring-2 focus-visible:outline-none"
+        :aria-sort="ariaSort('status')"
         @click="toggleSort('status')"
       >
         Status
-        <ArrowUpDown :class="['size-3', sortField === 'status' ? 'text-foreground' : 'text-muted-foreground/50']" />
+        <ArrowUpDown :class="['size-3', sortField === 'status' ? 'text-foreground' : 'text-muted-foreground']" />
       </button>
       <button
-        class="flex items-center gap-1 text-left"
+        class="focus-visible:ring-ring flex items-center gap-1 rounded-sm text-left focus-visible:ring-2 focus-visible:outline-none"
+        :aria-sort="ariaSort('priority')"
         @click="toggleSort('priority')"
       >
         Priority
-        <ArrowUpDown :class="['size-3', sortField === 'priority' ? 'text-foreground' : 'text-muted-foreground/50']" />
+        <ArrowUpDown :class="['size-3', sortField === 'priority' ? 'text-foreground' : 'text-muted-foreground']" />
       </button>
       <button
-        class="flex items-center gap-1 text-left"
+        class="focus-visible:ring-ring flex items-center gap-1 rounded-sm text-left focus-visible:ring-2 focus-visible:outline-none"
+        :aria-sort="ariaSort('assignee')"
         @click="toggleSort('assignee')"
       >
         Assignee
-        <ArrowUpDown :class="['size-3', sortField === 'assignee' ? 'text-foreground' : 'text-muted-foreground/50']" />
+        <ArrowUpDown :class="['size-3', sortField === 'assignee' ? 'text-foreground' : 'text-muted-foreground']" />
       </button>
       <button
-        class="flex items-center gap-1 text-left"
+        class="focus-visible:ring-ring flex items-center gap-1 rounded-sm text-left focus-visible:ring-2 focus-visible:outline-none"
+        :aria-sort="ariaSort('dueDate')"
         @click="toggleSort('dueDate')"
       >
         Due
-        <ArrowUpDown :class="['size-3', sortField === 'dueDate' ? 'text-foreground' : 'text-muted-foreground/50']" />
+        <ArrowUpDown :class="['size-3', sortField === 'dueDate' ? 'text-foreground' : 'text-muted-foreground']" />
       </button>
       <span class="text-center">Info</span>
     </div>
@@ -187,7 +199,7 @@ function subtasksDone(task: KanbanTask): number {
           <span class="text-sm font-medium">{{ group.column.title }}</span>
           <Badge
             variant="secondary"
-            class="ml-1 h-4 px-1.5 text-[10px] tabular-nums"
+            class="ml-1 h-4 px-1.5 text-xs tabular-nums"
           >
             {{ group.tasks.length }}
           </Badge>
@@ -197,25 +209,30 @@ function subtasksDone(task: KanbanTask): number {
           <div
             v-for="item in group.tasks"
             :key="item.task.id"
-            class="hover:bg-muted/30 grid cursor-pointer grid-cols-[60px_1fr_100px_110px_130px_100px_80px] items-center gap-2 border-x border-b px-3 py-2 transition-colors"
-            @click="$emit('task-click', item.task)"
+            class="group/row hover:bg-muted/30 relative grid grid-cols-[60px_1fr_100px_110px_130px_100px_80px] items-center gap-2 border-x border-b px-3 py-2 transition-colors"
           >
-            <span class="text-muted-foreground font-mono text-[11px]">{{ item.task.id }}</span>
+            <span class="text-muted-foreground font-mono text-xs">{{ item.task.id }}</span>
 
             <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <span
+                <!-- Row's one button, stretched over the row; the link,
+                     status select and tooltips sit above it (z-10). -->
+                <button
+                  type="button"
                   :class="[
-                    'truncate text-[13px] font-medium',
+                    'truncate text-left text-sm font-medium outline-none',
+                    'after:absolute after:inset-0 focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:ring-inset',
                     item.columnId === 'done' ? 'text-muted-foreground line-through' : '',
                   ]"
+                  :title="item.task.title"
+                  @click="$emit('task-click', item.task)"
                 >
                   {{ item.task.title }}
-                </span>
+                </button>
                 <NuxtLink
                   :to="`/dashboard/kanban/${item.task.id}`"
-                  class="text-muted-foreground hover:text-foreground shrink-0 opacity-0 transition-opacity group-hover/row:opacity-100"
-                  @click.stop
+                  :aria-label="`Open ${item.task.id} detail`"
+                  class="text-muted-foreground hover:text-foreground relative z-10 shrink-0 opacity-0 transition-opacity group-hover/row:opacity-100 focus-visible:opacity-100"
                 >
                   <ExternalLink class="size-3" />
                 </NuxtLink>
@@ -229,7 +246,7 @@ function subtasksDone(task: KanbanTask): number {
                   :key="tag.label"
                   :label="tag.label"
                   :color="tag.color"
-                  class="!px-1.5 !py-0 !text-[9px]"
+                  class="!px-1.5 !py-0 !text-xs"
                 />
                 <SubtaskProgress
                   v-if="item.task.subtaskIds.length"
@@ -246,8 +263,7 @@ function subtasksDone(task: KanbanTask): number {
                 @update:model-value="(val) => $emit('move-task', item.task, String(val))"
               >
                 <SelectTrigger
-                  class="hover:bg-muted h-6 w-auto gap-1 rounded-md border-none bg-transparent px-1.5 text-[11px] font-medium shadow-none"
-                  @click.stop
+                  class="hover:bg-muted relative z-10 h-6 w-auto gap-1 rounded-md border-none bg-transparent px-1.5 text-xs font-medium shadow-none"
                 >
                   <span class="flex items-center gap-1.5">
                     <span :class="['size-1.5 rounded-full', item.dotColor]" />
@@ -277,7 +293,10 @@ function subtasksDone(task: KanbanTask): number {
                 :color="item.task.assignee.color"
                 size="xs"
               />
-              <span class="truncate text-[12px]">{{ item.task.assignee.name }}</span>
+              <span
+                class="relative z-10 truncate text-xs"
+                :title="item.task.assignee.name"
+              >{{ item.task.assignee.name }}</span>
             </div>
 
             <div>
@@ -288,7 +307,7 @@ function subtasksDone(task: KanbanTask): number {
               />
               <span
                 v-else
-                class="text-muted-foreground/50 text-[11px]"
+                class="text-muted-foreground text-xs"
               >—</span>
             </div>
 
@@ -296,7 +315,7 @@ function subtasksDone(task: KanbanTask): number {
               <TooltipProvider :delay-duration="200">
                 <Tooltip v-if="item.task.commentItems.length">
                   <TooltipTrigger as-child>
-                    <span class="text-muted-foreground/70 flex items-center gap-0.5 text-[11px]">
+                    <span class="text-muted-foreground relative z-10 flex items-center gap-0.5 text-xs tabular-nums">
                       <MessageSquare class="size-3" />
                       {{ item.task.commentItems.length }}
                     </span>
@@ -307,7 +326,7 @@ function subtasksDone(task: KanbanTask): number {
                 </Tooltip>
                 <Tooltip v-if="item.task.fileItems.length">
                   <TooltipTrigger as-child>
-                    <span class="text-muted-foreground/70 flex items-center gap-0.5 text-[11px]">
+                    <span class="text-muted-foreground relative z-10 flex items-center gap-0.5 text-xs tabular-nums">
                       <Paperclip class="size-3" />
                       {{ item.task.fileItems.length }}
                     </span>
@@ -325,24 +344,9 @@ function subtasksDone(task: KanbanTask): number {
 
     <div
       v-if="flatTasks.length === 0"
-      class="text-muted-foreground flex flex-1 items-center justify-center rounded-b-lg border-x border-b py-12 text-sm"
+      class="text-muted-foreground flex flex-1 items-center justify-center rounded-b-lg border-x border-b py-4 text-sm"
     >
       No tasks match your filters.
     </div>
   </div>
 </template>
-
-<style scoped>
-.kanban-list {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
-}
-.kanban-list::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
-}
-.kanban-list::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--border));
-  border-radius: 3px;
-}
-</style>

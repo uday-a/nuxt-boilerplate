@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { Folder, AlertCircle, Loader2, Trash2 } from 'lucide-vue-next'
+import { AlertCircle, Loader2, Trash2 } from '@/lib/icon-pack'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Page, PageHeader, PageHeaderHeading, PageBody } from '@/components/ui/page'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import type { ApiResponse } from '~~/server/utils/response'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
@@ -19,6 +23,7 @@ interface Project {
   updatedAt: string | Date
 }
 
+const { locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const slug = computed(() => String(route.params.slug))
@@ -30,7 +35,11 @@ const project = computed<Project | null>(() =>
 )
 const loadError = computed(() => fetchErr.value?.message ?? (getRes.value && !getRes.value.ok ? getRes.value.error.message : null))
 
-useHead(() => ({ title: `${project.value?.name ?? slug.value} · Projects` }))
+// Detail pages have no nav label of their own; the H1 and tab title use the
+// project's name (falling back to the route label while it loads).
+const routeLabel = useRouteLabel()
+const title = computed(() => project.value?.name ?? routeLabel.value)
+useHead({ title })
 
 // Edit form. Initialized from server data each time it arrives.
 const form = reactive({ name: '', description: '' })
@@ -44,6 +53,8 @@ watchEffect(() => {
 const saveState = ref<'idle' | 'saving' | 'error'>('idle')
 const saveError = ref<string | null>(null)
 const deleteState = ref<'idle' | 'deleting'>('idle')
+// Designed confirm dialog instead of window.confirm(), matching delete-user.
+const confirmDelete = ref(false)
 
 async function save() {
   if (!project.value) return
@@ -67,7 +78,7 @@ async function save() {
 
 async function remove() {
   if (!project.value) return
-  if (!confirm(`Delete "${project.value.name}"? This cannot be undone.`)) return
+  confirmDelete.value = false
   deleteState.value = 'deleting'
   const res = await $fetch<ApiResponse<{ deleted: boolean }>>(`/api/projects/${slug.value}`, {
     method: 'DELETE',
@@ -86,51 +97,62 @@ async function remove() {
 </script>
 
 <template>
-  <div class="space-y-6">
-    <div
-      v-if="loadError"
-      class="border-destructive/30 bg-destructive/10 text-destructive flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
-    >
-      <AlertCircle class="size-4" />
-      {{ loadError }}
-    </div>
+  <Page>
+    <PageHeader>
+      <PageHeaderHeading
+        :title="title"
+        :description="project ? `Created ${new Date(project.createdAt).toLocaleDateString(locale)}` : undefined"
+      />
+    </PageHeader>
 
-    <div
-      v-else-if="pending"
-      class="text-muted-foreground text-sm"
-    >
-      Loading…
-    </div>
-
-    <template v-else-if="project">
-      <header class="space-y-2">
-        <div class="flex items-center gap-2">
-          <Folder class="text-muted-foreground size-4" />
-          <h1 class="text-2xl font-semibold tracking-tight">
-            {{ project.name }}
-          </h1>
+    <PageBody class="max-w-3xl space-y-4">
+      <EmptyState
+        v-if="loadError"
+        :icon="AlertCircle"
+        role="alert"
+        title="Couldn't load this project"
+        description="It may have been deleted, or something went wrong on our side."
+      >
+        <div class="mt-4 flex justify-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            @click="refresh()"
+          >
+            Retry
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            as-child
+          >
+            <NuxtLink to="/projects">Back to projects</NuxtLink>
+          </Button>
         </div>
-        <p class="text-muted-foreground text-sm">
-          Project · <code>{{ project.slug }}</code> · created {{ new Date(project.createdAt).toLocaleDateString() }}
-        </p>
-      </header>
+      </EmptyState>
 
-      <Card>
+      <Skeleton
+        v-else-if="pending"
+        class="h-72 rounded-xl"
+        aria-busy="true"
+      />
+
+      <Card v-else-if="project">
         <CardHeader>
           <CardTitle class="text-base">
             Details
           </CardTitle>
-          <CardDescription>Edit the project metadata. Slug is immutable after creation.</CardDescription>
+          <CardDescription>Rename the project or update its description.</CardDescription>
         </CardHeader>
         <CardContent class="space-y-4">
-          <div class="grid gap-1.5">
+          <div class="grid gap-2">
             <Label for="p-name">Name</Label>
             <Input
               id="p-name"
               v-model="form.name"
             />
           </div>
-          <div class="grid gap-1.5">
+          <div class="grid gap-2">
             <Label for="p-desc">Description</Label>
             <Textarea
               id="p-desc"
@@ -141,8 +163,12 @@ async function remove() {
           <div
             v-if="saveError"
             class="text-destructive flex items-center gap-2 text-sm"
+            role="alert"
           >
-            <AlertCircle class="size-4" />
+            <AlertCircle
+              class="size-4 shrink-0"
+              aria-hidden="true"
+            />
             {{ saveError }}
           </div>
           <div class="flex justify-between">
@@ -150,9 +176,12 @@ async function remove() {
               variant="ghost"
               :disabled="deleteState === 'deleting'"
               class="text-destructive hover:text-destructive"
-              @click="remove"
+              @click="confirmDelete = true"
             >
-              <Trash2 class="size-4" />
+              <Trash2
+                class="size-4"
+                aria-hidden="true"
+              />
               Delete project
             </Button>
             <Button
@@ -162,12 +191,41 @@ async function remove() {
               <Loader2
                 v-if="saveState === 'saving'"
                 class="size-4 animate-spin"
+                aria-hidden="true"
               />
               Save changes
             </Button>
           </div>
         </CardContent>
       </Card>
-    </template>
-  </div>
+    </PageBody>
+
+    <!-- Delete confirmation -->
+    <Dialog v-model:open="confirmDelete">
+      <DialogContent class="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Delete “{{ project?.name }}”?</DialogTitle>
+          <DialogDescription>The project and its settings are removed for everyone. This can’t be undone.</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            @click="confirmDelete = false"
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            @click="remove"
+          >
+            <Trash2
+              class="size-4"
+              aria-hidden="true"
+            />
+            Delete project
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  </Page>
 </template>

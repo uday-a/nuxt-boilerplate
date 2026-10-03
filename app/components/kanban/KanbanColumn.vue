@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus, MoreHorizontal, ChevronsLeft, ChevronsRight } from 'lucide-vue-next'
+import { Plus, MoreHorizontal, ChevronsLeft, ChevronsRight } from '@/lib/icon-pack'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import KanbanCard from './KanbanCard.vue'
@@ -28,7 +28,7 @@ defineEmits<{
 
 <template>
   <div
-    :class="['group/col flex shrink-0 flex-col transition-all duration-200', collapsed ? 'w-12' : 'w-[300px]']"
+    :class="['group/col flex max-h-full min-h-0 shrink-0 flex-col transition-all duration-200', collapsed ? 'w-12' : 'border-border/70 bg-muted/40 w-[300px] rounded-xl border p-2']"
     @dragover.prevent
     @drop="$emit('drop')"
   >
@@ -38,12 +38,12 @@ defineEmits<{
       @click="$emit('toggle-collapse', column.id)"
     >
       <span :class="['size-2 shrink-0 rounded-full', column.dotColor]" />
-      <span :class="['text-[11px] font-semibold tracking-tight', column.color, 'rotate-180 [writing-mode:vertical-lr]']">
+      <span :class="['text-xs font-semibold tracking-tight', column.color, 'rotate-180 [writing-mode:vertical-lr]']">
         {{ column.title }}
       </span>
       <Badge
         variant="secondary"
-        class="mt-1 h-5 min-w-5 justify-center rounded-md px-1 text-[10px]"
+        class="mt-1 h-5 min-w-5 justify-center rounded-md px-1 text-xs tabular-nums"
       >
         {{ column.tasks.length }}
       </Badge>
@@ -51,19 +51,19 @@ defineEmits<{
     </button>
 
     <template v-else>
-      <div class="bg-background/95 sticky top-0 z-10 mb-2 flex items-center gap-2 px-2 py-1.5 backdrop-blur-sm">
+      <div class="mb-2 flex shrink-0 items-center gap-2 rounded-lg bg-[color-mix(in_oklch,var(--muted)_40%,var(--background))] px-2 py-1.5">
         <button
-          class="text-muted-foreground/50 hover:text-muted-foreground shrink-0 transition-colors"
+          class="text-muted-foreground hover:text-foreground shrink-0 transition-colors"
           title="Collapse column"
           @click="$emit('toggle-collapse', column.id)"
         >
           <ChevronsLeft class="size-3.5" />
         </button>
         <span :class="['size-2 shrink-0 rounded-full', column.dotColor]" />
-        <h3 :class="['text-[13px] font-semibold tracking-tight', column.color]">
+        <h3 :class="['text-sm font-semibold tracking-tight', column.color]">
           {{ column.title }}
         </h3>
-        <span class="text-muted-foreground bg-muted rounded-md px-1.5 py-0.5 text-[11px] font-medium tabular-nums">
+        <span class="text-muted-foreground bg-muted rounded-md px-1.5 py-0.5 text-xs font-medium tabular-nums">
           {{ column.tasks.length }}
         </span>
         <div class="ml-auto flex items-center">
@@ -87,10 +87,10 @@ defineEmits<{
 
       <div
         :class="[
-          'kanban-lane flex flex-col rounded-xl p-2 transition-all duration-200',
+          'min-h-15 flex flex-col overflow-y-auto rounded-lg transition-all duration-200 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin]',
           dragOverColumn === column.id && draggedTask
             ? 'bg-primary/[0.06] ring-primary/25 ring-1 ring-inset'
-            : 'bg-muted/40',
+            : '',
         ]"
         @dragover.prevent="$emit('lane-drag-over', $event, column.id, column.tasks.length)"
       >
@@ -135,7 +135,7 @@ defineEmits<{
 
         <button
           v-if="column.tasks.length === 0"
-          class="text-muted-foreground/50 hover:text-muted-foreground hover:border-muted-foreground/30 flex flex-1 flex-col items-center justify-center rounded-lg border border-dashed py-10 transition-colors"
+          class="text-muted-foreground hover:text-foreground hover:border-muted-foreground/30 flex flex-1 flex-col items-center justify-center rounded-lg border border-dashed py-4 transition-colors"
           @click="$emit('add-task', column.id)"
         >
           <Plus class="mb-1 size-4" />
@@ -146,7 +146,7 @@ defineEmits<{
       </div>
 
       <button
-        class="text-muted-foreground hover:text-foreground hover:bg-muted/60 mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed py-2 text-xs transition-colors"
+        class="text-muted-foreground hover:text-foreground hover:bg-muted/60 mt-2 flex w-full shrink-0 items-center justify-center gap-1.5 rounded-lg border border-dashed py-2 text-xs transition-colors"
         @click="$emit('add-task', column.id)"
       >
         <Plus class="size-3.5" />
@@ -155,9 +155,3 @@ defineEmits<{
     </template>
   </div>
 </template>
-
-<style scoped>
-.kanban-lane {
-  min-height: 60px;
-}
-</style>

@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
+import { boolean, integer, jsonb, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
 
 // Application roles. Backed by a Postgres ENUM so the DB rejects unknown
 // values — a free-text varchar would let a typo like 'admin ' silently
@@ -116,3 +116,74 @@ export const magicLinkTokens = pgTable('magic_link_tokens', {
   usedAt: timestamp('used_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
+
+// API keys — scoped credentials for programmatic access.
+//
+// Same token discipline as magic_link_tokens: we store the SHA-256 hash,
+// never the raw key. The raw value is shown once at creation and
+// discarded server-side immediately. `prefix` (e.g. `uipkge_a1b2c3d4`)
+// lets support identify a key from logs without touching the hash.
+// `verifyApiKey()` in server/utils/api-keys.ts is the single
+// verification path — it compares hashes, rejects revoked/expired keys,
+// and touches lastUsedAt. Nothing else reads this table directly.
+export const apiKeys = pgTable('api_keys', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 64 }).notNull(),
+  keyHash: varchar('key_hash', { length: 64 }).notNull().unique(),
+  prefix: varchar('prefix', { length: 24 }).notNull(),
+  // Space-separated scopes, e.g. 'read' or 'read write'. Kept loose-string
+  // (not an enum) so new scopes don't require a migration.
+  scopes: varchar('scopes', { length: 128 }).notNull().default('read'),
+  lastUsedAt: timestamp('last_used_at'),
+  expiresAt: timestamp('expires_at'),
+  revokedAt: timestamp('revoked_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export type ApiKey = typeof apiKeys.$inferSelect
+export type NewApiKey = typeof apiKeys.$inferInsert
+
+// Audit log — append-only record of who did what.
+//
+// Written by server code via recordAudit() (server/utils/audit.ts),
+// never by clients. The structured logger ships to Axiom for ops; this
+// table is the in-product surface (settings/activity page). Rows are
+// never updated — corrections are new rows — so there is no updatedAt.
+// userId uses SET NULL (not cascade): deleting a user must not rewrite
+// history.
+export const auditLogs = pgTable('audit_logs', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
+  // Dot-namespaced action, mirroring logger event names:
+  // 'auth.signin', 'projects.create', 'api_keys.revoke', …
+  action: varchar('action', { length: 64 }).notNull(),
+  entity: varchar('entity', { length: 32 }),
+  entityId: varchar('entity_id', { length: 64 }),
+  metadata: jsonb('metadata').$type<Record<string, unknown>>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export type AuditLog = typeof auditLogs.$inferSelect
+export type NewAuditLog = typeof auditLogs.$inferInsert
+
+// Team invites — email + role invitations.
+//
+// Same token discipline as magic_link_tokens: SHA-256 hash persisted,
+// raw token only in the emailed link, single-use via acceptedAt, 7-day
+// TTL. Accepting an invite upserts the user and applies the invited
+// role — the role column reuses the userRole enum, so requireRole()
+// honors it with no extra plumbing.
+export const invites = pgTable('invites', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 256 }).notNull(),
+  role: userRole('role').notNull().default('user'),
+  tokenHash: varchar('token_hash', { length: 64 }).notNull().unique(),
+  invitedBy: integer('invited_by').references(() => users.id, { onDelete: 'set null' }),
+  expiresAt: timestamp('expires_at').notNull(),
+  acceptedAt: timestamp('accepted_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export type Invite = typeof invites.$inferSelect
+export type NewInvite = typeof invites.$inferInsert

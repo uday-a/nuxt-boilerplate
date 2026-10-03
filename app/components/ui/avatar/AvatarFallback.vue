@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 const fallbackVariants = cva('flex size-full items-center justify-center rounded-full bg-muted font-medium', {
   variants: {
     size: {
-      'xs': 'text-[8px]',
+      'xs': 'text-xs',
       'sm': 'text-xs',
       'default': 'text-sm',
       'lg': 'text-base',
@@ -20,9 +20,9 @@ const fallbackVariants = cva('flex size-full items-center justify-center rounded
       primary: 'bg-primary text-primary-foreground',
       secondary: 'bg-secondary text-secondary-foreground',
       destructive: 'bg-destructive text-destructive-foreground',
-      success: 'bg-[var(--success)] text-white dark:text-black',
-      warning: 'bg-[var(--warning)] text-black',
-      info: 'bg-[var(--info)] text-white dark:text-black',
+      success: 'bg-success text-success-foreground',
+      warning: 'bg-warning text-warning-foreground',
+      info: 'bg-info text-info-foreground',
       error: 'bg-destructive text-white dark:text-black',
       muted: 'bg-muted text-muted-foreground',
     },

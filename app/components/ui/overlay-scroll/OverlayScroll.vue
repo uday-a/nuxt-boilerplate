@@ -168,14 +168,14 @@ defineExpose({
   <div
     data-uipkge
     data-slot="overlay-scroll"
-    :class="cn('overlay-scroll relative', props.class)"
+    :class="cn('overlay-scroll relative flex min-h-0 flex-col overflow-hidden', props.class)"
     @mouseenter="onEnter"
     @mouseleave="onLeave"
   >
     <div
       ref="scrollerEl"
       data-slot="overlay-scroll-viewport"
-      class="overlay-scroll__inner h-full overflow-x-hidden overflow-y-auto"
+      class="overlay-scroll__inner min-h-0 flex-1 overflow-x-hidden overflow-y-auto"
       @scroll="onScroll"
     >
       <slot />

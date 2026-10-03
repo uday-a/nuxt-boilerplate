@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Check, ArrowRight } from 'lucide-vue-next'
+import { Check, ArrowRight } from '@/lib/icon-pack'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 definePageMeta({ middleware: 'auth', layout: false })
-useHead({ title: 'Welcome · Acme' })
+useHead({ title: 'Welcome' })
 
 const steps = ['Profile', 'Workspace', 'Invite'] as const
 const step = ref<0 | 1 | 2>(0)
@@ -32,34 +32,36 @@ function skip() {
 
 <template>
   <div class="bg-background text-foreground min-h-screen">
-    <main class="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-6 py-12">
-      <ol class="mb-6 flex items-center gap-3 text-xs">
+    <main class="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-4 py-4">
+      <ol class="mb-4 flex items-center gap-3 text-xs">
         <li
           v-for="(label, i) in steps"
           :key="label"
           class="flex items-center gap-2"
         >
           <span
-            class="flex size-6 items-center justify-center rounded-full border text-[11px] font-medium"
+            class="flex size-6 items-center justify-center rounded-full border text-xs font-medium tabular-nums"
             :class="i < step ? 'bg-primary text-primary-foreground border-primary' : i === step ? 'border-foreground text-foreground' : 'text-muted-foreground'"
           >
             <Check
               v-if="i < step"
-              class="size-3"
+              class="size-3.5"
+              aria-hidden="true"
             />
             <template v-else>{{ i + 1 }}</template>
           </span>
           <span :class="i === step ? 'font-medium' : 'text-muted-foreground'">{{ label }}</span>
           <ArrowRight
             v-if="i < steps.length - 1"
-            class="text-muted-foreground size-3"
+            class="text-muted-foreground size-3.5"
+            aria-hidden="true"
           />
         </li>
       </ol>
 
       <Card>
         <CardHeader>
-          <CardTitle class="text-xl">
+          <CardTitle class="text-2xl">
             <template v-if="step === 0">
               Tell us about you
             </template>
@@ -93,9 +95,11 @@ function skip() {
               />
             </div>
             <div class="grid gap-2">
-              <Label>Your role</Label>
+              <Label for="onb-role">Your role</Label>
               <Select v-model="role">
-                <SelectTrigger><SelectValue placeholder="Select a role" /></SelectTrigger>
+                <SelectTrigger id="onb-role">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="engineer">
                     Engineering
@@ -127,9 +131,11 @@ function skip() {
               />
             </div>
             <div class="grid gap-2">
-              <Label>Team size</Label>
+              <Label for="onb-size">Team size</Label>
               <Select v-model="workspaceSize">
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="onb-size">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="1-5">
                     1–5
@@ -164,7 +170,7 @@ function skip() {
         </CardContent>
       </Card>
 
-      <div class="mt-6 flex items-center justify-between">
+      <div class="mt-4 flex items-center justify-between">
         <Button
           v-if="step > 0"
           variant="ghost"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Send, ThumbsUp, MessageCircle, Sparkles, Bug, Lightbulb, CheckCircle2, AlertCircle } from 'lucide-vue-next'
+import { ref, type Component } from 'vue'
+import { Send, ThumbsUp, Sparkles, Bug, Lightbulb, CheckCircle2, AlertCircle } from '@/lib/icon-pack'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -8,23 +8,74 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { FileUpload, FileUploadContent, FileUploadItem } from '@/components/ui/file-upload'
+import { Page, PageHeader, PageHeaderHeading, PageBody } from '@/components/ui/page'
 import type { ApiResponse } from '~~/server/utils/response'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
-useHead({ title: 'Feedback' })
+const title = useRouteLabel()
+useHead({ title })
+
+const { t } = useI18n()
 
 const category = ref<'idea' | 'bug' | 'praise'>('idea')
 const subject = ref('')
 const message = ref('')
+
+// Screenshots: images only, capped at 3 files / 5 MB each. Validated
+// here for fast feedback; the API re-checks every file server-side.
+const MAX_FEEDBACK_FILES = 3
+const MAX_FEEDBACK_FILE_BYTES = 5 * 1024 * 1024
+
+const files = ref<File[]>([])
+const fileError = ref<string | null>(null)
+
+function onFilesPicked(next: File[]) {
+  fileError.value = null
+  const merged = [...files.value]
+  for (const f of next) {
+    if (!f.type.startsWith('image/')) {
+      fileError.value = t('feedback.attachments.badType', { name: f.name })
+      continue
+    }
+    if (f.size > MAX_FEEDBACK_FILE_BYTES) {
+      fileError.value = t('feedback.attachments.tooBig', { name: f.name })
+      continue
+    }
+    if (merged.length >= MAX_FEEDBACK_FILES) {
+      fileError.value = t('feedback.attachments.tooMany')
+      break
+    }
+    if (merged.some(m => m.name === f.name && m.size === f.size)) continue
+    merged.push(f)
+  }
+  files.value = merged.slice(0, MAX_FEEDBACK_FILES)
+}
+
+function setFile(index: number, file: File) {
+  // Index assignment (not v-model="files[i]"): noUncheckedIndexedAccess
+  // types files[i] as File | undefined, which v-model can't bind to.
+  files.value[index] = file
+}
+
+function removeFile(index: number) {
+  files.value = files.value.filter((_, i) => i !== index)
+  if (!files.value.length) fileError.value = null
+}
 
 type Status = { kind: 'idle' } | { kind: 'sending' } | { kind: 'sent', delivered: boolean } | { kind: 'error', message: string }
 const status = ref<Status>({ kind: 'idle' })
 
 async function onSend() {
   status.value = { kind: 'sending' }
+  const form = new FormData()
+  form.append('category', category.value)
+  form.append('subject', subject.value)
+  form.append('message', message.value)
+  for (const f of files.value) form.append('files', f, f.name)
   const res = await $fetch<ApiResponse<{ delivered: boolean, id: string | null }>>('/api/feedback', {
     method: 'POST',
-    body: { category: category.value, subject: subject.value, message: message.value },
+    body: form,
   }).catch((err) => {
     // $fetch throws on non-2xx; surface the envelope's error message.
     const data = (err as { data?: { error?: { message?: string } } }).data
@@ -39,56 +90,52 @@ async function onSend() {
   status.value = { kind: 'sent', delivered: res.data.delivered }
   subject.value = ''
   message.value = ''
+  files.value = []
+  fileError.value = null
 }
 
 const recent = [
-  { kind: 'bug', author: 'Marcus R.', summary: 'Sparkline tooltip flickers when crossing zero', upvotes: 8, status: 'in-progress', age: '2d ago' },
-  { kind: 'idea', author: 'Alice C.', summary: 'Let me pin sessions from the playground header, not just the menu', upvotes: 14, status: 'planned', age: '4d ago' },
-  { kind: 'idea', author: 'David K.', summary: 'Add a "compare two models side-by-side" view in the playground', upvotes: 32, status: 'planned', age: '1w ago' },
-  { kind: 'bug', author: 'Eva J.', summary: 'JSON mode adds a trailing newline on Quantum responses', upvotes: 3, status: 'shipped', age: '1w ago' },
-  { kind: 'idea', author: 'Frank L.', summary: 'Slack notifications when batch jobs finish', upvotes: 21, status: 'considering', age: '2w ago' },
-  { kind: 'praise', author: 'Olive P.', summary: 'The new docs search is incredibly fast — feels instant.', upvotes: 11, status: '', age: '2w ago' },
+  { kind: 'bug', author: 'Mark R.', summary: 'Chart tooltip flickers when a series crosses zero', upvotes: 8, status: 'in-progress', age: '2d ago' },
+  { kind: 'idea', author: 'Alice C.', summary: 'Pin favourite projects to the top of the sidebar', upvotes: 14, status: 'planned', age: '4d ago' },
+  { kind: 'idea', author: 'David K.', summary: 'Compare two billing periods side by side on the usage page', upvotes: 32, status: 'planned', age: '1w ago' },
+  { kind: 'bug', author: 'Eva J.', summary: 'CSV export adds a blank line at the end of the file', upvotes: 3, status: 'shipped', age: '1w ago' },
+  { kind: 'idea', author: 'Frank L.', summary: 'Slack notifications when a deploy finishes', upvotes: 21, status: 'considering', age: '2w ago' },
+  { kind: 'praise', author: 'Olivia P.', summary: 'The new search is incredibly fast — feels instant.', upvotes: 11, status: '', age: '2w ago' },
 ]
 
-const statusVariant: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-  'shipped': 'default',
-  'in-progress': 'secondary',
-  'planned': 'outline',
+const statusVariant: Record<string, 'success' | 'info' | 'secondary' | 'outline'> = {
+  'shipped': 'success',
+  'in-progress': 'info',
+  'planned': 'secondary',
   'considering': 'outline',
 }
 
-const kindIcon: Record<string, any> = { bug: Bug, idea: Lightbulb, praise: Sparkles }
-const kindColor: Record<string, string> = {
-  bug: 'text-amber-600 dark:text-amber-400',
-  idea: 'text-violet-600 dark:text-violet-400',
-  praise: 'text-emerald-600 dark:text-emerald-400',
-}
+const kindIcon: Record<string, Component> = { bug: Bug, idea: Lightbulb, praise: Sparkles }
 </script>
 
 <template>
-  <div class="space-y-6">
-    <header class="space-y-1">
-      <h1 class="text-2xl font-semibold tracking-tight">
-        Feedback
-      </h1>
-      <p class="text-muted-foreground text-sm">
-        Tell us what's broken, what's missing, what feels right. We read every submission within 48 hours.
-      </p>
-    </header>
+  <Page>
+    <PageHeader>
+      <PageHeaderHeading
+        :title="title"
+        description="Tell us what's broken, what's missing and what works. We read every note within 48 hours."
+      />
+    </PageHeader>
 
-    <div class="grid gap-6 lg:grid-cols-[1fr_400px]">
-      <Card>
+    <PageBody class="grid gap-4 lg:grid-cols-3">
+      <Card class="lg:col-span-2">
         <CardHeader>
           <CardTitle class="text-base">
             Send us a note
           </CardTitle>
-          <CardDescription>Choose the closest match. We route based on category and respond from the right person.</CardDescription>
+          <CardDescription>Pick the closest category so the right person replies.</CardDescription>
         </CardHeader>
-        <CardContent class="space-y-5">
+        <CardContent class="space-y-4">
           <div class="grid gap-2">
-            <Label>Category</Label>
+            <Label id="fb-category">Category</Label>
             <RadioGroup
               v-model="category"
+              aria-labelledby="fb-category"
               class="grid grid-cols-3 gap-2"
             >
               <div class="hover:bg-muted/40 [&:has([data-state=checked])]:bg-muted [&:has([data-state=checked])]:border-foreground/30 flex items-center gap-2 rounded-lg border p-3 cursor-pointer">
@@ -142,22 +189,64 @@ const kindColor: Record<string, string> = {
               placeholder="What happened? What were you expecting? Anything we should reproduce?"
             />
             <p class="text-muted-foreground text-xs">
-              If this is a bug, include the API request ID from the error toast — we can pull the exact server-side log.
+              For bugs, include the steps you took and the request ID from any error message.
+            </p>
+          </div>
+
+          <div class="grid gap-2">
+            <Label>{{ t('feedback.attachments.label') }}</Label>
+            <FileUpload
+              :model-value="files"
+              accept="image/*"
+              multiple
+              :disabled="status.kind === 'sending'"
+              @update:model-value="onFilesPicked"
+            >
+              <template #content>
+                <FileUploadContent v-if="files.length">
+                  <FileUploadItem
+                    v-for="(f, i) in files"
+                    :key="`${f.name}-${f.size}`"
+                    :model-value="f"
+                    @update:model-value="setFile(i, $event)"
+                    @remove="removeFile(i)"
+                  />
+                </FileUploadContent>
+              </template>
+            </FileUpload>
+            <p class="text-muted-foreground text-xs">
+              {{ t('feedback.attachments.hint') }}
+            </p>
+            <p
+              v-if="fileError"
+              class="text-destructive text-xs"
+            >
+              {{ fileError }}
             </p>
           </div>
 
           <div
             v-if="status.kind === 'sent'"
-            class="flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-400"
+            class="border-success/30 bg-success/10 text-success flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+            role="status"
           >
-            <CheckCircle2 class="size-4" />
-            {{ status.delivered ? 'Thanks — we got it.' : 'Sent (dev mode — printed to server log).' }}
+            <CheckCircle2
+              class="size-4 shrink-0"
+              aria-hidden="true"
+            />
+            <!-- `status.delivered` is false when no email provider is set up
+                   (the note is printed to the server log instead). -->
+            Thanks — we got it.
           </div>
           <div
             v-else-if="status.kind === 'error'"
-            class="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+            class="border-destructive/30 bg-destructive/10 text-destructive flex items-center gap-2 rounded-md border px-3 py-2 text-sm"
+            role="alert"
           >
-            <AlertCircle class="size-4" />
+            <AlertCircle
+              class="size-4 shrink-0"
+              aria-hidden="true"
+            />
             {{ status.message }}
           </div>
 
@@ -169,11 +258,13 @@ const kindColor: Record<string, string> = {
               Save draft
             </Button>
             <Button
-              class="gap-2"
               :disabled="status.kind === 'sending' || subject.length < 3 || message.length < 10"
               @click="onSend"
             >
-              <Send class="size-4" />
+              <Send
+                class="size-4"
+                aria-hidden="true"
+              />
               {{ status.kind === 'sending' ? 'Sending…' : 'Send' }}
             </Button>
           </div>
@@ -182,49 +273,54 @@ const kindColor: Record<string, string> = {
 
       <Card>
         <CardHeader>
-          <CardTitle class="text-base flex items-center gap-2">
-            <MessageCircle class="size-4" /> Recent from the team
+          <CardTitle class="text-base">
+            Recent from the team
           </CardTitle>
           <CardDescription>Public feedback from your workspace.</CardDescription>
         </CardHeader>
-        <CardContent class="space-y-3">
+        <CardContent class="space-y-4">
+          <DemoDataBanner message="Sample feedback. Your team's notes will appear here." />
           <div
             v-for="(r, i) in recent"
             :key="i"
-            class="border-b pb-3 last:border-0 last:pb-0"
+            class="border-b pb-4 last:border-0 last:pb-0"
           >
-            <div class="flex items-start gap-2.5">
+            <div class="flex items-start gap-3">
               <component
                 :is="kindIcon[r.kind]"
-                :class="['mt-0.5 size-4 shrink-0', kindColor[r.kind]]"
+                class="text-muted-foreground mt-0.5 size-4 shrink-0"
+                aria-hidden="true"
               />
               <div class="min-w-0 flex-1 space-y-1">
-                <p class="text-sm leading-snug">
+                <p class="text-sm">
                   {{ r.summary }}
                 </p>
                 <div class="text-muted-foreground flex flex-wrap items-center gap-2 text-xs">
                   <span>{{ r.author }} · {{ r.age }}</span>
-                  <span
-                    v-if="r.status"
-                    class="text-foreground/60"
-                  >·</span>
                   <Badge
                     v-if="r.status"
                     :variant="statusVariant[r.status]"
-                    class="text-[9px] capitalize"
+                    class="capitalize"
                   >
                     {{ r.status.replace('-', ' ') }}
                   </Badge>
                 </div>
               </div>
-              <button class="hover:bg-muted text-muted-foreground hover:text-foreground flex items-center gap-1 rounded-md border px-2 py-1 text-xs transition-colors">
-                <ThumbsUp class="size-3" />
+              <button
+                type="button"
+                :aria-label="`Upvote: ${r.upvotes} votes`"
+                class="hover:bg-muted text-muted-foreground hover:text-foreground flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs transition-colors"
+              >
+                <ThumbsUp
+                  class="size-3.5"
+                  aria-hidden="true"
+                />
                 <span class="tabular-nums">{{ r.upvotes }}</span>
               </button>
             </div>
           </div>
         </CardContent>
       </Card>
-    </div>
-  </div>
+    </PageBody>
+  </Page>
 </template>

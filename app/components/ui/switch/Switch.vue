@@ -4,7 +4,7 @@ import type { HTMLAttributes } from 'vue'
 import { computed, getCurrentInstance, useSlots } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
 import { SwitchRoot, SwitchThumb, useForwardPropsEmits } from 'reka-ui'
-import { Loader2 } from 'lucide-vue-next'
+import { Loader2 } from '@/lib/icon-pack'
 import { cn } from '@/lib/utils'
 
 const props = defineProps<
@@ -95,7 +95,8 @@ const thumbTranslate = {
 }
 
 const textSizes = {
-  sm: 'text-[7px]',
+  // WHY (Rule4): 12px is the text floor, even inside the small switch.
+  sm: 'text-xs',
   default: 'text-xs',
   lg: 'text-xs',
 }

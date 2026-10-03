@@ -9,7 +9,7 @@ export { default as AvatarGroup } from './AvatarGroup.vue'
 export const avatarVariants = cva('relative flex shrink-0 overflow-hidden', {
   variants: {
     size: {
-      'xs': 'size-4',
+      'xs': 'size-5',
       'sm': 'size-6',
       'default': 'size-8',
       'lg': 'size-12',
@@ -32,15 +32,15 @@ export const avatarVariants = cva('relative flex shrink-0 overflow-hidden', {
       primary: 'bg-primary text-primary-foreground',
       secondary: 'bg-secondary text-secondary-foreground',
       destructive: 'bg-destructive text-destructive-foreground',
-      success: 'bg-[var(--success)] text-white dark:text-black',
-      warning: 'bg-[var(--warning)] text-black',
-      info: 'bg-[var(--info)] text-white dark:text-black',
+      success: 'bg-success text-success-foreground',
+      warning: 'bg-warning text-warning-foreground',
+      info: 'bg-info text-info-foreground',
       error: 'bg-destructive text-white dark:text-black',
       muted: 'bg-muted text-muted-foreground',
     },
     variant: {
       default: '',
-      outlined: 'border-2 border-current',
+      outlined: 'border border-current',
       soft: 'bg-opacity-20',
     },
   },
@@ -48,9 +48,9 @@ export const avatarVariants = cva('relative flex shrink-0 overflow-hidden', {
     { color: 'primary', variant: 'soft', class: 'bg-primary/20 text-primary' },
     { color: 'secondary', variant: 'soft', class: 'bg-secondary/20 text-secondary-foreground' },
     { color: 'destructive', variant: 'soft', class: 'bg-destructive/20 text-destructive' },
-    { color: 'success', variant: 'soft', class: 'bg-[var(--success)]/20 text-[var(--success)]' },
-    { color: 'warning', variant: 'soft', class: 'bg-[var(--warning)]/20 text-[var(--warning)]' },
-    { color: 'info', variant: 'soft', class: 'bg-[var(--info)]/20 text-[var(--info)]' },
+    { color: 'success', variant: 'soft', class: 'bg-success/20 text-success' },
+    { color: 'warning', variant: 'soft', class: 'bg-warning/20 text-warning' },
+    { color: 'info', variant: 'soft', class: 'bg-info/20 text-info' },
     { color: 'error', variant: 'soft', class: 'bg-destructive/20 text-destructive' },
   ],
   defaultVariants: {
@@ -66,7 +66,8 @@ export const avatarFallbackVariants = cva(
   {
     variants: {
       size: {
-        'xs': 'text-[8px]',
+        // WHY (Rule4): 12px is the text floor, so xs avatars are size-5 to fit it.
+        'xs': 'text-xs',
         'sm': 'text-xs',
         'default': 'text-sm',
         'lg': 'text-base',
@@ -78,9 +79,9 @@ export const avatarFallbackVariants = cva(
         primary: 'bg-primary text-primary-foreground',
         secondary: 'bg-secondary text-secondary-foreground',
         destructive: 'bg-destructive text-destructive-foreground',
-        success: 'bg-[var(--success)] text-white dark:text-black',
-        warning: 'bg-[var(--warning)] text-black',
-        info: 'bg-[var(--info)] text-white dark:text-black',
+        success: 'bg-success text-success-foreground',
+        warning: 'bg-warning text-warning-foreground',
+        info: 'bg-info text-info-foreground',
         error: 'bg-destructive text-white dark:text-black',
         muted: 'bg-muted text-muted-foreground',
       },

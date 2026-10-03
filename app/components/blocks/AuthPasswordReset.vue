@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { ArrowLeft, MailCheck } from 'lucide-vue-next'
+import { ArrowLeft, MailCheck } from '@/lib/icon-pack'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -42,7 +42,7 @@ function submitReset() {
 </script>
 
 <template>
-  <div class="bg-background flex min-h-svh items-center justify-center p-6">
+  <div class="bg-background flex min-h-svh items-center justify-center p-4">
     <h1 class="sr-only">
       {{ t('auth.passwordReset.srTitle') }}
     </h1>
@@ -82,18 +82,24 @@ function submitReset() {
             :href="signInHref"
             class="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm"
           >
-            <ArrowLeft class="size-3" />{{ t('auth.passwordReset.request.back') }}
+            <ArrowLeft
+              class="size-4"
+              aria-hidden="true"
+            />{{ t('auth.passwordReset.request.back') }}
           </a>
         </CardFooter>
       </template>
 
       <template v-else-if="stage === 'sent'">
-        <CardContent class="space-y-4 pt-6 text-center">
+        <CardContent class="space-y-4 pt-4 text-center">
           <div class="bg-primary/10 text-primary mx-auto flex size-12 items-center justify-center rounded-full">
-            <MailCheck class="size-6" />
+            <MailCheck
+              class="size-6"
+              aria-hidden="true"
+            />
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-semibold">
+            <h3 class="text-2xl font-semibold tracking-tight">
               {{ t('auth.passwordReset.sent.title') }}
             </h3>
             <p class="text-muted-foreground text-sm">
@@ -166,19 +172,27 @@ function submitReset() {
       </template>
 
       <template v-else>
-        <CardContent class="space-y-4 pt-6 text-center">
-          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-            <MailCheck class="size-6" />
+        <CardContent class="space-y-4 pt-4 text-center">
+          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-success/10 text-success">
+            <MailCheck
+              class="size-6"
+              aria-hidden="true"
+            />
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-semibold">
+            <h3 class="text-2xl font-semibold tracking-tight">
               {{ t('auth.passwordReset.done.title') }}
             </h3>
             <p class="text-muted-foreground text-sm">
               {{ t('auth.passwordReset.done.description') }}
             </p>
           </div>
-          <a :href="signInHref"><Button class="w-full">{{ t('auth.passwordReset.done.submit') }}</Button></a>
+          <Button
+            as-child
+            class="w-full"
+          >
+            <a :href="signInHref">{{ t('auth.passwordReset.done.submit') }}</a>
+          </Button>
         </CardContent>
       </template>
     </Card>

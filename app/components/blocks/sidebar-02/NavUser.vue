@@ -11,7 +11,7 @@ import {
   Palette,
   Sparkles,
   Sun,
-} from 'lucide-vue-next'
+} from '@/lib/icon-pack'
 
 import {
   Avatar,
@@ -72,19 +72,25 @@ const initials = computed(() => {
             size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:!justify-center"
           >
-            <Avatar class="h-8 w-8 shrink-0 rounded-lg group-data-[collapsible=icon]:size-6">
+            <Avatar class="size-8 shrink-0 rounded-lg group-data-[collapsible=icon]:size-6">
               <AvatarImage
                 v-if="user.avatar"
                 :src="user.avatar"
                 :alt="user.name"
               />
-              <AvatarFallback class="rounded-lg text-xs group-data-[collapsible=icon]:text-[10px]">
+              <AvatarFallback class="rounded-lg text-xs group-data-[collapsible=icon]:text-xs">
                 {{ initials }}
               </AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-              <span class="truncate font-medium">{{ user.name }}</span>
-              <span class="truncate text-xs">{{ user.email }}</span>
+              <span
+                class="truncate font-medium"
+                :title="user.name"
+              >{{ user.name }}</span>
+              <span
+                class="truncate text-xs"
+                :title="user.email"
+              >{{ user.email }}</span>
             </div>
             <ChevronsUpDown class="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
           </SidebarMenuButton>
@@ -97,7 +103,7 @@ const initials = computed(() => {
         >
           <DropdownMenuLabel class="p-0 font-normal">
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-              <Avatar class="h-8 w-8 rounded-lg">
+              <Avatar class="size-8 rounded-lg">
                 <AvatarImage
                   v-if="user.avatar"
                   :src="user.avatar"

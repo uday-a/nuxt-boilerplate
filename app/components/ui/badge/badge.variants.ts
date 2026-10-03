@@ -19,10 +19,10 @@ export const badgeVariants = cva(
           'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
         success:
-          'border-transparent bg-[var(--success)]/10 text-[var(--success)] dark:text-[var(--success)] [a&]:hover:bg-[var(--success)]/20',
+          'border-transparent bg-success/10 text-success [a&]:hover:bg-success/20',
         warning:
-          'border-transparent bg-[var(--warning)]/10 text-[var(--warning)] dark:text-[var(--warning)] [a&]:hover:bg-[var(--warning)]/20',
-        info: 'border-transparent bg-[var(--info)]/10 text-[var(--info)] dark:text-[var(--info)] [a&]:hover:bg-[var(--info)]/20',
+          'border-transparent bg-warning/10 text-warning [a&]:hover:bg-warning/20',
+        info: 'border-transparent bg-info/10 text-info [a&]:hover:bg-info/20',
       },
     },
     defaultVariants: {

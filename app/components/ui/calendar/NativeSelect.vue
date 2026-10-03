@@ -3,7 +3,7 @@ import type { AcceptableValue } from 'reka-ui'
 import { computed } from 'vue'
 import type { HTMLAttributes } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
-import { ChevronDownIcon } from 'lucide-vue-next'
+import { ChevronDownIcon } from '@/lib/icon-pack'
 import { cn } from '@/lib/utils'
 
 defineOptions({

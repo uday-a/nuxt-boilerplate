@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { resolveDemoMode } from '../../shared/demo-mode'
 
 // Centralized, zod-validated server-side env access. Import `env` from here
 // instead of reading `process.env` directly so we get:
@@ -84,8 +85,8 @@ const Env = z.object({
   // fresh fork is fully clickable without a GitHub OAuth app or DB.
   //   - 'true'  → always on (even in prod — useful for public previews)
   //   - 'false' → always off (recommended for real production)
-  //   - unset   → auto: on when OAuth isn't configured and we're not in
-  //               production. See `isDemoMode` below.
+  //   - unset   → auto: on only when NODE_ENV is explicitly
+  //               'development'. See `isDemoMode` below.
   NUXT_DEMO_MODE: z.enum(['true', 'false']).optional(),
 
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
@@ -143,13 +144,14 @@ if (env.POLAR_WEBHOOK_SECRET && !env.POLAR_ACCESS_TOKEN) {
   throw new Error('POLAR_WEBHOOK_SECRET is set but POLAR_ACCESS_TOKEN is not. Set both, or unset both.')
 }
 
-// Demo mode is ON BY DEFAULT in development and auto-OFF in production; set
+// Demo mode is ON only when NODE_ENV is explicitly 'development' (which
+// `nuxt dev` sets) and OFF otherwise — including when NODE_ENV is unset, so
+// read the raw process.env value, not the schema default above. Set
 // NUXT_DEMO_MODE explicitly to override either way. A fresh `git clone` +
 // `npm run dev` is fully clickable with no GitHub OAuth app or DB, while a
 // production deploy stays locked down by default.
 //
 // SECURITY: while on, anyone who POSTs /auth/demo gets a logged-in session —
-// a deliberate auth bypass. It is forced off in production unless you set
+// a deliberate auth bypass. It is off outside development unless you set
 // NUXT_DEMO_MODE=true; only do that for throwaway public previews.
-export const isDemoMode = env.NUXT_DEMO_MODE === 'true'
-  || (env.NUXT_DEMO_MODE !== 'false' && env.NODE_ENV !== 'production')
+export const isDemoMode = resolveDemoMode(env.NUXT_DEMO_MODE, process.env.NODE_ENV)

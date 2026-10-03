@@ -13,7 +13,7 @@ const props = defineProps<{
 }>()
 
 const densityClass = computed(() => {
-  if (props.density === 'compact') return '[&_td]:py-1.5 [&_td]:text-xs [&_th]:h-8 [&_th]:text-xs'
+  if (props.density === 'compact') return '[&_td]:py-1.5 [&_th]:h-8'
   if (props.density === 'comfortable') return '[&_td]:py-3 [&_th]:h-12'
   // cozy is the new TableCell/TableHead baseline (py-2 / h-10) -- no override.
   return ''

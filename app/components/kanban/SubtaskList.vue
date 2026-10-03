@@ -29,13 +29,13 @@ const doneCount = computed(() => subtasks.value.filter(s => s.column?.id === 'do
   <div v-if="subtasks.length">
     <div class="mb-2 flex items-center justify-between">
       <span
-        :class="compact ? 'text-[11px]' : 'text-[13px]'"
+        :class="compact ? 'text-xs' : 'text-sm'"
         class="text-muted-foreground tabular-nums"
       >
         {{ doneCount }}/{{ subtasks.length }} done
       </span>
       <span
-        :class="compact ? 'text-[10px]' : 'text-[11px]'"
+        :class="compact ? 'text-xs' : 'text-xs'"
         class="text-muted-foreground tabular-nums"
       >
         {{ subtasks.length > 0 ? Math.round((doneCount / subtasks.length) * 100) : 0 }}%
@@ -45,7 +45,7 @@ const doneCount = computed(() => subtasks.value.filter(s => s.column?.id === 'do
       <div
         :class="[
           'h-full rounded-full transition-all duration-500',
-          doneCount === subtasks.length ? 'bg-emerald-500' : 'bg-primary',
+          doneCount === subtasks.length ? 'bg-success' : 'bg-primary',
         ]"
         :style="{ width: `${subtasks.length > 0 ? Math.round((doneCount / subtasks.length) * 100) : 0}%` }"
       />
@@ -63,13 +63,13 @@ const doneCount = computed(() => subtasks.value.filter(s => s.column?.id === 'do
         ]"
       >
         <span :class="['size-1.5 shrink-0 rounded-full', column?.dotColor ?? 'bg-muted-foreground']" />
-        <span :class="['shrink-0 font-mono', compact ? 'text-[10px]' : 'text-[11px]', 'text-muted-foreground/70']">
+        <span :class="['shrink-0 font-mono', compact ? 'text-xs' : 'text-xs', 'text-muted-foreground']">
           {{ task.id }}
         </span>
         <span
           :class="[
             'min-w-0 flex-1 truncate',
-            compact ? 'text-[12px]' : 'text-[13px]',
+            compact ? 'text-xs' : 'text-sm',
             column?.id === 'done' ? 'text-muted-foreground line-through' : 'text-foreground',
           ]"
         >
@@ -78,7 +78,7 @@ const doneCount = computed(() => subtasks.value.filter(s => s.column?.id === 'do
         <span
           :class="[
             'shrink-0 rounded-md px-1.5 py-0.5 font-medium',
-            compact ? 'text-[9px]' : 'text-[10px]',
+            compact ? 'text-xs' : 'text-xs',
             column?.color ?? 'text-muted-foreground',
           ]"
         >
@@ -89,7 +89,7 @@ const doneCount = computed(() => subtasks.value.filter(s => s.column?.id === 'do
   </div>
   <p
     v-else
-    :class="compact ? 'text-muted-foreground text-[12px]' : 'text-muted-foreground text-sm'"
+    :class="compact ? 'text-muted-foreground text-xs' : 'text-muted-foreground text-sm'"
   >
     No subtasks yet.
   </p>

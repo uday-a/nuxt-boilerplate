@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { CheckCircle2 } from 'lucide-vue-next'
+import { CheckCircle2 } from '@/lib/icon-pack'
 
 const props = defineProps<{
   done: number
@@ -15,10 +15,10 @@ const isComplete = computed(() => props.done === props.total && props.total > 0)
 <template>
   <div v-if="total > 0">
     <div class="mb-1 flex items-center justify-between">
-      <span class="text-muted-foreground text-xs">
+      <span class="text-muted-foreground text-xs tabular-nums">
         <CheckCircle2
           v-if="isComplete"
-          class="mr-0.5 inline size-3 text-emerald-500"
+          class="mr-0.5 inline size-3 text-success"
         />
         {{ done }}/{{ total }} subtasks
       </span>
@@ -26,7 +26,7 @@ const isComplete = computed(() => props.done === props.total && props.total > 0)
     </div>
     <div :class="['bg-muted overflow-hidden rounded-full', barHeight ?? 'h-1.5']">
       <div
-        :class="['h-full rounded-full transition-all duration-500', isComplete ? 'bg-emerald-500' : 'bg-primary']"
+        :class="['h-full rounded-full transition-all duration-500', isComplete ? 'bg-success' : 'bg-primary']"
         :style="{ width: `${percent}%` }"
       />
     </div>

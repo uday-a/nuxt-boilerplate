@@ -3,7 +3,7 @@ import type { Component, HTMLAttributes } from 'vue'
 import { computed, ref, useAttrs, useSlots } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { cn } from '@/lib/utils'
-import { X, Eye, EyeOff } from 'lucide-vue-next'
+import { X, Eye, EyeOff } from '@/lib/icon-pack'
 
 defineOptions({
   inheritAttrs: false,

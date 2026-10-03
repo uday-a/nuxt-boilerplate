@@ -16,11 +16,11 @@ const statusConfig = {
   },
   warning: {
     icon: 'i-radix-icons-triangle-alert',
-    container: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900',
+    container: 'bg-warning/10 text-warning border-warning/20',
   },
   success: {
     icon: 'i-radix-icons-check-circled',
-    container: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900',
+    container: 'bg-success/10 text-success border-success/20',
   },
 }
 </script>

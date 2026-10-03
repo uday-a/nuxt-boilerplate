@@ -3,7 +3,7 @@ import type { CheckboxRootProps } from 'reka-ui'
 import type { ComputedRef, HTMLAttributes } from 'vue'
 import { computed, getCurrentInstance, inject } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
-import { Check, Minus, Loader2 } from 'lucide-vue-next'
+import { Check, Minus, Loader2 } from '@/lib/icon-pack'
 import { CheckboxIndicator, CheckboxRoot, useForwardPropsEmits } from 'reka-ui'
 import { cn } from '@/lib/utils'
 
@@ -136,12 +136,12 @@ const colorClasses: Record<string, string> = {
   secondary:
     'data-[state=checked]:bg-secondary data-[state=checked]:border-secondary data-[state=indeterminate]:bg-secondary data-[state=indeterminate]:border-secondary',
   success:
-    'data-[state=checked]:bg-[var(--success)] data-[state=checked]:border-[var(--success)] data-[state=indeterminate]:bg-[var(--success)] data-[state=indeterminate]:border-[var(--success)]',
+    'data-[state=checked]:bg-success data-[state=checked]:border-success data-[state=indeterminate]:bg-success data-[state=indeterminate]:border-success',
   warning:
-    'data-[state=checked]:bg-[var(--warning)] data-[state=checked]:border-[var(--warning)] data-[state=indeterminate]:bg-[var(--warning)] data-[state=indeterminate]:border-[var(--warning)]',
+    'data-[state=checked]:bg-warning data-[state=checked]:border-warning data-[state=indeterminate]:bg-warning data-[state=indeterminate]:border-warning',
   error:
     'data-[state=checked]:bg-destructive data-[state=checked]:border-destructive data-[state=indeterminate]:bg-destructive data-[state=indeterminate]:border-destructive',
-  info: 'data-[state=checked]:bg-[var(--info)] data-[state=checked]:border-[var(--info)] data-[state=indeterminate]:bg-[var(--info)] data-[state=indeterminate]:border-[var(--info)]',
+  info: 'data-[state=checked]:bg-info data-[state=checked]:border-info data-[state=indeterminate]:bg-info data-[state=indeterminate]:border-info',
 }
 
 // Density classes

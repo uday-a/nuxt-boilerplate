@@ -31,17 +31,17 @@ const LOGOS = [
 
 <template>
   <section class="border-y bg-muted/30">
-    <div class="mx-auto max-w-6xl px-6 py-14">
-      <p class="text-muted-foreground text-center text-xs font-medium uppercase tracking-widest">
+    <div class="mx-auto max-w-6xl px-4 py-4">
+      <p class="text-muted-foreground text-center text-xs font-medium uppercase tracking-wider">
         Trusted by teams at
       </p>
       <div
-        class="mt-10 grid grid-cols-2 items-center justify-items-center gap-x-10 gap-y-8 sm:grid-cols-3 lg:grid-cols-6"
+        class="mt-4 grid grid-cols-2 items-center justify-items-center gap-x-4 gap-y-4 sm:grid-cols-3 lg:grid-cols-6"
       >
         <div
           v-for="logo in LOGOS"
           :key="logo.label"
-          class="text-foreground/55 hover:text-foreground inline-flex items-center gap-2 transition-colors"
+          class="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 transition-colors"
         >
           <svg
             viewBox="0 0 24 24"
@@ -53,7 +53,7 @@ const LOGOS = [
             <title>{{ logo.label }}</title>
             <path :d="logo.d" />
           </svg>
-          <span class="text-base font-semibold tracking-tight">{{ logo.label }}</span>
+          <span class="text-base font-semibold">{{ logo.label }}</span>
         </div>
       </div>
     </div>

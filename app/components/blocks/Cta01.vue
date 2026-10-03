@@ -1,27 +1,20 @@
 <script setup lang="ts">
-import { ArrowRight } from 'lucide-vue-next'
+import { ArrowRight } from '@/lib/icon-pack'
 import { Button } from '@/components/ui/button'
 
 const { loggedIn } = useUserSession()
 </script>
 
 <template>
-  <section class="relative overflow-hidden bg-background">
-    <div
-      class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-primary/15 via-background to-background"
-    />
-    <div
-      class="pointer-events-none absolute -bottom-40 right-1/4 size-[500px] rounded-full bg-primary/10 blur-3xl"
-    />
-
-    <div class="mx-auto max-w-4xl px-6 py-24 text-center">
+  <section class="bg-muted/30 border-t">
+    <div class="mx-auto max-w-4xl px-4 py-4 text-center">
       <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-        Ready to give your team a Monday they'll actually look forward to?
+        Ready to see what your team ships next?
       </h2>
       <p class="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-        Set up takes 12 minutes. Migrate from your current tool with one CSV upload.
+        Setup takes 12 minutes. Bring your projects over from your current tool with one CSV upload.
       </p>
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
         <Button
           v-if="loggedIn"
           as-child
@@ -29,7 +22,10 @@ const { loggedIn } = useUserSession()
         >
           <NuxtLink to="/dashboard">
             Go to dashboard
-            <ArrowRight class="ml-2 size-4" />
+            <ArrowRight
+              class="size-4"
+              aria-hidden="true"
+            />
           </NuxtLink>
         </Button>
         <Button
@@ -39,7 +35,10 @@ const { loggedIn } = useUserSession()
         >
           <NuxtLink to="/sign-up">
             Start free trial
-            <ArrowRight class="ml-2 size-4" />
+            <ArrowRight
+              class="size-4"
+              aria-hidden="true"
+            />
           </NuxtLink>
         </Button>
         <Button

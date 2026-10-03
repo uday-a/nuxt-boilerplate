@@ -43,7 +43,9 @@ provide('pinInputContext', {
   size: toRef(props, 'size'),
 })
 
-function handleComplete(value: string[]) {
+function handleComplete(value: string[] | number[]) {
+  // Reka emits the raw slot array (string[] for type="text", number[] for
+  // type="number"); the wrapper contract is the joined string either way.
   const joined = value.join('')
   emits('complete', joined)
   if (props.autoSubmit) {

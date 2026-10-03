@@ -6,7 +6,7 @@ import { GaugeChart as EChartsGaugeChart } from 'echarts/charts'
 import { TooltipComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { cn } from '@/lib/utils'
-import { chartColors, chartTextColor, chartTooltipBg, chartTooltipBorder, chartTooltipText, gaugeThresholds } from '../useChartTheme'
+import { chartForegroundColor, chartTextColor, chartTooltipBg, chartTooltipBorder, chartTooltipText, semanticGaugeThresholds } from '../useChartTheme'
 
 interface Props {
   value: number
@@ -15,9 +15,8 @@ interface Props {
   unit?: string
   label?: string
   height?: number | string
-  /** Colour stops as [percentage, hex] pairs. Default: teal->amber->red,
-   *  pulled from `gaugeThresholds` in useChartTheme so the safe-zone
-   *  colour ties back to the dashboard palette. Pass your own to override. */
+  /** Colour stops as [fraction, colour] pairs. Default: the theme's
+   *  success -> warning -> destructive tokens (70% / 90% stops). */
   thresholds?: [number, string][]
   option?: any
   class?: string
@@ -30,8 +29,10 @@ const props = withDefaults(defineProps<Props>(), {
   max: 100,
   unit: '',
   height: 220,
-  thresholds: () => gaugeThresholds,
+  thresholds: undefined,
 })
+
+const stops = computed(() => props.thresholds ?? semanticGaugeThresholds.value)
 
 const mergedOption = computed(() => ({
   tooltip: {
@@ -54,25 +55,25 @@ const mergedOption = computed(() => ({
       axisLine: {
         lineStyle: {
           width: 14,
-          color: props.thresholds.map(([stop, color]) => [stop, color] as [number, string]),
+          color: stops.value.map(([stop, color]) => [stop, color] as [number, string]),
         },
       },
       axisTick: { distance: -22, length: 4, lineStyle: { color: chartTextColor.value, width: 1 } },
       splitLine: { distance: -26, length: 8, lineStyle: { color: chartTextColor.value, width: 2 } },
-      axisLabel: { color: chartTextColor.value, fontSize: 10, distance: -34 },
+      axisLabel: { color: chartTextColor.value, fontSize: 12, distance: -34 },
       anchor: { show: false },
       title: {
         offsetCenter: [0, '88%'],
         color: chartTextColor.value,
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: 500,
       },
       detail: {
         valueAnimation: true,
         formatter: `{value}${props.unit ? ' ' + props.unit : ''}`,
-        color: chartColors.value[0],
+        color: chartForegroundColor.value,
         fontSize: 28,
-        fontWeight: 700,
+        fontWeight: 600,
         offsetCenter: [0, '40%'],
       },
       data: [{ value: props.value, name: props.label ?? '' }],

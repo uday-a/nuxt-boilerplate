@@ -6,7 +6,7 @@ import { PieChart as EChartsPieChart } from 'echarts/charts'
 import { TooltipComponent, LegendComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { cn } from '@/lib/utils'
-import { chartColors, chartTooltipBg, chartTooltipBorder, chartTooltipText } from '../useChartTheme'
+import { chartColors, chartSurfaceColor, chartTooltipBg, chartTooltipBorder, chartTooltipText } from '../useChartTheme'
 
 use([CanvasRenderer, EChartsPieChart, TooltipComponent, LegendComponent])
 
@@ -47,14 +47,14 @@ const mergedOption = computed(() => {
       icon: 'circle',
       itemWidth: 8,
       itemHeight: 8,
-      textStyle: { fontSize: 11 },
+      textStyle: { fontSize: 12 },
     },
     series: [
       {
         type: 'pie',
         radius: props.donut ? ['45%', '70%'] : '65%',
         center: ['50%', '45%'],
-        itemStyle: { borderRadius: 4, borderColor: '#fff', borderWidth: 2 },
+        itemStyle: { borderRadius: 4, borderColor: chartSurfaceColor.value, borderWidth: 2 },
         label: { show: false },
         data: chartData,
       },

@@ -9,7 +9,7 @@ const props = defineProps<{ class?: HTMLAttributes['class'] }>()
   <div
     data-uipkge
     data-slot="sheet-header"
-    :class="cn('flex flex-col gap-1.5 p-4', props.class)"
+    :class="cn('flex shrink-0 flex-col gap-1.5 border-b p-4 pr-12', props.class)"
   >
     <slot />
   </div>

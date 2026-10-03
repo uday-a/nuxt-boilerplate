@@ -2,17 +2,92 @@
 import {
   ChevronLeft, ChevronRight, Flame, TrendingUp, MousePointer2,
   Activity as ActivityIcon, Calendar as CalendarIcon, X, Sparkles, BarChart3,
-} from 'lucide-vue-next'
+  LogIn, FolderPlus, MessageSquare, UserPlus, AlertCircle,
+} from '@/lib/icon-pack'
 import { Button } from '@/components/ui/button'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Page, PageHeader, PageHeaderHeading, PageBody } from '@/components/ui/page'
+import type { ApiResponse } from '~~/server/utils/response'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
-useHead({ title: 'Activity' })
+const title = useRouteLabel()
+useHead({ title })
+
+const { t, locale } = useI18n()
+const { user: sessionUser } = useUserSession()
+
+// ─── Live audit feed ─────────────────────────────────────────────────
+// Fetches /api/activity (envelope: check res.ok via useFetch data). When
+// rows exist we render the real feed below; when empty (no DB / demo
+// session) the mock heatmap stays as the fallback and the page shows
+// the shared DemoDataBanner.
+interface FeedItem {
+  id: number
+  userId: number | null
+  action: string
+  entity: string | null
+  entityId: string | null
+  metadata: Record<string, unknown> | null
+  createdAt: string | Date
+  actorEmail: string | null
+}
+
+const { data: activityRes, pending: feedPending, error: feedError, refresh: refreshFeed } = await useFetch<ApiResponse<{ items: FeedItem[], total: number }>>('/api/activity')
+
+const feedItems = computed<FeedItem[]>(() =>
+  activityRes.value?.ok ? activityRes.value.data.items : [],
+)
+const hasLive = computed(() => feedItems.value.length > 0)
+
+function feedActionIcon(action: string) {
+  if (action.startsWith('auth.')) return LogIn
+  if (action.startsWith('projects.')) return FolderPlus
+  if (action.startsWith('feedback.')) return MessageSquare
+  if (action.startsWith('team.')) return UserPlus
+  return ActivityIcon
+}
+
+function describeItem(item: FeedItem): string {
+  const suffix = item.entity ? ` · ${item.entity}${item.entityId ? ` #${item.entityId}` : ''}` : ''
+  return `${item.action}${suffix}`
+}
+
+function actorLabel(item: FeedItem): string {
+  if (item.actorEmail) {
+    const selfEmail = sessionUser.value?.email
+    if (selfEmail && item.actorEmail.toLowerCase() === selfEmail.toLowerCase()) return selfEmail
+    return item.actorEmail
+  }
+  return t('settings.activity.feed.deletedUser')
+}
+
+function formatFull(value: string | Date): string {
+  const date = value instanceof Date ? value : new Date(value)
+  return date.toLocaleString(locale.value, { dateStyle: 'medium', timeStyle: 'short' })
+}
+
+function timeAgo(value: string | Date): string {
+  const date = value instanceof Date ? value : new Date(value)
+  const diffMs = date.getTime() - Date.now()
+  const rtf = new Intl.RelativeTimeFormat(locale.value, { numeric: 'auto' })
+  const absSec = Math.abs(diffMs) / 1000
+  if (absSec < 60) return rtf.format(Math.round(diffMs / 1000), 'second')
+  const mins = Math.round(diffMs / 60000)
+  if (Math.abs(mins) < 60) return rtf.format(mins, 'minute')
+  const hours = Math.round(diffMs / 3600000)
+  if (Math.abs(hours) < 24) return rtf.format(hours, 'hour')
+  const days = Math.round(diffMs / 86400000)
+  if (Math.abs(days) < 30) return rtf.format(days, 'day')
+  const months = Math.round(diffMs / 2592000000)
+  if (Math.abs(months) < 12) return rtf.format(months, 'month')
+  return rtf.format(Math.round(diffMs / 31536000000), 'year')
+}
 
 // Same composable that powers /dashboard/calendar — different visual treatment.
 const {
-  today, todayKey,
-  cursor, monthLabel, gridDays, weekdays,
+  todayKey,
+  monthLabel, gridDays, weekdays,
   rangeBounds, rangeDayCount, isRange, inRange,
   prevMonth, nextMonth, goToToday, clearRange,
   onCellMouseDown, onCellMouseEnter, endDrag,
@@ -35,13 +110,14 @@ function activityFor(key: string): number {
   return Math.max(0, base + noise)
 }
 
-// 5-level intensity → tailwind emerald shades
+// 5-level intensity → one chart-2 opacity ramp (legend reuses it)
+const intensityRamp = ['bg-muted/40', 'bg-chart-2/15', 'bg-chart-2/35', 'bg-chart-2/60', 'bg-chart-2/90'] as const
 function intensityClass(n: number): string {
-  if (n === 0) return 'bg-muted/40'
-  if (n < 5) return 'bg-emerald-500/15'
-  if (n < 12) return 'bg-emerald-500/35'
-  if (n < 20) return 'bg-emerald-500/60'
-  return 'bg-emerald-500/85'
+  if (n === 0) return intensityRamp[0]
+  if (n < 5) return intensityRamp[1]
+  if (n < 12) return intensityRamp[2]
+  if (n < 20) return intensityRamp[3]
+  return intensityRamp[4]
 }
 
 const monthCells = computed(() =>
@@ -74,12 +150,13 @@ const monthStats = computed(() => {
 })
 
 const rangeStats = computed(() => {
-  const { lo, hi } = rangeBounds.value
+  const { lo } = rangeBounds.value
   const cells: { key: string, count: number }[] = []
   const start = dateFromKey(lo)
   const days = rangeDayCount.value
   for (let i = 0; i < days; i++) {
-    const d = new Date(start); d.setDate(start.getDate() + i)
+    const d = new Date(start)
+    d.setDate(start.getDate() + i)
     const key = isoDate(d)
     cells.push({ key, count: activityFor(key) })
   }
@@ -95,259 +172,303 @@ function fmtKey(key: string) {
 </script>
 
 <template>
-  <div
-    class="flex flex-col gap-5"
-    @mouseup="endDrag"
-  >
-    <!-- Header -->
-    <header class="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/dashboard">
-                Dashboard
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbPage>Activity</BreadcrumbPage>
-          </BreadcrumbList>
-        </Breadcrumb>
-        <h1 class="text-2xl font-semibold tracking-tight mt-2">
-          Activity
-        </h1>
-        <p class="text-muted-foreground text-sm">
-          Daily session heatmap. Drag or shift-click to summarize a range.
-        </p>
-      </div>
-    </header>
+  <Page @mouseup="endDrag">
+    <PageHeader>
+      <PageHeaderHeading
+        :title="title"
+        description="Daily session heatmap. Drag or shift-click to summarize a range."
+      />
+    </PageHeader>
 
-    <!-- KPI strip -->
-    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <div class="relative overflow-hidden rounded-xl border bg-card/40 p-4">
-        <div class="flex items-center gap-1.5">
-          <ActivityIcon class="size-3.5 text-emerald-400" />
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
-            Total · this month
-          </p>
-        </div>
-        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">
-          {{ monthStats.total.toLocaleString() }}
-        </p>
-        <p class="mt-1 text-[11px] text-muted-foreground">
-          sessions
-        </p>
-      </div>
-      <div class="relative overflow-hidden rounded-xl border bg-card/40 p-4">
-        <div class="flex items-center gap-1.5">
-          <BarChart3 class="size-3.5 text-sky-400" />
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
-            Avg · active day
-          </p>
-        </div>
-        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">
-          {{ monthStats.avg }}
-        </p>
-        <p class="mt-1 text-[11px] text-muted-foreground">
-          sessions/day
-        </p>
-      </div>
-      <div class="relative overflow-hidden rounded-xl border bg-card/40 p-4">
-        <div class="flex items-center gap-1.5">
-          <TrendingUp class="size-3.5 text-violet-400" />
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
-            Peak day
-          </p>
-        </div>
-        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">
-          {{ monthStats.peak?.count ?? 0 }}
-        </p>
-        <p class="mt-1 text-[11px] text-muted-foreground truncate">
-          {{ monthStats.peak ? fmtKey(monthStats.peak.key) : '—' }}
-        </p>
-      </div>
-      <div class="relative overflow-hidden rounded-xl border bg-card/40 p-4">
-        <div class="flex items-center gap-1.5">
-          <Flame class="size-3.5 text-amber-400" />
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
-            Current streak
-          </p>
-        </div>
-        <p class="mt-2 text-3xl font-semibold tabular-nums leading-none">
-          {{ monthStats.streak }}
-        </p>
-        <p class="mt-1 text-[11px] text-muted-foreground">
-          day{{ monthStats.streak === 1 ? '' : 's' }} in a row
-        </p>
-      </div>
-    </div>
+    <PageBody class="space-y-4">
+      <DemoDataBanner v-if="!hasLive" />
 
-    <!-- Heatmap card -->
-    <div class="rounded-xl border bg-card/40 overflow-hidden">
-      <!-- Toolbar -->
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/30 px-4 py-2.5">
-        <div class="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            class="size-7"
-            @click="prevMonth"
-          >
-            <ChevronLeft class="size-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            class="size-7"
-            @click="nextMonth"
-          >
-            <ChevronRight class="size-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            class="h-7 text-xs"
-            @click="goToToday"
-          >
-            Today
-          </Button>
-          <h2 class="text-sm font-semibold ml-2">
-            {{ monthLabel }}
-          </h2>
-        </div>
-        <div class="flex items-center gap-3 text-[11px] text-muted-foreground">
-          <div
-            v-if="isRange"
-            class="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-0.5 text-emerald-300 ring-1 ring-inset ring-emerald-500/20"
-          >
-            <MousePointer2 class="size-3" />
-            <span>{{ rangeDayCount }} days · {{ rangeStats.total.toLocaleString() }} sessions · avg {{ rangeStats.avg }}</span>
-            <button
-              class="ml-0.5 hover:text-foreground"
-              @click="clearRange"
-            >
-              <X class="size-3" />
-            </button>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <Sparkles class="size-3" />
-            <span>{{ monthStats.total.toLocaleString() }} this month</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Weekday header -->
-      <div class="grid grid-cols-7 border-b bg-muted/10 text-[10px] uppercase tracking-wider text-muted-foreground">
-        <div
-          v-for="w in weekdays"
-          :key="w"
-          class="px-2 py-2 font-medium"
-        >
-          {{ w }}
-        </div>
-      </div>
-
-      <!-- Heatmap grid -->
-      <div class="grid grid-cols-7 select-none">
-        <button
-          v-for="(d, i) in monthCells"
-          :key="d.key"
-          type="button"
-          :class="[
-            'group relative isolate flex h-20 items-start justify-between border-b border-r p-1.5 text-left transition-all focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            (i + 1) % 7 === 0 && 'border-r-0',
-            i >= 35 && 'border-b-0',
-            !d.inMonth && 'opacity-40',
-            inRange(d.key) && 'ring-1 ring-inset ring-emerald-500/60 z-10',
-          ]"
-          :title="`${fmtKey(d.key)} — ${d.count} session${d.count === 1 ? '' : 's'}`"
-          @mousedown="onCellMouseDown(d.key, $event)"
-          @mouseenter="onCellMouseEnter(d.key)"
-        >
-          <!-- Intensity fill -->
-          <div :class="['pointer-events-none absolute inset-1 rounded-md transition-all group-hover:brightness-125 group-hover:inset-0.5', intensityClass(d.count)]" />
-          <!-- Date number -->
-          <span
-            :class="[
-              'relative inline-flex size-5 items-center justify-center rounded-full text-[11px] tabular-nums z-10',
-              d.key === todayKey && 'bg-foreground text-background font-semibold ring-2 ring-emerald-400',
-              d.key !== todayKey && d.inMonth && 'text-foreground/80',
-              !d.inMonth && 'text-foreground/40',
-            ]"
-          >{{ d.date.getDate() }}</span>
-          <!-- Count badge (subtle, top-right) only on hover for active cells -->
-          <span
-            v-if="d.count > 0 && d.inMonth"
-            class="relative z-10 text-[10px] tabular-nums text-foreground/70 opacity-0 transition-opacity group-hover:opacity-100"
-          >{{ d.count }}</span>
-        </button>
-      </div>
-
-      <!-- Legend -->
-      <div class="flex flex-wrap items-center gap-3 border-t bg-muted/20 px-4 py-2 text-[10px] text-muted-foreground">
-        <CalendarIcon class="size-3" />
-        <span>Less</span>
-        <span class="h-2.5 w-4 rounded-sm bg-muted/40" />
-        <span class="h-2.5 w-4 rounded-sm bg-emerald-500/15" />
-        <span class="h-2.5 w-4 rounded-sm bg-emerald-500/35" />
-        <span class="h-2.5 w-4 rounded-sm bg-emerald-500/60" />
-        <span class="h-2.5 w-4 rounded-sm bg-emerald-500/85" />
-        <span>More</span>
-        <span class="ml-auto">Tip: drag or shift-click to summarize a range.</span>
-      </div>
-    </div>
-
-    <!-- Range detail (only when range > 1) -->
-    <div
-      v-if="isRange"
-      class="rounded-xl border bg-gradient-to-br from-emerald-500/10 to-transparent p-4"
-    >
-      <div class="flex items-center justify-between gap-3">
-        <div>
-          <p class="text-[10px] uppercase tracking-[0.14em] font-medium text-muted-foreground">
-            Selected range
-          </p>
-          <p class="mt-1 text-base font-semibold">
-            {{ fmtKey(rangeBounds.lo) }} → {{ fmtKey(rangeBounds.hi) }}
-          </p>
-        </div>
-        <div class="grid grid-cols-3 gap-3 text-right">
-          <div>
-            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Days
-            </p>
-            <p class="text-lg font-semibold tabular-nums">
-              {{ rangeDayCount }}
-            </p>
-          </div>
-          <div>
-            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Active
-            </p>
-            <p class="text-lg font-semibold tabular-nums">
-              {{ rangeStats.active }}
-            </p>
-          </div>
-          <div>
-            <p class="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Total
-            </p>
-            <p class="text-lg font-semibold tabular-nums text-emerald-300">
-              {{ rangeStats.total.toLocaleString() }}
-            </p>
-          </div>
-        </div>
-      </div>
-      <!-- Mini per-day bars across range -->
-      <div class="mt-4 flex items-end gap-0.5 h-12">
-        <div
-          v-for="c in rangeStats.cells"
-          :key="c.key"
-          :class="['flex-1 rounded-sm transition-colors', c.count === 0 ? 'bg-muted/30' : 'bg-emerald-500/70']"
-          :style="{ height: c.count === 0 ? '8%' : `${Math.min(100, 12 + c.count * 4)}%` }"
-          :title="`${fmtKey(c.key)} — ${c.count}`"
+      <!-- KPI strip -->
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <StatTile
+          label="Total this month"
+          :value="monthStats.total.toLocaleString()"
+          caption="sessions"
+          :icon="ActivityIcon"
+        />
+        <StatTile
+          label="Avg per active day"
+          :value="String(monthStats.avg)"
+          caption="sessions/day"
+          :icon="BarChart3"
+        />
+        <StatTile
+          label="Peak day"
+          :value="String(monthStats.peak?.count ?? 0)"
+          :caption="monthStats.peak ? fmtKey(monthStats.peak.key) : '—'"
+          :icon="TrendingUp"
+        />
+        <StatTile
+          label="Current streak"
+          :value="String(monthStats.streak)"
+          :caption="`day${monthStats.streak === 1 ? '' : 's'} in a row`"
+          :icon="Flame"
         />
       </div>
-    </div>
-  </div>
+
+      <!-- Heatmap card -->
+      <Card>
+        <!-- Toolbar -->
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b px-4 py-2">
+          <div class="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              class="size-8"
+              aria-label="Previous month"
+              @click="prevMonth"
+            >
+              <ChevronLeft class="size-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              class="size-8"
+              aria-label="Next month"
+              @click="nextMonth"
+            >
+              <ChevronRight class="size-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              class="h-7 text-xs"
+              @click="goToToday"
+            >
+              Today
+            </Button>
+            <h2 class="ml-2 text-sm font-semibold">
+              {{ monthLabel }}
+            </h2>
+          </div>
+          <div class="text-muted-foreground flex items-center gap-4 text-xs">
+            <div
+              v-if="isRange"
+              class="bg-primary/10 text-primary ring-primary/20 flex items-center gap-1.5 rounded-full px-2 py-0.5 ring-1 ring-inset"
+            >
+              <MousePointer2
+                class="size-3.5"
+                aria-hidden="true"
+              />
+              <span class="tabular-nums">{{ rangeDayCount }} days · {{ rangeStats.total.toLocaleString() }} sessions · avg {{ rangeStats.avg }}</span>
+              <button
+                type="button"
+                class="hover:text-foreground ml-0.5"
+                aria-label="Clear range"
+                @click="clearRange"
+              >
+                <X class="size-3.5" />
+              </button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <Sparkles
+                class="size-3.5"
+                aria-hidden="true"
+              />
+              <span class="tabular-nums">{{ monthStats.total.toLocaleString() }} this month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekday header -->
+        <div class="bg-muted/10 text-muted-foreground grid grid-cols-7 border-b text-xs font-medium tracking-wider uppercase">
+          <div
+            v-for="w in weekdays"
+            :key="w"
+            class="p-2"
+          >
+            {{ w }}
+          </div>
+        </div>
+
+        <!-- Heatmap grid -->
+        <div class="grid grid-cols-7 select-none">
+          <button
+            v-for="(d, i) in monthCells"
+            :key="d.key"
+            type="button"
+            :class="[
+              'group focus-visible:ring-ring relative isolate flex h-20 items-start justify-between border-r border-b p-1.5 text-left transition-all focus-visible:z-10 focus-visible:ring-2 focus-visible:outline-none',
+              (i + 1) % 7 === 0 && 'border-r-0',
+              i >= 35 && 'border-b-0',
+              !d.inMonth && 'opacity-40',
+              inRange(d.key) && 'ring-primary/60 z-10 ring-1 ring-inset',
+            ]"
+            :title="`${fmtKey(d.key)}: ${d.count} session${d.count === 1 ? '' : 's'}`"
+            @mousedown="onCellMouseDown(d.key, $event)"
+            @mouseenter="onCellMouseEnter(d.key)"
+          >
+            <!-- Intensity fill -->
+            <div :class="['pointer-events-none absolute inset-1 rounded-md transition-all group-hover:inset-0.5', intensityClass(d.count)]" />
+            <!-- Date number -->
+            <span
+              :class="[
+                'relative z-10 inline-flex size-6 items-center justify-center rounded-full text-xs tabular-nums',
+                d.key === todayKey ? 'bg-primary text-primary-foreground font-semibold' : 'text-foreground',
+              ]"
+            >{{ d.date.getDate() }}</span>
+            <!-- Count badge, revealed on hover for active cells -->
+            <!-- WHY (Rule95): focus-within joins hover so keyboard/touch
+                 users get the count too -- hover alone hides it from them. -->
+            <span
+              v-if="d.count > 0 && d.inMonth"
+              class="text-foreground relative z-10 text-xs tabular-nums opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+            >{{ d.count }}</span>
+          </button>
+        </div>
+
+        <!-- Legend -->
+        <div class="bg-muted/20 text-muted-foreground flex flex-wrap items-center gap-2 border-t px-4 py-2 text-xs">
+          <CalendarIcon
+            class="size-3.5"
+            aria-hidden="true"
+          />
+          <span>Less</span>
+          <span
+            v-for="cls in intensityRamp"
+            :key="cls"
+            :class="['h-2.5 w-4 rounded-sm', cls]"
+          />
+          <span>More</span>
+          <span class="ml-auto">Drag or shift-click to summarize a range.</span>
+        </div>
+      </Card>
+
+      <!-- Range detail (only when range > 1) -->
+      <Card
+        v-if="isRange"
+        class="p-4"
+      >
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Selected range
+            </p>
+            <p class="mt-1 text-base font-semibold">
+              {{ fmtKey(rangeBounds.lo) }} → {{ fmtKey(rangeBounds.hi) }}
+            </p>
+          </div>
+          <div class="grid grid-cols-3 gap-4 text-right">
+            <div>
+              <p class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Days
+              </p>
+              <!-- WHY (Rule27): KPI values sit on text-2xl so the range
+                   summary matches the tile hierarchy. -->
+              <p class="text-2xl font-semibold tracking-tight tabular-nums">
+                {{ rangeDayCount }}
+              </p>
+            </div>
+            <div>
+              <p class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Active
+              </p>
+              <p class="text-2xl font-semibold tracking-tight tabular-nums">
+                {{ rangeStats.active }}
+              </p>
+            </div>
+            <div>
+              <p class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Total
+              </p>
+              <p class="text-2xl font-semibold tracking-tight tabular-nums">
+                {{ rangeStats.total.toLocaleString() }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Mini per-day bars across range -->
+        <div class="mt-4 flex h-12 items-end gap-0.5">
+          <div
+            v-for="c in rangeStats.cells"
+            :key="c.key"
+            :class="['flex-1 rounded-sm transition-colors', c.count === 0 ? 'bg-muted/40' : 'bg-chart-2']"
+            :style="{ height: c.count === 0 ? '8%' : `${Math.min(100, 12 + c.count * 4)}%` }"
+            :title="`${fmtKey(c.key)}: ${c.count} sessions`"
+          />
+        </div>
+      </Card>
+
+      <!-- Live events (audit log) -->
+      <Card>
+        <CardHeader class="border-b">
+          <CardTitle
+            as="h2"
+            class="text-base"
+          >
+            {{ t('settings.activity.feed.title') }}
+          </CardTitle>
+        </CardHeader>
+        <div
+          v-if="feedPending"
+          class="text-muted-foreground px-4 py-3 text-sm"
+        >
+          {{ t('settings.activity.states.loading') }}
+        </div>
+        <EmptyState
+          v-else-if="feedError || (activityRes && !activityRes.ok)"
+          :icon="AlertCircle"
+          role="alert"
+          :title="t('settings.activity.states.error')"
+          class="py-4"
+        >
+          <Button
+            variant="outline"
+            size="sm"
+            class="mt-4"
+            @click="refreshFeed()"
+          >
+            {{ t('settings.activity.states.retry') }}
+          </Button>
+        </EmptyState>
+        <ul
+          v-else-if="hasLive"
+          class="divide-y"
+        >
+          <li
+            v-for="item in feedItems"
+            :key="item.id"
+            class="flex items-center gap-2 px-4 py-2"
+          >
+            <component
+              :is="feedActionIcon(item.action)"
+              class="text-muted-foreground size-4 shrink-0"
+              aria-hidden="true"
+            />
+            <div class="min-w-0 flex-1">
+              <p
+                class="truncate text-sm font-medium"
+                :title="describeItem(item)"
+              >
+                {{ describeItem(item) }}
+              </p>
+              <p
+                class="text-muted-foreground truncate text-xs"
+                :title="actorLabel(item)"
+              >
+                {{ actorLabel(item) }}
+              </p>
+            </div>
+            <time
+              :title="formatFull(item.createdAt)"
+              class="text-muted-foreground shrink-0 text-xs tabular-nums"
+            >
+              {{ timeAgo(item.createdAt) }}
+            </time>
+          </li>
+        </ul>
+        <p
+          v-else
+          class="text-muted-foreground px-4 py-3 text-sm"
+        >
+          {{ t('settings.activity.states.empty') }}
+        </p>
+      </Card>
+    </PageBody>
+  </Page>
 </template>

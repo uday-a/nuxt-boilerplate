@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { LucideIcon } from 'lucide-vue-next'
+import type { Component } from 'vue'
 import {
   Folder,
   Forward,
   MoreHorizontal,
   Trash2,
-} from 'lucide-vue-next'
+} from '@/lib/icon-pack'
 
 import {
   DropdownMenu,
@@ -28,7 +28,7 @@ defineProps<{
   projects: {
     name: string
     url: string
-    icon: LucideIcon
+    icon: Component
     isActive?: boolean
   }[]
 }>()
@@ -54,6 +54,7 @@ const { t } = useI18n()
         <SidebarMenuButton
           as-child
           :is-active="item.isActive"
+          class="data-[active=true]:bg-sidebar-primary/10 data-[active=true]:text-sidebar-primary data-[active=true]:font-medium data-[active=true]:[&>svg]:text-sidebar-primary"
         >
           <NuxtLink :to="item.url">
             <component :is="item.icon" />

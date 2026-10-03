@@ -3,7 +3,7 @@ import type { RadioGroupItemProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { computed, inject } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
-import { Circle } from 'lucide-vue-next'
+import { Circle } from '@/lib/icon-pack'
 import { RadioGroupIndicator, RadioGroupItem, useForwardProps } from 'reka-ui'
 import { cn } from '@/lib/utils'
 
@@ -83,10 +83,10 @@ const indicatorSizes = {
 const colorClasses: Record<string, string> = {
   primary: 'data-[state=checked]:border-primary',
   secondary: 'data-[state=checked]:border-secondary',
-  success: 'data-[state=checked]:border-[var(--success)] data-[state=checked]:text-[var(--success)]',
-  warning: 'data-[state=checked]:border-[var(--warning)] data-[state=checked]:text-[var(--warning)]',
+  success: 'data-[state=checked]:border-success data-[state=checked]:text-success',
+  warning: 'data-[state=checked]:border-warning data-[state=checked]:text-warning',
   error: 'data-[state=checked]:border-destructive data-[state=checked]:text-destructive',
-  info: 'data-[state=checked]:border-[var(--info)] data-[state=checked]:text-[var(--info)]',
+  info: 'data-[state=checked]:border-info data-[state=checked]:text-info',
 }
 
 // Density classes

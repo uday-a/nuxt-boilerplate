@@ -4,9 +4,11 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { Page, PageHeader, PageHeaderHeading, PageBody } from '@/components/ui/page'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
-useHead({ title: 'Notifications · Settings' })
+const title = useRouteLabel()
+useHead({ title })
 
 type Channel = { email: boolean, inApp: boolean }
 const prefs = reactive<Record<string, Channel>>({
@@ -29,63 +31,63 @@ const rows: { key: keyof typeof prefs, label: string, description: string }[] = 
 </script>
 
 <template>
-  <div class="space-y-6">
-    <header class="space-y-1">
-      <h1 class="text-2xl font-semibold tracking-tight">
-        Notifications
-      </h1>
-      <p class="text-muted-foreground text-sm">
-        Pick which channels receive which events.
-      </p>
-    </header>
+  <Page>
+    <PageHeader>
+      <PageHeaderHeading
+        :title="title"
+        description="Pick which channels receive which events."
+      />
+    </PageHeader>
 
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-base">
-          Delivery preferences
-        </CardTitle>
-        <CardDescription>Critical security alerts always send to email and can’t be disabled.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div class="grid grid-cols-[1fr_auto_auto] items-end gap-x-6 gap-y-1 pb-2 text-xs font-medium text-muted-foreground">
-          <span>Event</span>
-          <span class="px-1 text-center">Email</span>
-          <span class="px-1 text-center">In-app</span>
-        </div>
-        <Separator />
-        <div
-          v-for="(r, i) in rows"
-          :key="r.key"
-        >
-          <div class="grid grid-cols-[1fr_auto_auto] items-center gap-x-6 py-3">
-            <div class="space-y-0.5">
-              <Label
-                :for="`pref-${r.key}-email`"
-                class="text-sm font-medium"
-              >{{ r.label }}</Label>
-              <p class="text-muted-foreground text-xs">
-                {{ r.description }}
-              </p>
-            </div>
-            <Switch
-              :id="`pref-${r.key}-email`"
-              v-model="prefs[r.key]!.email"
-            />
-            <Switch
-              :id="`pref-${r.key}-inapp`"
-              v-model="prefs[r.key]!.inApp"
-            />
+    <PageBody class="max-w-3xl space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle class="text-base">
+            Delivery preferences
+          </CardTitle>
+          <CardDescription>Critical security alerts always send to email and can’t be disabled.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div class="grid grid-cols-[1fr_auto_auto] items-end gap-x-4 gap-y-1 pb-2 text-xs font-medium text-muted-foreground">
+            <span>Event</span>
+            <span class="px-1 text-center">Email</span>
+            <span class="px-1 text-center">In-app</span>
           </div>
-          <Separator v-if="i < rows.length - 1" />
-        </div>
-      </CardContent>
-    </Card>
+          <Separator />
+          <div
+            v-for="(r, i) in rows"
+            :key="r.key"
+          >
+            <div class="grid grid-cols-[1fr_auto_auto] items-center gap-x-4 py-3">
+              <div class="space-y-0.5">
+                <Label
+                  :for="`pref-${r.key}-email`"
+                  class="text-sm font-medium"
+                >{{ r.label }}</Label>
+                <p class="text-muted-foreground text-xs">
+                  {{ r.description }}
+                </p>
+              </div>
+              <Switch
+                :id="`pref-${r.key}-email`"
+                v-model="prefs[r.key]!.email"
+              />
+              <Switch
+                :id="`pref-${r.key}-inapp`"
+                v-model="prefs[r.key]!.inApp"
+              />
+            </div>
+            <Separator v-if="i < rows.length - 1" />
+          </div>
+        </CardContent>
+      </Card>
 
-    <div class="flex justify-end gap-2">
-      <Button variant="outline">
-        Reset
-      </Button>
-      <Button>Save preferences</Button>
-    </div>
-  </div>
+      <div class="flex items-center justify-end gap-2">
+        <Button variant="outline">
+          Reset
+        </Button>
+        <Button>Save preferences</Button>
+      </div>
+    </PageBody>
+  </Page>
 </template>

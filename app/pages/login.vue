@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { safeRedirectPath } from '@/lib/utils'
-import { Sparkles, Mail, AlertCircle, CheckCircle2 } from 'lucide-vue-next'
+import { Sparkles, Mail, AlertCircle } from '@/lib/icon-pack'
 import type { ApiResponse } from '~~/server/utils/response'
 
 definePageMeta({ auth: false, layout: false })
@@ -39,8 +39,7 @@ const demoLoading = ref(false)
 async function signInAsDemo() {
   demoLoading.value = true
   try {
-    const res = await $fetch('/auth/demo', { method: 'POST' })
-    console.log('DEMO_SIGNIN_SUCCESS', res)
+    await $fetch('/auth/demo', { method: 'POST' })
     await refreshSession()
     await navigateTo(next.value)
   }
@@ -87,7 +86,7 @@ function onOauth(provider: 'github' | 'google') {
 </script>
 
 <template>
-  <div class="bg-background relative flex min-h-svh items-center justify-center p-6 md:p-10">
+  <div class="bg-background relative flex min-h-svh items-center justify-center p-4 md:p-4">
     <div class="w-full max-w-sm">
       <AuthSignIn
         forgot-password-href="/forgot-password"
@@ -102,8 +101,11 @@ function onOauth(provider: 'github' | 'google') {
         v-if="errorBanner"
         class="fixed top-6 right-6 z-50 max-w-sm"
       >
-        <div class="bg-destructive/10 text-destructive flex items-center gap-2 rounded-lg border border-destructive/20 p-4 text-sm shadow-lg">
-          <AlertCircle class="size-4 shrink-0" />
+        <div class="bg-popover text-destructive border-destructive/30 flex items-center gap-2 rounded-lg border p-4 text-sm shadow-lg">
+          <AlertCircle
+            class="size-4 shrink-0"
+            aria-hidden="true"
+          />
           <span>{{ errorBanner }}</span>
         </div>
       </div>
@@ -112,9 +114,12 @@ function onOauth(provider: 'github' | 'google') {
         v-if="linkState.kind === 'sent'"
         class="fixed top-6 right-6 z-50 max-w-sm"
       >
-        <div class="bg-primary/10 text-primary flex items-center gap-2 rounded-lg border border-primary/20 p-4 text-sm shadow-lg">
-          <Mail class="size-4 shrink-0" />
-          <span>Sign-in link sent to <strong>{{ linkState.email }}</strong>. Check your inbox.</span>
+        <div class="bg-popover text-popover-foreground flex items-center gap-2 rounded-lg border p-4 text-sm shadow-lg">
+          <Mail
+            class="size-4 shrink-0"
+            aria-hidden="true"
+          />
+          <span>Sign-in link sent to <strong class="font-semibold">{{ linkState.email }}</strong>. Check your inbox.</span>
         </div>
       </div>
 
@@ -122,8 +127,11 @@ function onOauth(provider: 'github' | 'google') {
         v-if="linkState.kind === 'error'"
         class="fixed top-6 right-6 z-50 max-w-sm"
       >
-        <div class="bg-destructive/10 text-destructive flex items-center gap-2 rounded-lg border border-destructive/20 p-4 text-sm shadow-lg">
-          <AlertCircle class="size-4 shrink-0" />
+        <div class="bg-popover text-destructive border-destructive/30 flex items-center gap-2 rounded-lg border p-4 text-sm shadow-lg">
+          <AlertCircle
+            class="size-4 shrink-0"
+            aria-hidden="true"
+          />
           <span>{{ linkState.message }}</span>
         </div>
       </div>
@@ -136,10 +144,13 @@ function onOauth(provider: 'github' | 'google') {
       v-if="demoMode"
       class="fixed inset-x-0 bottom-6 z-40 flex justify-center px-4"
     >
-      <div class="bg-background/95 ring-border/60 flex items-center gap-3 rounded-full border px-4 py-2 shadow-lg backdrop-blur ring-1">
-        <Sparkles class="text-primary size-4" />
+      <div class="bg-background/95 flex items-center gap-3 rounded-full border px-4 py-2 shadow-lg backdrop-blur">
+        <Sparkles
+          class="text-primary size-4"
+          aria-hidden="true"
+        />
         <span class="text-muted-foreground text-sm">
-          No GitHub OAuth configured.
+          Just looking around? Try the demo workspace.
         </span>
         <Button
           size="sm"

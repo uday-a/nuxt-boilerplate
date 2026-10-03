@@ -1,10 +1,21 @@
 import { computed, ref, type Component, type Ref } from 'vue'
 import {
-  AlertTriangle, CheckCircle2, CreditCard, GitBranch, MessageSquare,
+  AlertTriangle, CheckCircle2, CreditCard, GitBranch, Info, MessageSquare,
   ShieldAlert, UserPlus,
-} from 'lucide-vue-next'
+} from '@/lib/icon-pack'
+import {
+  chartAxisColor, chartColors, chartSplitLineColor, chartTextColor, chartTooltipBg, chartTooltipBorder, chartTooltipText,
+} from '@/components/ui/charts/useChartTheme'
+import { computeFunnelStats, describeFunnelForAria, normalizeFunnelStages } from '@/lib/funnel'
+import { SAMPLE_PLAN, SAMPLE_USAGE, usagePct } from '@/lib/usage-mock'
+import { use } from 'echarts/core'
+import { BarChart as EBarChart, GaugeChart as EGaugeChart, LineChart as ELineChart } from 'echarts/charts'
+import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components'
 
-export type Range = '24h' | '7d' | '30d' | 'qtd' | 'ytd'
+// The revenue combo and quota ring are RawCharts, which leave registration to us.
+use([EBarChart, EGaugeChart, ELineChart, GridComponent, LegendComponent, TooltipComponent])
+
+export type Range = '24h' | '7d' | '30d' | 'qtd' | 'ytd' | 'custom'
 
 // Human label per range. Powers the funnel + hourly-requests subtitles
 // so the descriptive copy stays in sync with the selected tab.
@@ -14,6 +25,7 @@ const RANGE_LABEL: Record<Range, string> = {
   '30d': 'Last 30 days',
   'qtd': 'Quarter to date',
   'ytd': 'Year to date',
+  'custom': 'Custom range',
 }
 
 // Deterministic spark generator -- no Math.random() so SSR + client
@@ -117,12 +129,31 @@ const KPI_BY_RANGE: Record<Range, KpiBlock> = {
     conversion: { delta: '+2.1pp' },
     latency: { delta: '+47ms' },
     churn: { delta: '-1.1pp' },
+    // Jan → Sep 2026, one point per month.
     spark: {
-      revenue: [2980, 3320, 3780, 4180, 4720],
-      users: [9000, 9800, 10800, 11800, 12847],
-      requests: [1880, 2080, 2240, 2360, 2484],
-      conversion: [5.3, 5.9, 6.5, 7.0, 7.4],
-      latency: [365, 380, 395, 405, 412],
+      revenue: [2980, 3180, 3390, 3620, 3850, 4080, 4300, 4510, 4720],
+      users: [9000, 9450, 9900, 10380, 10850, 11350, 11850, 12350, 12847],
+      requests: [1880, 1960, 2040, 2110, 2190, 2260, 2340, 2410, 2484],
+      conversion: [5.3, 5.6, 5.8, 6.1, 6.4, 6.7, 6.9, 7.2, 7.4],
+      latency: [365, 371, 377, 383, 389, 395, 401, 406, 412],
+    },
+  },
+  // Custom range (RangeCalendar popover): the picked {start,end} window
+  // drives which tab is active; the series below are a plausible
+  // mid-length window so every range-aware computed keeps working.
+  'custom': {
+    mrr: { delta: '+9.6%' },
+    users: { delta: '+6.2%' },
+    rpm: { delta: '+8.4%' },
+    conversion: { delta: '+0.4pp' },
+    latency: { delta: '+12ms' },
+    churn: { delta: '-0.2pp' },
+    spark: {
+      revenue: spark(14, 4280, 4720, 70, 71),
+      users: spark(14, 11800, 12847, 110, 73),
+      requests: spark(14, 2200, 2484, 100, 79),
+      conversion: spark(14, 7.0, 7.4, 0.12, 83),
+      latency: spark(14, 400, 412, 5, 89),
     },
   },
 }
@@ -165,13 +196,19 @@ const revenueByRange: Record<Range, RevenuePoint[]> = {
   ],
   '30d': genSeries(30, 4180, 4720, 3000, 3380, 17),
   'qtd': genSeries(12, 28000, 33000, 20000, 23000, 41).map((p, i) => ({ ...p, x: `W${i + 1}` })),
+  // Monthly revenue tracks MRR: ~$73k in Jan → $115.7k in Sep (+58.6%).
   'ytd': [
-    { x: 'Jan', revenue: 184000, expenses: 108000 },
-    { x: 'Feb', revenue: 172000, expenses: 112000 },
-    { x: 'Mar', revenue: 198000, expenses: 118000 },
-    { x: 'Apr', revenue: 224000, expenses: 124000 },
-    { x: 'May', revenue: 248000, expenses: 132000 },
+    { x: 'Jan', revenue: 73000, expenses: 58000 },
+    { x: 'Feb', revenue: 77800, expenses: 60500 },
+    { x: 'Mar', revenue: 82900, expenses: 62400 },
+    { x: 'Apr', revenue: 88100, expenses: 65200 },
+    { x: 'May', revenue: 93600, expenses: 67100 },
+    { x: 'Jun', revenue: 99200, expenses: 69800 },
+    { x: 'Jul', revenue: 104500, expenses: 72300 },
+    { x: 'Aug', revenue: 110300, expenses: 74900 },
+    { x: 'Sep', revenue: 115700, expenses: 77600 },
   ],
+  'custom': genSeries(14, 4280, 4720, 3060, 3380, 71).map((p, i) => ({ ...p, x: `D${i + 1}` })),
 }
 
 interface RequestsBlock {
@@ -217,15 +254,27 @@ const requestsByRange: Record<Range, RequestsBlock> = {
   'ytd': {
     title: 'Requests by month',
     subtitle: 'Year to date · UTC',
-    data: ['Jan', 'Feb', 'Mar', 'Apr', 'May'].map((m, i) => ({
+    data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'].map((m, i) => ({
       x: m,
       y: Math.round(720000 + i * 86000 + Math.sin(i * 1.2) * 38000),
+    })),
+  },
+  'custom': {
+    title: 'Requests by day',
+    subtitle: 'Custom range · UTC',
+    data: Array.from({ length: 14 }, (_, i) => ({
+      x: `D${i + 1}`,
+      y: Math.round(26500 + Math.sin(i * 0.8) * 3600 + ((i * 19) % 2200)),
     })),
   },
 }
 
 // Funnel: ratios stay constant across ranges (60% → 40% → 30% → 25%);
 // only the absolute visitor count scales with the window.
+// `value` is the REAL count -- horizontal bars encode length = count, so the
+// old triangle trick (inflating Paid / Retained 30d to Activated's width so
+// the tip stayed labellable) is gone. `realValue` is kept = value for
+// backward compatibility with consumers/ports that read it.
 function buildFunnel(visitors: number) {
   const signups = Math.round(visitors * 0.6)
   const activated = Math.round(signups * 0.4)
@@ -235,17 +284,22 @@ function buildFunnel(visitors: number) {
     { name: 'Visitors', value: visitors, realValue: visitors },
     { name: 'Sign-ups', value: signups, realValue: signups },
     { name: 'Activated', value: activated, realValue: activated },
-    { name: 'Paid', value: activated, realValue: paid },
-    { name: 'Retained 30d', value: activated, realValue: retained },
+    { name: 'Paid', value: paid, realValue: paid },
+    { name: 'Retained 30d', value: retained, realValue: retained },
   ]
 }
 
 const VISITORS_BY_RANGE: Record<Range, number> = {
-  '24h': 820,
-  '7d': 5740,
+  // Hand-picked so successive Math.round steps land back on the exact
+  // 60/40/30/25 ratios (and 1.8% end-to-end) at 1-decimal display rounding
+  // on EVERY range -- the card footer prints the computed step rates, so a
+  // rounding-hostile seed would read '29.9% → 25.4%' on small windows.
+  '24h': 1000,
+  '7d': 6000,
   '30d': 24850,
   'qtd': 74600,
   'ytd': 124200,
+  'custom': 14900,
 }
 
 // Top products: identity stays constant, only the change% varies per
@@ -264,6 +318,7 @@ const PRODUCT_CHANGE_BY_RANGE: Record<Range, string[]> = {
   '30d': ['+12.4%', '+8.1%', '+22.0%', '+3.8%', '-2.4%'],
   'qtd': ['+24.1%', '+18.3%', '+38.2%', '+8.4%', '-4.2%'],
   'ytd': ['+58.6%', '+42.5%', '+74.1%', '+18.7%', '-8.9%'],
+  'custom': ['+9.2%', '+6.2%', '+14.8%', '+2.1%', '-1.3%'],
 }
 
 // ── Remaining static data ───────────────────────────────────────────
@@ -278,9 +333,11 @@ export interface Activity {
 
 export interface Alert {
   icon: Component
-  tone: string
+  severity: 'critical' | 'warning' | 'info'
   title: string
   detail: string
+  /** Service and region the alert fired from. */
+  source: string
   age: string
 }
 
@@ -299,7 +356,49 @@ export interface Product {
   up: boolean
 }
 
+// ECharts paints on canvas and interpolates colours itself (visualMap,
+// gauge bands), so theme tokens are resolved to plain rgb() here.
+// Painting the CSS value into a 1px canvas converts any colour space
+// (the semantic tokens are oklch) into sRGB bytes.
+type Rgb = [number, number, number]
+let probe: CanvasRenderingContext2D | null = null
+function tokenRgb(name: string): Rgb {
+  const fallback: Rgb = [128, 128, 128]
+  if (typeof window === 'undefined') return fallback
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  if (!value) return fallback
+  probe ??= document.createElement('canvas').getContext('2d', { willReadFrequently: true })
+  if (!probe) return fallback
+  probe.clearRect(0, 0, 1, 1)
+  probe.fillStyle = value
+  probe.fillRect(0, 0, 1, 1)
+  const [r = 128, g = 128, b = 128] = probe.getImageData(0, 0, 1, 1).data
+  return [r, g, b]
+}
+const rgb = ([r, g, b]: Rgb, alpha = 1) => (alpha === 1 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${alpha})`)
+
+// Quota gauge bands follow the UsageBar rule: < 70% fine, 70–89% warning,
+// ≥ 90% at the limit. Same API-calls meter as Settings → Billing / Limits.
+const API_CALLS = SAMPLE_USAGE.find(m => m.id === 'api-calls')!
+const QUOTA_USED = usagePct(API_CALLS)
+
 export function useDashboardData(range: Ref<Range> = ref<Range>('30d')) {
+  // Token colours for the canvas charts. Reading `chartTextColor` ties
+  // this to the chart theme's own dark/light re-resolve.
+  const tokens = computed(() => {
+    void chartTextColor.value
+    return {
+      surface: rgb(tokenRgb('--card')),
+      success: rgb(tokenRgb('--success')),
+      warning: rgb(tokenRgb('--warning')),
+      destructive: rgb(tokenRgb('--destructive')),
+      track: rgb(tokenRgb('--muted')),
+      foreground: rgb(tokenRgb('--foreground')),
+      mutedForeground: rgb(tokenRgb('--muted-foreground')),
+      chart1: tokenRgb('--chart-1'),
+    }
+  })
+
   // Reactive views over the range tab. Static demo data (revenue
   // series, calendar heatmap, treemap, top products/customers,
   // activities, alerts) lives outside the per-range table on purpose
@@ -308,84 +407,174 @@ export function useDashboardData(range: Ref<Range> = ref<Range>('30d')) {
   const kpi = computed(() => KPI_BY_RANGE[range.value])
   const rangeLabel = computed(() => RANGE_LABEL[range.value])
 
-  const revenueSeries = computed(() => revenueByRange[range.value])
+  // Profit and refunds are derived per point so they always agree with the
+  // revenue/expenses lines for whichever range is selected.
+  const revenueSeries = computed(() => revenueByRange[range.value].map((p, i) => ({
+    ...p,
+    profit: p.revenue - p.expenses,
+    refunds: Math.round(p.revenue * (0.03 + ((i * 7) % 5) * 0.002)),
+  })))
+  // Revenue combo: revenue/expenses as bars, profit/refunds as lines on the
+  // same axis. Colours and chrome come from the theme so it follows light,
+  // dark and the colour-theme presets like the other charts.
+  const revenueComboOption = computed(() => {
+    // Four groups for every range keeps the combo readable in a one-third
+    // card. Groups can differ in length (30 days → 8/8/8/6), so each shows
+    // the per-point average rather than a sum — otherwise a short last group
+    // reads as a fake dip. Labelled with its span, e.g. "1–8" or "Mon–Tue".
+    const raw = revenueSeries.value
+    const GROUPS = 4
+    const size = Math.ceil(raw.length / GROUPS)
+    const pts = Array.from({ length: Math.ceil(raw.length / size) }, (_, b) => {
+      const chunk = raw.slice(b * size, b * size + size)
+      const sum = (k: 'revenue' | 'expenses' | 'profit' | 'refunds') => Math.round(chunk.reduce((t, p) => t + p[k], 0) / chunk.length)
+      const first = chunk[0]!.x
+      const last = chunk[chunk.length - 1]!.x
+      return { x: first === last ? first : `${first}–${last}`, revenue: sum('revenue'), expenses: sum('expenses'), profit: sum('profit'), refunds: sum('refunds') }
+    })
+    const c = chartColors.value
+    const perPoint = size > 1 ? ' avg' : ''
+    const money = (v: number) => `$${Math.round(v).toLocaleString()}${perPoint}`
+    const kFmt = (v: number) => (v >= 1000 ? `${v / 1000}k` : String(v))
+    const line = (name: string, key: 'profit' | 'refunds', color: string, dashed = false) => ({
+      name,
+      type: 'line',
+      smooth: true,
+      symbol: 'circle',
+      symbolSize: 8,
+      yAxisIndex: 1,
+      data: pts.map(p => p[key]),
+      lineStyle: { width: 3, color, type: dashed ? 'dashed' : 'solid' },
+      itemStyle: { color, borderColor: tokens.value.surface, borderWidth: 2 },
+      emphasis: { focus: 'series' },
+      z: 5,
+    })
+    const bar = (name: string, key: 'revenue' | 'expenses', color: string) => ({
+      name,
+      type: 'bar',
+      barMaxWidth: 22,
+      barGap: '15%',
+      data: pts.map(p => p[key]),
+      // Bars are the context, lines the story: keep the bars faint.
+      itemStyle: { color, borderRadius: [3, 3, 0, 0], opacity: 0.3 },
+      emphasis: { focus: 'series', itemStyle: { opacity: 0.6 } },
+      // WHY (Rule57): one fixed demo annotation on an obvious dip so the
+      // combo teaches event overlays. Clearly fake data (see label copy).
+      markLine: name === 'Revenue'
+        ? {
+            silent: true,
+            symbol: 'none',
+            lineStyle: { color, type: 'dashed', width: 1 },
+            label: { formatter: 'Deploy v2.4 (demo)', fontSize: 12, color: chartTextColor.value },
+            data: [{ xAxis: pts[Math.min(2, pts.length - 1)]!.x }],
+          }
+        : undefined,
+    })
+    return {
+      grid: { left: 8, right: 8, top: 32, bottom: 32, containLabel: true },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        valueFormatter: money,
+        backgroundColor: chartTooltipBg.value,
+        borderColor: chartTooltipBorder.value,
+        textStyle: { color: chartTooltipText.value, fontSize: 12 },
+      },
+      legend: { bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8, textStyle: { fontSize: 12, color: chartTextColor.value } },
+      xAxis: {
+        type: 'category',
+        data: pts.map(p => p.x),
+        axisLine: { lineStyle: { color: chartAxisColor.value } },
+        axisLabel: { color: chartTextColor.value, fontSize: 12 },
+        axisTick: { show: false },
+      },
+      // Left axis: bars (revenue/expenses). Right axis: lines (profit/refunds),
+      // so the smaller line values use the full height instead of hugging 0.
+      // WHY (Rule45): both zero-based -- bars encode length from zero.
+      // WHY (Rule53): each axis is named with its own unit so the dual
+      // scales are never implied shared.
+      yAxis: [
+        {
+          type: 'value',
+          min: 0,
+          splitNumber: 4,
+          name: 'Revenue · USD',
+          nameTextStyle: { color: chartTextColor.value, fontSize: 12, align: 'left' },
+          splitLine: { lineStyle: { color: chartSplitLineColor.value } },
+          axisLabel: { color: chartTextColor.value, fontSize: 12, formatter: kFmt },
+        },
+        {
+          type: 'value',
+          min: 0,
+          splitNumber: 4,
+          name: 'Profit · USD',
+          nameTextStyle: { color: chartTextColor.value, fontSize: 12, align: 'right' },
+          splitLine: { show: false },
+          axisLabel: { color: chartTextColor.value, fontSize: 12, formatter: kFmt },
+        },
+      ],
+      series: [
+        bar('Revenue', 'revenue', c[0]!),
+        bar('Expenses', 'expenses', c[1]!),
+        line('Profit', 'profit', c[2]!),
+        line('Refunds', 'refunds', c[3]!, true),
+      ],
+    }
+  })
+
   const requestsBlock = computed(() => requestsByRange[range.value])
 
   // Stepwise conversion rates: Sign-ups retains 60% of Visitors,
   // Activated 40% of Sign-ups, Paid 30% of Activated, Retained 25% of
   // Paid. End-to-end = 0.60 * 0.40 * 0.30 * 0.25 = 1.8% of Visitors.
-  //
-  // The two bottom stages (Paid, Retained 30d) carry the same `value`
-  // as Activated so they render at the same trapezoid width -- a
-  // deliberate "the funnel reaches a floor" look. `realValue` keeps
-  // the actual count for the label formatter.
   const funnel = computed(() => buildFunnel(VISITORS_BY_RANGE[range.value]))
 
-  // Custom funnel series so the bottom-three equal-size effect works
-  // AND the inline labels show the real count rather than the
-  // inflated visual value. `sort: 'none'` is important -- with three
-  // identical values ECharts otherwise reshuffles the order.
+  // Range-aware funnel facts for the card subtitle/footer
+  // ('447 of 24,850 retained (1.8% end-to-end)', 'Step rates: ...').
+  const funnelSummary = computed(() => computeFunnelStats(normalizeFunnelStages(funnel.value)))
+
+  // WHY (Rule54): prior-period totals so the funnel card footer can surface
+  // a "vs prior period" comparison. The funnel tooltip's Δ is
+  // stage-vs-stage, not period-vs-period -- this is the period baseline.
+  // Fixed demo seed (~8% below the current window).
+  const funnelPrior = computed(() => {
+    const visitors = Math.round(VISITORS_BY_RANGE[range.value] * 0.92)
+    const retained = Math.round(visitors * 0.018)
+    return { visitors, retained }
+  })
+
+  // Horizontal staged-bar option layer for FunnelChart. Deliberately thin:
+  // bar GEOMETRY (yAxis categories, single-hue series, outside labels) lives
+  // in FunnelChart.vue so standalone use matches the dashboard. This only
+  // adds the range-aware accessible name -- it must NOT contain `series`,
+  // `xAxis` or `yAxis` (the component merge is shallow; a `series` here
+  // would replace the bars). Ports: mirror the component for geometry,
+  // mirror this shape for the range-aware aria description.
   const funnelOption = computed(() => ({
-    series: [{
-      type: 'funnel',
-      sort: 'none',
-      left: '10%',
-      right: '10%',
-      top: 10,
-      bottom: 24,
-      gap: 2,
-      label: {
-        show: true,
-        position: 'inside',
-        color: '#fff',
-        fontSize: 12,
-        fontWeight: 600,
-        formatter: (p: { name: string, value: number, data?: { realValue?: number } }) =>
-          `${p.name}\n${(p.data?.realValue ?? p.value).toLocaleString()}`,
-      },
-      labelLine: { length: 8, lineStyle: { width: 1, type: 'solid' } },
-      itemStyle: { borderColor: '#fff', borderWidth: 1 },
-      emphasis: { label: { fontSize: 13, fontWeight: 700 } },
-      data: funnel.value,
-    }],
+    aria: {
+      enabled: true,
+      label: { description: describeFunnelForAria(funnelSummary.value, rangeLabel.value) },
+    },
   }))
 
-  // Top 8 teams visible, the 5 smallest bundled into "Other" so every
-  // rect is wide enough for a readable label. Total headcount is
-  // preserved (124 across 13 teams) -- the "Other" bundle's segment
-  // count is the truth we want in the chart, not just a count.
-  const rawSegments = [
-    { name: 'Backend', value: 22 },
-    { name: 'Frontend', value: 18 },
-    { name: 'Inside sales', value: 14 },
-    { name: 'Field sales', value: 12 },
-    { name: 'Customer success', value: 10 },
-    { name: 'Marketing', value: 8 },
-    { name: 'Support', value: 8 },
-    { name: 'Mobile', value: 8 },
-    { name: 'Infra', value: 8 },
-    { name: 'Sales ops', value: 6 },
-    { name: 'People', value: 4 },
-    { name: 'Finance', value: 4 },
-    { name: 'Design', value: 2 },
-  ]
-  const segmentsVisibleCount = 8
-  const segmentsSorted = [...rawSegments].sort((a, b) => b.value - a.value)
+  // Headcount by department. Five cells (one per chart token) keep every
+  // rect big enough for its full label. Totals match the office list
+  // (1,221 people across 9 offices, lib/locations.ts).
   const segments = [
-    ...segmentsSorted.slice(0, segmentsVisibleCount),
-    {
-      name: `Other (${segmentsSorted.length - segmentsVisibleCount})`,
-      value: segmentsSorted.slice(segmentsVisibleCount).reduce((s, x) => s + x.value, 0),
-    },
+    { name: 'Engineering', value: 486 },
+    { name: 'Sales', value: 298 },
+    { name: 'Customer success', value: 184 },
+    { name: 'Marketing', value: 142 },
+    { name: 'G&A', value: 111 },
   ]
-  const totalHeadcount = rawSegments.reduce((s, d) => s + d.value, 0)
-  const totalTeams = rawSegments.length
+  const totalHeadcount = segments.reduce((s, d) => s + d.value, 0)
+  const totalDepartments = segments.length
 
   // Anchor to a fixed date so SSR + client produce identical strings
   // and values (Math.random() / new Date() would diverge between
   // renders and trigger a hydration text mismatch). Update this
   // baseline whenever the demo data is refreshed.
-  const calendarAnchor = new Date('2026-05-15T00:00:00Z')
+  const calendarAnchor = new Date('2026-09-28T00:00:00Z')
   function seeded(i: number): number {
     // Cheap deterministic pseudo-random: keeps the heatmap visually
     // busy without importing a seed library.
@@ -406,39 +595,130 @@ export function useDashboardData(range: Ref<Range> = ref<Range>('30d')) {
     calendarAnchor.toISOString().slice(0, 10),
   ]
 
+  // Heatmap ramp: chart-1 from faint to full, matching the legend
+  // swatches on the page. Cell borders use the card surface so the grid
+  // gaps disappear into the card in dark mode too.
+  const calendarColorRange = computed<[string, string]>(() => [
+    rgb(tokens.value.chart1, 0.12),
+    rgb(tokens.value.chart1),
+  ])
+  const calendarOption = computed(() => ({
+    calendar: {
+      top: 24,
+      left: 36,
+      right: 12,
+      cellSize: ['auto', 14],
+      range: calendarRange,
+      itemStyle: { color: chartSplitLineColor.value, borderColor: tokens.value.surface, borderWidth: 2 },
+      splitLine: { show: false },
+      dayLabel: { color: chartTextColor.value, fontSize: 12, firstDay: 1, nameMap: ['S', 'M', 'T', 'W', 'T', 'F', 'S'] },
+      monthLabel: { color: chartTextColor.value, fontSize: 12, fontWeight: 600 },
+      yearLabel: { show: false },
+    },
+  }))
+
+  // Quota gauge: bands in status tokens; the progress arc takes the
+  // colour of the band the current value sits in.
+  const quotaUsed = QUOTA_USED
+  const gaugeThresholds = computed<[number, string][]>(() => [
+    [0.7, tokens.value.success],
+    [0.9, tokens.value.warning],
+    [1, tokens.value.destructive],
+  ])
+  // Progress ring instead of a speedometer: one thick rounded arc on a
+  // muted track, the band colour carrying the status, and a thin outer
+  // ring marking where the warning / limit bands start.
+  const quotaBand = computed(() => gaugeThresholds.value.find(([stop]) => quotaUsed / 100 < stop) ?? gaugeThresholds.value.at(-1)!)
+  const quotaMeta = {
+    used: API_CALLS.used,
+    limit: API_CALLS.limit,
+    remaining: API_CALLS.limit - API_CALLS.used,
+    renews: new Date(SAMPLE_PLAN.renews).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+  }
+  const gaugeOption = computed(() => {
+    const t = tokens.value
+    const arc = { type: 'gauge', startAngle: 210, endAngle: -30, min: 0, max: 100, center: ['50%', '56%'] }
+    const hidden = { axisTick: { show: false }, splitLine: { show: false }, axisLabel: { show: false }, pointer: { show: false } }
+    return {
+      series: [
+        {
+          ...arc,
+          ...hidden,
+          radius: '92%',
+          progress: { show: true, roundCap: true, width: 16, itemStyle: { color: quotaBand.value[1] } },
+          axisLine: { roundCap: true, lineStyle: { width: 16, color: [[1, t.track]] } },
+          anchor: { show: false },
+          title: { show: true, offsetCenter: [0, '26%'], color: t.mutedForeground, fontSize: 12 },
+          detail: {
+            valueAnimation: true,
+            offsetCenter: [0, '-4%'],
+            formatter: '{v|{value}}{u|%}',
+            rich: {
+              v: { fontSize: 36, fontWeight: 600, color: t.foreground },
+              u: { fontSize: 16, fontWeight: 500, color: t.mutedForeground, padding: [0, 0, 10, 2] },
+            },
+          },
+          data: [{ value: quotaUsed, name: 'of monthly quota' }],
+        },
+        {
+          // Threshold ring: success → warning → destructive, with a gap.
+          ...arc,
+          ...hidden,
+          radius: '100%',
+          axisLine: { lineStyle: { width: 3, color: gaugeThresholds.value.map(([stop, c]) => [stop, c]) } },
+          detail: { show: false },
+          title: { show: false },
+          data: [],
+          silent: true,
+        },
+      ],
+    }
+  })
+
   const topProducts = computed<Product[]>(() =>
     PRODUCT_BASE.map((p, i) => ({ ...p, change: PRODUCT_CHANGE_BY_RANGE[range.value][i]! })),
   )
 
   const alerts: Alert[] = [
-    { icon: ShieldAlert, tone: 'text-rose-500', title: 'Quantum rate-limit p99 breached', detail: '3,420/min vs 3,000 cap. 4 customers throttled.', age: '7m ago' },
-    { icon: AlertTriangle, tone: 'text-amber-500', title: 'Background workers degraded', detail: 'p95 412ms over last 8m. eu-west region only.', age: '38m ago' },
-    { icon: CheckCircle2, tone: 'text-emerald-500', title: 'Deploy succeeded on main', detail: 'commit 4e8a91c — Dashboard reset.', age: '1h ago' },
+    // All five are open — matches "5 open" in the card header.
+    { icon: ShieldAlert, severity: 'critical', title: 'Rate limit p99 breached', detail: '3,420/min vs 3,000 cap. 4 customers throttled.', source: 'api-gateway · us-east', age: '7m ago' },
+    { icon: AlertTriangle, severity: 'warning', title: 'Background workers degraded', detail: 'p95 412ms over the last 8 minutes.', source: 'workers · eu-west', age: '38m ago' },
+    { icon: Info, severity: 'info', title: 'Webhook retries climbing', detail: '312 retries in the last hour to 2 customer endpoints.', source: 'webhooks · global', age: '1h ago' },
+    { icon: GitBranch, severity: 'warning', title: 'Deploy pipeline queued', detail: '14 builds waiting over the last 20 minutes.', source: 'ci · us-west', age: '2h ago' },
+    { icon: CreditCard, severity: 'info', title: 'Usage at 80% of plan', detail: 'API quota projected to hit the cap in 6 days.', source: 'billing · global', age: '3h ago' },
   ]
 
+  // Ranked list: keep sorted by MRR, highest first.
   const topCustomers: Customer[] = [
+    { name: 'Olympus Robotics', plan: 'Enterprise', mrr: 5200, status: 'healthy', avatar: 'OR' },
     { name: 'Northwind Industries', plan: 'Enterprise', mrr: 4800, status: 'healthy', avatar: 'NI' },
     { name: 'Sentinel Labs', plan: 'Enterprise', mrr: 3600, status: 'healthy', avatar: 'SL' },
-    { name: 'Apex Logistics', plan: 'Pro', mrr: 1200, status: 'at-risk', avatar: 'AL' },
-    { name: 'Olympus Robotics', plan: 'Enterprise', mrr: 5200, status: 'healthy', avatar: 'OR' },
     { name: 'Crescent Health', plan: 'Pro', mrr: 1800, status: 'healthy', avatar: 'CH' },
+    { name: 'Apex Logistics', plan: 'Pro', mrr: 1200, status: 'at-risk', avatar: 'AL' },
     { name: 'Polaris Software', plan: 'Pro', mrr: 980, status: 'healthy', avatar: 'PS' },
   ]
 
-  // Strip every bit of chrome (axes, grid, tooltip, legend) so a chart
-  // fits inside a ~36-44px tall KPI tile without competing with the
-  // big number above it. CAREFUL: never include a `series` key here --
-  // the chart wrappers spread the option prop at the END of their
-  // computed option object, so a stub series would clobber the
-  // data-bound series and you'd see an empty chart. Series-shape
-  // tweaks would belong in the chart components themselves, not in
-  // consumer options.
-  const miniChrome = {
-    grid: { left: 0, right: 0, top: 2, bottom: 2, containLabel: false },
-    xAxis: { show: false, axisLine: { show: false }, axisLabel: { show: false }, axisTick: { show: false }, splitLine: { show: false } },
-    yAxis: { show: false, axisLine: { show: false }, axisLabel: { show: false }, axisTick: { show: false }, splitLine: { show: false } },
-    tooltip: { show: false },
-    legend: { show: false },
+  // Option for the Bar/Area mini-charts in the KPI tiles: no axes, grid,
+  // tooltip or legend. The chart wrappers spread `option` over their own
+  // object, so `xAxis`/`yAxis` here REPLACE the wrapper's axes -- they
+  // must carry the axis `type` and the category `data` again, or ECharts
+  // loses the categories and collapses the series into one stray bar.
+  // WHY (Rule45): zero-based, not floored under the series minimum -- a
+  // 12.5k → 12.8k ramp floored at 12.4k reads as a surge. Minis keep shape
+  // (Sparkline is trend-only); the zero base keeps them honest.
+  // Never include `series` here.
+  function miniChart(values: number[]) {
+    return {
+      grid: { left: 0, right: 0, top: 2, bottom: 0, containLabel: false },
+      xAxis: { type: 'category', show: false, boundaryGap: true, data: values.map((_, i) => i) },
+      yAxis: {
+        type: 'value',
+        show: false,
+        min: 0,
+      },
+      tooltip: { show: false },
+      legend: { show: false },
+    }
   }
 
   // Activity feed icons sit inside `IconBox variant="muted"`. The icon
@@ -460,11 +740,15 @@ export function useDashboardData(range: Ref<Range> = ref<Range>('30d')) {
   // range flips.
   const totalMrr = PRODUCT_BASE.reduce((s, p) => s + p.mrr, 0)
   const totalDeploys = calendarData.reduce((s, [, v]) => s + v, 0)
+  // WHY (Rules 76/82): fixed-anchor "as of" label so the dashboard header
+  // and the heatmap card can stamp visible freshness without new Date()
+  // (which would diverge between SSR + client and mismatch hydration).
+  const asOfLabel = calendarAnchor.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
   const statusTone: Record<Customer['status'], string> = {
-    'healthy': 'bg-emerald-500',
-    'at-risk': 'bg-amber-500',
-    'churned': 'bg-rose-500',
+    'healthy': 'bg-success',
+    'at-risk': 'bg-warning',
+    'churned': 'bg-destructive',
   }
 
   function formatK(n: number) {
@@ -473,22 +757,32 @@ export function useDashboardData(range: Ref<Range> = ref<Range>('30d')) {
 
   return {
     revenueSeries,
+    revenueComboOption,
     requestsBlock,
     funnel,
+    funnelSummary,
+    funnelPrior,
     funnelOption,
     segments,
-    segmentsVisibleCount,
     totalHeadcount,
-    totalTeams,
+    totalDepartments,
     calendarData,
     calendarRange,
+    calendarColorRange,
+    calendarOption,
+    quotaUsed,
+    gaugeThresholds,
+    gaugeOption,
+    quotaBand,
+    quotaMeta,
     topProducts,
     alerts,
     topCustomers,
-    miniChrome,
+    miniChart,
     activities,
     totalMrr,
     totalDeploys,
+    asOfLabel,
     statusTone,
     formatK,
     kpi,

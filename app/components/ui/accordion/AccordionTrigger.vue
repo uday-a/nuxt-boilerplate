@@ -4,7 +4,7 @@ import type { AccordionTriggerProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import { reactiveOmit } from '@vueuse/core'
 import { AccordionTrigger as RkAccordionTrigger } from 'reka-ui'
-import { ChevronDown } from 'lucide-vue-next'
+import { ChevronDown } from '@/lib/icon-pack'
 import { cn } from '@/lib/utils'
 import { accordionTriggerVariants } from './accordion.variants'
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { ShieldCheck, RotateCw } from 'lucide-vue-next'
+import { ShieldCheck, RotateCw } from '@/lib/icon-pack'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { PinInput, PinInputGroup, PinInputSlot } from '@/components/ui/pin-input'
@@ -65,14 +65,17 @@ function startResendCooldown() {
 </script>
 
 <template>
-  <div class="bg-background flex min-h-svh items-center justify-center p-6">
+  <div class="bg-background flex min-h-svh items-center justify-center p-4">
     <Card class="w-full max-w-sm">
       <template v-if="!verified">
         <CardHeader class="text-center">
           <div class="bg-primary/10 text-primary mx-auto mb-2 flex size-12 items-center justify-center rounded-full">
-            <ShieldCheck class="size-6" />
+            <ShieldCheck
+              class="size-6"
+              aria-hidden="true"
+            />
           </div>
-          <h1 class="text-2xl leading-none font-semibold tracking-tight">
+          <h1 class="text-2xl leading-tight font-semibold tracking-tight">
             {{ title ?? t('auth.mfa.title') }}
           </h1>
           <CardDescription>{{ description ?? t('auth.mfa.description') }}</CardDescription>
@@ -112,7 +115,10 @@ function startResendCooldown() {
               class="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-xs underline-offset-4 hover:underline"
               @click="startResendCooldown"
             >
-              <RotateCw class="size-3" />{{ t('auth.mfa.resend') }}
+              <RotateCw
+                class="size-3.5"
+                aria-hidden="true"
+              />{{ t('auth.mfa.resend') }}
             </button>
             <p
               v-else
@@ -134,22 +140,30 @@ function startResendCooldown() {
       </template>
 
       <template v-else>
-        <CardContent class="space-y-4 pt-6 text-center">
-          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-            <ShieldCheck class="size-6" />
+        <CardContent class="space-y-4 pt-4 text-center">
+          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-success/10 text-success">
+            <ShieldCheck
+              class="size-6"
+              aria-hidden="true"
+            />
           </div>
           <div class="space-y-1">
-            <h3 class="text-lg font-semibold">
+            <h3 class="text-2xl font-semibold tracking-tight">
               {{ t('auth.mfa.verifiedTitle') }}
             </h3>
             <p class="text-muted-foreground text-sm">
               {{ t('auth.mfa.verifiedDescription') }}
             </p>
           </div>
-          <a
-            :href="continueHref"
-            @click="emit('continue')"
-          ><Button class="w-full">{{ t('auth.mfa.continue') }}</Button></a>
+          <Button
+            as-child
+            class="w-full"
+          >
+            <a
+              :href="continueHref"
+              @click="emit('continue')"
+            >{{ t('auth.mfa.continue') }}</a>
+          </Button>
         </CardContent>
       </template>
     </Card>

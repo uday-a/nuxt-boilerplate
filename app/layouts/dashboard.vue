@@ -1,26 +1,28 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
-import { breadcrumbSegmentLabel } from '@/lib/breadcrumb-labels'
+import { routeLabel } from '@/lib/breadcrumb-labels'
 
+// Nuxt's auto-imported useRoute (not vue-router's): the vue-router one
+// resolved to undefined in this layout during page transitions.
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 const breadcrumbs = computed(() => {
-  const parts = route.path.split('/').filter(Boolean)
-  if (parts.length === 0) return [{ label: 'Dashboard' }]
-  return parts.map((p, i) => ({
-    label: breadcrumbSegmentLabel(p),
-    href: i < parts.length - 1 ? '/' + parts.slice(0, i + 1).join('/') : undefined,
-  }))
+  const parts = (route?.path ?? '').split('/').filter(Boolean)
+  if (parts.length === 0) return [{ label: t('nav.items.dashboard') }]
+  return parts.map((_, i) => {
+    const path = '/' + parts.slice(0, i + 1).join('/')
+    return { label: routeLabel(path, t), href: i < parts.length - 1 ? path : undefined }
+  })
 })
 
 const { user: sessionUser, clear } = useUserSession()
 const user = computed(() => {
-  const u = sessionUser.value as { firstName?: string, lastName?: string, email?: string, profilePictureUrl?: string, name?: string, login?: string } | undefined
+  const u = sessionUser.value as { firstName?: string, lastName?: string, email?: string, profilePictureUrl?: string, avatar?: string | null, name?: string, login?: string } | undefined
   if (!u) return { name: 'Guest', email: '', avatar: '' }
   const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.name || u.login || u.email || 'Guest'
-  return { name, email: u.email ?? '', avatar: u.profilePictureUrl ?? '' }
+  return { name, email: u.email ?? '', avatar: u.avatar ?? u.profilePictureUrl ?? '' }
 })
 
 async function onProfileSelect(key: string) {

@@ -29,7 +29,7 @@ import {
   Code,
   RemoveFormatting,
   ChevronDown,
-} from 'lucide-vue-next'
+} from '@/lib/icon-pack'
 import { Toggle } from '@/components/ui/toggle'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
@@ -359,8 +359,7 @@ const extendedItems = computed<ToolbarItem[]>(() => {
 .rich-text-editor .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
-  color: hsl(var(--muted-foreground));
-  opacity: 0.5;
+  color: var(--muted-foreground);
   pointer-events: none;
   height: 0;
 }
@@ -380,14 +379,14 @@ const extendedItems = computed<ToolbarItem[]>(() => {
 
 .rich-text-content .tiptap h1 {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.3;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
 }
 
 .rich-text-content .tiptap h2 {
-  font-size: 1.1rem;
+  font-size: 1.125rem;
   font-weight: 600;
   line-height: 1.3;
   margin-top: 0.75rem;
@@ -415,16 +414,16 @@ const extendedItems = computed<ToolbarItem[]>(() => {
 }
 
 .rich-text-content .tiptap blockquote {
-  border-left: 3px solid hsl(var(--border));
+  border-left: 3px solid var(--border);
   padding-left: 0.75rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-style: italic;
 }
 
 .rich-text-content .tiptap code {
-  background: hsl(var(--muted));
+  background: var(--muted);
   border-radius: 0.25rem;
   padding: 0.125rem 0.25rem;
   font-size: 0.8rem;
@@ -432,7 +431,7 @@ const extendedItems = computed<ToolbarItem[]>(() => {
 }
 
 .rich-text-content .tiptap pre {
-  background: hsl(var(--muted));
+  background: var(--muted);
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   margin-top: 0.5rem;
@@ -446,7 +445,7 @@ const extendedItems = computed<ToolbarItem[]>(() => {
 }
 
 .rich-text-content .tiptap hr {
-  border-color: hsl(var(--border));
+  border-color: var(--border);
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
@@ -469,7 +468,7 @@ const extendedItems = computed<ToolbarItem[]>(() => {
 }
 
 .rich-text-content .tiptap ul[data-type='taskList'] li > label input[type='checkbox'] {
-  accent-color: hsl(var(--primary));
+  accent-color: var(--primary);
   width: 0.875rem;
   height: 0.875rem;
   cursor: pointer;
@@ -481,7 +480,7 @@ const extendedItems = computed<ToolbarItem[]>(() => {
 
 /* Link styling */
 .rich-text-content .tiptap a {
-  color: hsl(var(--primary));
+  color: var(--primary);
   text-decoration: underline;
   cursor: pointer;
 }

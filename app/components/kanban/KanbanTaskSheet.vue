@@ -7,11 +7,10 @@ import DueDateBadge from './DueDateBadge.vue'
 import UserAvatar from './UserAvatar.vue'
 import CommentList from './CommentList.vue'
 import SubtaskList from './SubtaskList.vue'
-import { Sheet, SheetContent, SheetTitle, SheetDescription, SheetFooter, SheetClose } from '@/components/ui/sheet'
+import { Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { OverlayScroll } from '@/components/ui/overlay-scroll'
-import { Clock, Download, ExternalLink } from 'lucide-vue-next'
+import { Clock, Download, ExternalLink } from '@/lib/icon-pack'
 
 const props = defineProps<{
   open: boolean
@@ -29,6 +28,16 @@ const columnIdForTask = computed(() => {
   if (!props.task) return ''
   return props.columns.find(c => c.tasks.some(t => t.id === props.task!.id))?.id ?? ''
 })
+
+// A status change re-renders the card in its new column, so the element that
+// opened the sheet is gone by close time; send focus to the card's new node.
+function onCloseAutoFocus(event: Event) {
+  if (!props.task) return
+  const card = document.querySelector<HTMLElement>(`[data-task-id="${props.task.id}"] [data-card-title]`)
+  if (!card) return
+  event.preventDefault()
+  card.focus()
+}
 </script>
 
 <template>
@@ -36,20 +45,24 @@ const columnIdForTask = computed(() => {
     :open="open"
     @update:open="$emit('update:open', $event)"
   >
-    <SheetContent class="flex flex-col gap-0 overflow-hidden p-0 sm:max-w-[420px]">
+    <SheetContent
+      class="overflow-hidden sm:max-w-[420px]"
+      @close-auto-focus="onCloseAutoFocus"
+    >
       <template v-if="task">
         <div :class="['h-1 w-full shrink-0', priorityConfig[task.priority]?.bg]" />
 
-        <div class="shrink-0 px-5 pt-4 pb-3">
-          <div class="mb-3 flex items-center gap-2">
-            <span class="text-muted-foreground font-mono text-[11px] tracking-tight">{{ task.id }}</span>
-            <span class="text-muted-foreground/30">·</span>
+        <SheetHeader>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-muted-foreground font-mono text-xs tracking-tight">{{ task.id }}</span>
+            <span class="text-muted-foreground">·</span>
             <Select
               :model-value="columnIdForTask"
               @update:model-value="(val) => task && $emit('move-task', task, String(val))"
             >
               <SelectTrigger
-                class="hover:bg-secondary h-5 w-auto gap-1 rounded-md border-none bg-transparent px-1.5 text-[11px] font-medium shadow-none"
+                aria-label="Status"
+                class="hover:bg-secondary h-5 w-auto gap-1 rounded-md border-none bg-transparent px-1.5 text-xs font-medium shadow-none"
               >
                 <SelectValue />
               </SelectTrigger>
@@ -69,48 +82,48 @@ const columnIdForTask = computed(() => {
             <PriorityBadge
               :priority="task.priority"
               icon-size="size-3"
-              class="ml-auto"
             />
           </div>
 
-          <SheetTitle class="text-[15px] leading-snug font-semibold tracking-tight">
+          <SheetTitle class="text-base leading-snug font-semibold tracking-tight">
             {{ task.title }}
           </SheetTitle>
           <SheetDescription class="sr-only">
             Task details
           </SheetDescription>
-          <div
-            v-if="task.description"
-            class="text-muted-foreground rich-text-content prose prose-sm dark:prose-invert mt-1.5 max-w-none text-[13px] leading-relaxed"
-            v-html="task.description"
-          />
-          <p
-            v-else
-            class="text-muted-foreground mt-1.5 text-[13px] leading-relaxed"
-          >
-            No description provided.
-          </p>
+        </SheetHeader>
 
-          <div class="mt-3 flex flex-wrap gap-1.5">
-            <template v-if="task.tags.length">
-              <TagBadge
-                v-for="tag in task.tags"
-                :key="tag.label"
-                :label="tag.label"
-                :color="tag.color"
-              />
-            </template>
-            <span
+        <SheetBody>
+          <div class="space-y-4">
+            <div
+              v-if="task.description"
+              class="text-muted-foreground rich-text-content prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed"
+              v-html="task.description"
+            />
+            <p
               v-else
-              class="text-muted-foreground text-[11px]"
-            >No tags</span>
-          </div>
-        </div>
+              class="text-muted-foreground text-sm leading-relaxed"
+            >
+              No description provided.
+            </p>
 
-        <div class="bg-border mx-5 h-px" />
+            <div class="flex flex-wrap gap-1.5">
+              <template v-if="task.tags.length">
+                <TagBadge
+                  v-for="tag in task.tags"
+                  :key="tag.label"
+                  :label="tag.label"
+                  :color="tag.color"
+                />
+              </template>
+              <span
+                v-else
+                class="text-muted-foreground text-xs"
+              >No tags</span>
+            </div>
 
-        <OverlayScroll class="flex-1">
-          <div class="space-y-4 px-5 py-3">
+            <div class="bg-border h-px" />
+
             <div class="flex items-center gap-3">
               <UserAvatar
                 :name="task.assignee.name"
@@ -118,10 +131,10 @@ const columnIdForTask = computed(() => {
                 size="md"
               />
               <div>
-                <p class="text-[13px] leading-tight font-medium">
+                <p class="text-sm leading-tight font-medium">
                   {{ task.assignee.name }}
                 </p>
-                <p class="text-muted-foreground text-[11px]">
+                <p class="text-muted-foreground text-xs">
                   Assignee
                 </p>
               </div>
@@ -132,7 +145,7 @@ const columnIdForTask = computed(() => {
                 />
                 <p
                   v-else
-                  class="text-muted-foreground flex items-center gap-1 text-[13px] leading-tight"
+                  class="text-muted-foreground flex items-center gap-1 text-sm leading-tight"
                 >
                   <Clock class="size-3" />
                   No due date
@@ -144,10 +157,10 @@ const columnIdForTask = computed(() => {
               v-if="task.parentId"
               class="flex items-center gap-2"
             >
-              <span class="text-muted-foreground text-[11px]">Parent:</span>
+              <span class="text-muted-foreground text-xs">Parent:</span>
               <NuxtLink
                 :to="`/dashboard/kanban/${task.parentId}`"
-                class="text-primary text-[12px] font-medium hover:underline"
+                class="text-primary text-xs font-medium hover:underline"
                 @click="$emit('update:open', false)"
               >
                 {{ task.parentId }}
@@ -155,7 +168,7 @@ const columnIdForTask = computed(() => {
             </div>
 
             <div>
-              <h4 class="mb-2 text-[13px] font-semibold">
+              <h4 class="mb-2 text-sm font-semibold">
                 Subtasks
                 <span
                   v-if="task.subtaskIds.length"
@@ -174,7 +187,7 @@ const columnIdForTask = computed(() => {
             <div class="bg-border h-px" />
 
             <div>
-              <h4 class="mb-2 text-[13px] font-semibold">
+              <h4 class="mb-2 text-sm font-semibold">
                 Comments
                 <span
                   v-if="task.commentItems.length"
@@ -193,7 +206,7 @@ const columnIdForTask = computed(() => {
             <div class="bg-border h-px" />
 
             <div>
-              <h4 class="mb-2 text-[13px] font-semibold">
+              <h4 class="mb-2 text-sm font-semibold">
                 Files
                 <span
                   v-if="task.fileItems.length"
@@ -218,10 +231,13 @@ const columnIdForTask = computed(() => {
                     />
                   </div>
                   <div class="min-w-0 flex-1">
-                    <p class="truncate text-[12px] font-medium">
+                    <p
+                      class="truncate text-xs font-medium"
+                      :title="file.name"
+                    >
                       {{ file.name }}
                     </p>
-                    <p class="text-muted-foreground text-[10px]">
+                    <p class="text-muted-foreground text-xs">
                       {{ file.size }}
                     </p>
                   </div>
@@ -236,15 +252,15 @@ const columnIdForTask = computed(() => {
               </div>
               <p
                 v-else
-                class="text-muted-foreground text-[12px]"
+                class="text-muted-foreground text-xs"
               >
                 No files attached.
               </p>
             </div>
           </div>
-        </OverlayScroll>
+        </SheetBody>
 
-        <SheetFooter class="shrink-0 border-t px-5 py-3">
+        <SheetFooter>
           <div class="flex w-full items-center gap-2">
             <NuxtLink
               :to="`/dashboard/kanban/${task.id}`"

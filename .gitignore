@@ -13,6 +13,7 @@ node_modules
 /test-results/
 /playwright-report/
 /blob-report/
+/coverage/
 
 # Logs
 logs
@@ -47,5 +48,8 @@ logs
 
 # Pilot scratch (moved pages awaiting registry-driven rebuild)
 .pilot-backup/
+
+# Claude Code runtime lock (per-session, never commit)
+.claude/scheduled_tasks.lock
 .vercel
 .env*.local

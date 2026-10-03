@@ -4,7 +4,7 @@ import { provide, computed, ref, nextTick, watch, onMounted } from 'vue'
 import { useId } from 'reka-ui'
 import { useVModel } from '@vueuse/core'
 import { cn } from '@/lib/utils'
-import { Loader, Check, AlertCircle, X } from 'lucide-vue-next'
+import { Loader, Check, AlertCircle, X } from '@/lib/icon-pack'
 import { Label } from '@/components/ui/label'
 
 export interface TextareaProps {
@@ -485,7 +485,7 @@ onMounted(() => {
         :aria-invalid="hasError"
         :class="
           cn(
-            'w-full flex-1 resize-y bg-transparent outline-none',
+            'w-full flex-1 resize-y bg-transparent outline-none placeholder:text-muted-foreground',
             densityClasses,
             resizeClasses,
             prefix ? 'pl-16' : 'pl-3',

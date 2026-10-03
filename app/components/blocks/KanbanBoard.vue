@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
+import { Plus } from '@/lib/icon-pack'
 import { PageHeader, PageHeaderHeading } from '@/components/ui/page'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -90,7 +91,7 @@ function addComment(task: KanbanTask, text: string) {
   task.commentItems.push({
     id: `c${Date.now()}`,
     author: 'Admin User',
-    authorColor: 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400',
+    authorColor: 'bg-muted text-muted-foreground',
     text,
     time: 'Just now',
   })
@@ -103,7 +104,9 @@ function moveTask(task: KanbanTask, targetColumnId: string) {
   const taskIndex = sourceCol.tasks.findIndex(t => t.id === task.id)
   if (taskIndex === -1) return
   const removed = sourceCol.tasks.splice(taskIndex, 1)
-  if (removed[0]) targetCol.tasks.push(removed[0])
+  if (!removed[0]) return
+  targetCol.tasks.push(removed[0])
+  toast(`${task.id} moved to ${targetCol.title}`)
 }
 
 const detailOpen = ref(false)
@@ -214,36 +217,37 @@ function onCreateTask(columnId: string, tasks: KanbanTask[]) {
   <div
     ref="kanbanEl"
     data-slot="kanban-board"
-    class="kanban-page flex h-[calc(100dvh-3.5rem-3rem)] flex-col overflow-hidden lg:h-[calc(100dvh-3.5rem-3rem)]"
+    class="flex h-[calc(100dvh-3.5rem-2rem)] flex-col overflow-hidden"
   >
-    <div
+    <PageHeader
       v-if="!hideHeader"
-      class="mb-3 shrink-0"
+      class="mb-4 shrink-0"
     >
-      <PageHeader>
-        <div class="flex items-start justify-between gap-4">
-          <PageHeaderHeading
-            :title="title ?? ''"
-            :description="description ?? ''"
-          />
-          <div class="flex shrink-0 items-center gap-2">
-            <Badge
-              variant="secondary"
-              class="font-mono text-xs tabular-nums"
-            >
-              {{ totalTasks }} tasks
-            </Badge>
-            <Button
-              size="sm"
-              @click="openAddTask(defaultColumnId)"
-            >
-              <Plus class="size-4" />
-              Add Task
-            </Button>
-          </div>
+      <PageHeaderHeading
+        :title="title ?? ''"
+        :description="description ?? ''"
+      />
+      <template #actions>
+        <div class="flex shrink-0 items-center gap-2">
+          <Badge
+            variant="secondary"
+            class="tabular-nums"
+          >
+            {{ totalTasks }} tasks
+          </Badge>
+          <Button
+            size="sm"
+            @click="openAddTask(defaultColumnId)"
+          >
+            <Plus
+              class="size-4"
+              aria-hidden="true"
+            />
+            Add task
+          </Button>
         </div>
-      </PageHeader>
-    </div>
+      </template>
+    </PageHeader>
 
     <KanbanToolbar
       v-if="!hideToolbar"
@@ -255,7 +259,7 @@ function onCreateTask(columnId: string, tasks: KanbanTask[]) {
 
     <div
       v-if="viewMode === 'board'"
-      class="kanban-board relative flex min-h-0 flex-1 items-start gap-3 overflow-auto pb-3"
+      class="relative flex min-h-0 flex-1 items-start gap-3 overflow-x-auto overflow-y-hidden pb-3 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin]"
     >
       <KanbanColumn
         v-for="column in filteredColumns"
@@ -301,21 +305,3 @@ function onCreateTask(columnId: string, tasks: KanbanTask[]) {
     />
   </div>
 </template>
-
-<style scoped>
-.kanban-board {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
-}
-.kanban-board::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
-}
-.kanban-board::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--border));
-  border-radius: 3px;
-}
-.kanban-board::-webkit-scrollbar-corner {
-  background: transparent;
-}
-</style>

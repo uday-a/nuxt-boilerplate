@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { LucideIcon } from 'lucide-vue-next'
-import { ChevronRight } from 'lucide-vue-next'
+import type { Component } from 'vue'
+import { ChevronRight } from '@/lib/icon-pack'
 import {
   Collapsible,
   CollapsibleContent,
@@ -10,7 +10,6 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -18,49 +17,60 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
 
-defineProps<{
+const props = defineProps<{
   items: {
     title: string
     url: string
-    icon: LucideIcon
+    icon: Component
     isActive?: boolean
     items?: {
       title: string
       url: string
+      isActive?: boolean
     }[]
   }[]
 }>()
 
 const { t } = useI18n()
+
+// Groups with children open when one of their pages is active — also after
+// client-side navigation, not only on first render — and stay user-toggleable.
+const open = ref<Record<string, boolean>>({})
+watch(
+  () => props.items.map(i => [i.title, !!i.isActive] as const),
+  (states) => {
+    for (const [title, active] of states) {
+      if (active) open.value[title] = true
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <SidebarGroup>
     <SidebarGroupLabel>{{ t('nav.groups.platform') }}</SidebarGroupLabel>
     <SidebarMenu>
-      <Collapsible
+      <template
         v-for="item in items"
         :key="item.title"
-        as-child
-        :default-open="item.isActive"
       >
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            as-child
-            :tooltip="item.title"
-            :is-active="item.isActive"
-          >
-            <NuxtLink :to="item.url">
-              <component :is="item.icon" />
-              <span>{{ item.title }}</span>
-            </NuxtLink>
-          </SidebarMenuButton>
-          <template v-if="item.items?.length">
+        <!-- Group: the whole row toggles; only the children navigate. -->
+        <Collapsible
+          v-if="item.items?.length"
+          v-model:open="open[item.title]"
+          as-child
+        >
+          <SidebarMenuItem>
             <CollapsibleTrigger as-child>
-              <SidebarMenuAction class="data-[state=open]:rotate-90">
-                <ChevronRight />
-                <span class="sr-only">{{ t('nav.actions.toggle') }}</span>
-              </SidebarMenuAction>
+              <SidebarMenuButton
+                :tooltip="item.title"
+                :class="['group/trigger', item.isActive && 'text-sidebar-foreground font-medium']"
+              >
+                <component :is="item.icon" />
+                <span>{{ item.title }}</span>
+                <ChevronRight class="ml-auto transition-transform duration-200 group-data-[state=open]/trigger:rotate-90" />
+              </SidebarMenuButton>
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
@@ -71,6 +81,7 @@ const { t } = useI18n()
                   <SidebarMenuSubButton
                     as-child
                     :is-active="subItem.isActive"
+                    class="data-[active=true]:bg-sidebar-primary/10 data-[active=true]:text-sidebar-primary data-[active=true]:font-medium"
                   >
                     <NuxtLink :to="subItem.url">
                       <span>{{ subItem.title }}</span>
@@ -79,9 +90,23 @@ const { t } = useI18n()
                 </SidebarMenuSubItem>
               </SidebarMenuSub>
             </CollapsibleContent>
-          </template>
+          </SidebarMenuItem>
+        </Collapsible>
+
+        <SidebarMenuItem v-else>
+          <SidebarMenuButton
+            as-child
+            :tooltip="item.title"
+            :is-active="item.isActive"
+            class="data-[active=true]:bg-sidebar-primary/10 data-[active=true]:text-sidebar-primary data-[active=true]:font-medium data-[active=true]:[&>svg]:text-sidebar-primary"
+          >
+            <NuxtLink :to="item.url">
+              <component :is="item.icon" />
+              <span>{{ item.title }}</span>
+            </NuxtLink>
+          </SidebarMenuButton>
         </SidebarMenuItem>
-      </Collapsible>
+      </template>
     </SidebarMenu>
   </SidebarGroup>
 </template>

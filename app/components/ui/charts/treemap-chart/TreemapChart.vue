@@ -6,7 +6,7 @@ import { TreemapChart as EChartsTreemapChart } from 'echarts/charts'
 import { TooltipComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { cn } from '@/lib/utils'
-import { chartColors, chartTooltipBg, chartTooltipBorder, chartTooltipText } from '../useChartTheme'
+import { chartColors, chartSurfaceColor, chartTooltipBg, chartTooltipBorder, chartTooltipText } from '../useChartTheme'
 
 interface TreeNode {
   name: string
@@ -20,6 +20,8 @@ interface Props {
   /** Show breadcrumb at top when drilling into a sub-tree. Default false. */
   showBreadcrumb?: boolean
   option?: any
+  /** Screen-reader name for the canvas. Sets role="img" + aria-label on the wrapper. */
+  label?: string
   class?: string
 }
 
@@ -35,7 +37,7 @@ const mergedOption = computed(() => ({
   tooltip: {
     formatter: (info: any) => {
       const parts = info.treePathInfo.map((n: any) => n.name).filter(Boolean)
-      return `<strong>${parts.join(' / ')}</strong><br>${info.value?.toLocaleString?.() ?? info.value}`
+      return `<span class="font-semibold">${parts.join(' / ')}</span><br>${info.value?.toLocaleString?.() ?? info.value}`
     },
     backgroundColor: chartTooltipBg.value,
     borderColor: chartTooltipBorder.value,
@@ -61,15 +63,15 @@ const mergedOption = computed(() => ({
         show: true,
         formatter: ({ name, value }: any) => (value ? `{b|${name}}\n{v|${value}}` : name),
         rich: {
-          b: { color: '#fff', fontSize: 11, fontWeight: 600, lineHeight: 14 },
-          v: { color: 'rgba(255,255,255,0.85)', fontSize: 10, fontWeight: 500, lineHeight: 12 },
+          b: { color: chartSurfaceColor.value, fontSize: 12, fontWeight: 600, lineHeight: 16 },
+          v: { color: chartSurfaceColor.value, fontSize: 12, fontWeight: 400, lineHeight: 16 },
         },
         overflow: 'truncate',
         ellipsis: '…',
       },
       labelLayout: { hideOverlap: false },
       upperLabel: { show: false },
-      itemStyle: { borderColor: '#fff', borderWidth: 2, gapWidth: 2 },
+      itemStyle: { borderColor: chartSurfaceColor.value, borderWidth: 2, gapWidth: 2 },
       // The earlier `levels` config carried `colorSaturation` per depth
       // for nested trees, but it also implicitly cleared the series
       // `label` config at each level -- which meant flat data (the
@@ -88,6 +90,8 @@ const mergedOption = computed(() => ({
   <div
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', props.class)"
+    :role="props.label ? 'img' : undefined"
+    :aria-label="props.label"
   >
     <VChart
       :option="mergedOption"

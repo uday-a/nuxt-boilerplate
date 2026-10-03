@@ -10,12 +10,12 @@ defineProps<{
 
 <template>
   <div :class="cn('', $props.class)">
-    <h1 class="text-xl font-bold tracking-tight">
+    <h1 class="text-2xl font-semibold tracking-tight">
       {{ title }}
     </h1>
     <p
       v-if="description"
-      class="text-muted-foreground mt-1 text-sm leading-relaxed"
+      class="text-muted-foreground mt-1 text-sm"
     >
       {{ description }}
     </p>

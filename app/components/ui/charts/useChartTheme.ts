@@ -42,7 +42,7 @@ function toHex(cssColor: string): string {
   return _hexCanvas.fillStyle as string
 }
 
-function resolveVar(name: string, fallback: string): string {
+export function resolveVar(name: string, fallback: string): string {
   if (typeof window === 'undefined') return fallback
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
   if (!v) return fallback
@@ -95,7 +95,46 @@ export const chartTooltipText: ComputedRef<string> = computed(() => {
   return resolveVar('--popover-foreground', '#333333')
 })
 
-// Default gauge stoplight: teal (safe) -> amber (warning) -> red (danger).
+// Theme primary (--primary) -- the single hue for sequential charts (funnel
+// bars fade it 1.0 -> 0.45 by depth via per-item opacity, so dark mode only
+// re-resolves the hue). Follows the colour-theme presets like everything else.
+export const chartPrimaryColor: ComputedRef<string> = computed(() => {
+  themeKey.value
+  return resolveVar('--primary', '#171717')
+})
+
+// Muted track (--muted) -- bar backgrounds, gauge tracks. Keeps the track
+// glued to the surface in both themes (never a hardcoded grey).
+export const chartMutedColor: ComputedRef<string> = computed(() => {
+  themeKey.value
+  return resolveVar('--muted', '#f5f5f5')
+})
+
+// Card/surface colour — for cell borders and inside-label text so they
+// read as gaps/contrast on both light and dark surfaces (never '#fff').
+export const chartSurfaceColor: ComputedRef<string> = computed(() => {
+  themeKey.value
+  return resolveVar('--card', '#ffffff')
+})
+
+export const chartForegroundColor: ComputedRef<string> = computed(() => {
+  themeKey.value
+  return resolveVar('--foreground', '#171717')
+})
+
+// Gauge stoplight from the semantic status tokens, same rule as the app's
+// UsageBar: < 70% success, 70-89% warning, >= 90% destructive.
+export const semanticGaugeThresholds: ComputedRef<[number, string][]> = computed(() => {
+  themeKey.value
+  return [
+    [0.7, resolveVar('--success', '#14b8a6')],
+    [0.9, resolveVar('--warning', '#f59e0b')],
+    [1, resolveVar('--destructive', '#dc2626')],
+  ]
+})
+
+// Static fallback stoplight (SSR / consumers that want fixed hex):
+// teal (safe) -> amber (warning) -> red (danger).
 // Pulled off saturated green and onto teal so the gauge ties back to the
 // dashboard palette; red is kept as the universal "limit reached" cue.
 // GaugeChart consumes this via its `thresholds` prop default; consumers

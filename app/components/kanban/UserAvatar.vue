@@ -11,7 +11,7 @@ defineProps<{
 }>()
 
 const sizeMap = {
-  xs: { avatar: 'size-6', text: 'text-[10px]' },
+  xs: { avatar: 'size-6', text: 'text-xs' },
   sm: { avatar: 'size-7', text: 'text-xs' },
   md: { avatar: 'size-8', text: 'text-xs' },
 }
@@ -19,7 +19,7 @@ const sizeMap = {
 
 <template>
   <Avatar :class="cn(sizeMap[size ?? 'sm'].avatar, 'shrink-0', $props.class)">
-    <AvatarFallback :class="[sizeMap[size ?? 'sm'].text, 'font-bold', color]">
+    <AvatarFallback :class="[sizeMap[size ?? 'sm'].text, 'font-semibold', color]">
       {{ getInitials(name) }}
     </AvatarFallback>
   </Avatar>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Check, Sparkles } from 'lucide-vue-next'
+import { Check, Sparkles } from '@/lib/icon-pack'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,6 +16,10 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 type Cycle = 'monthly' | 'yearly'
 type Plan = 'pro' | 'team' | 'enterprise'
 
+// `page` renders the section heading as the page's H1 (on /pricing) and
+// drops the eyebrow, so the page has one heading hierarchy.
+defineProps<{ page?: boolean }>()
+
 const cycle = ref<Cycle>('monthly')
 
 // Plan keys match `Plan` in server/utils/polar.ts so the parent page
@@ -24,23 +28,36 @@ const emit = defineEmits<{
   subscribe: [plan: Plan, cycle: Cycle]
   contactSales: []
 }>()
+
+const starterFeatures = ['Up to 5 seats', '3 projects', '10,000 API calls / month', 'Email support']
+const teamFeatures = ['Up to 50 seats', 'Unlimited projects', '250,000 API calls / month', 'Integrations and webhooks', 'Priority support']
+const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', 'Audit logs and role policies', 'Custom API limits', 'Success manager and 99.99% SLA']
 </script>
 
 <template>
   <section class="bg-background">
-    <div class="mx-auto max-w-6xl px-6 py-24">
-      <div class="mb-10 text-center">
-        <p class="text-sm font-medium uppercase tracking-widest text-primary">
+    <div
+      class="mx-auto max-w-6xl px-4"
+      :class="page ? 'py-4' : 'py-4'"
+    >
+      <div class="mb-4 text-center">
+        <p
+          v-if="!page"
+          class="text-muted-foreground text-xs font-medium uppercase tracking-wider"
+        >
           Pricing
         </p>
-        <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+        <component
+          :is="page ? 'h1' : 'h2'"
+          class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl"
+        >
           Plans for teams of every size
-        </h2>
+        </component>
         <p class="mx-auto mt-3 max-w-xl text-lg text-muted-foreground">
           No hidden fees. Cancel anytime. Save 20% with annual billing.
         </p>
 
-        <div class="mt-6 inline-flex">
+        <div class="mt-4 inline-flex">
           <ToggleGroup
             type="single"
             :model-value="cycle"
@@ -51,10 +68,7 @@ const emit = defineEmits<{
             </ToggleGroupItem>
             <ToggleGroupItem value="yearly">
               Yearly
-              <Badge
-                variant="secondary"
-                class="ml-2"
-              >
+              <Badge variant="secondary">
                 −20%
               </Badge>
             </ToggleGroupItem>
@@ -62,15 +76,15 @@ const emit = defineEmits<{
         </div>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-3">
+      <div class="grid gap-4 lg:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle class="text-xl">
+            <CardTitle class="text-base">
               Starter
             </CardTitle>
             <CardDescription>For small teams trying things out.</CardDescription>
             <div class="mt-4 flex items-baseline gap-1">
-              <span class="text-4xl font-semibold tracking-tight">
+              <span class="text-4xl font-semibold tracking-tight tabular-nums">
                 ${{ cycle === 'monthly' ? 9 : 7 }}
               </span>
               <span class="text-sm text-muted-foreground">/ user / month</span>
@@ -78,21 +92,16 @@ const emit = defineEmits<{
           </CardHeader>
           <CardContent>
             <ul class="space-y-3 text-sm">
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Up to 10 employees</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Core HR + directory</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Time off + holidays</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Email support</span>
+              <li
+                v-for="feature in starterFeatures"
+                :key="feature"
+                class="flex items-start gap-2"
+              >
+                <Check
+                  class="text-success mt-0.5 size-4 shrink-0"
+                  aria-hidden="true"
+                />
+                <span>{{ feature }}</span>
               </li>
             </ul>
           </CardContent>
@@ -109,16 +118,22 @@ const emit = defineEmits<{
 
         <div class="relative">
           <Badge class="absolute -top-3 left-1/2 z-10 -translate-x-1/2 gap-1 shadow-sm">
-            <Sparkles class="size-3" /> Most popular
+            <Sparkles
+              class="size-3"
+              aria-hidden="true"
+            />
+            Most popular
           </Badge>
-          <Card class="border-primary shadow-lg ring-1 ring-primary/10">
+          <!-- WHY (Rule7): flat system -- shadow-sm only. The highlighted
+               plan keeps its ring; elevation doesn't carry the emphasis. -->
+          <Card class="border-primary shadow-sm ring-1 ring-primary/10">
             <CardHeader>
-              <CardTitle class="text-xl">
+              <CardTitle class="text-base">
                 Team
               </CardTitle>
-              <CardDescription>For growing companies scaling people ops.</CardDescription>
+              <CardDescription>For growing teams shipping every week.</CardDescription>
               <div class="mt-4 flex items-baseline gap-1">
-                <span class="text-4xl font-semibold tracking-tight">
+                <span class="text-4xl font-semibold tracking-tight tabular-nums">
                   ${{ cycle === 'monthly' ? 29 : 24 }}
                 </span>
                 <span class="text-sm text-muted-foreground">/ user / month</span>
@@ -126,25 +141,16 @@ const emit = defineEmits<{
             </CardHeader>
             <CardContent>
               <ul class="space-y-3 text-sm">
-                <li class="flex items-start gap-2">
-                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                  <span>Unlimited employees</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                  <span>Payroll + tax filing</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                  <span>Onboarding workflows</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                  <span>Performance reviews</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                  <span>Slack + priority support</span>
+                <li
+                  v-for="feature in teamFeatures"
+                  :key="feature"
+                  class="flex items-start gap-2"
+                >
+                  <Check
+                    class="text-success mt-0.5 size-4 shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span>{{ feature }}</span>
                 </li>
               </ul>
             </CardContent>
@@ -161,35 +167,26 @@ const emit = defineEmits<{
 
         <Card>
           <CardHeader>
-            <CardTitle class="text-xl">
+            <CardTitle class="text-base">
               Enterprise
             </CardTitle>
-            <CardDescription>Custom controls for regulated industries.</CardDescription>
+            <CardDescription>Security and controls for large organisations.</CardDescription>
             <div class="mt-4 flex items-baseline gap-1">
-              <span class="text-3xl font-semibold tracking-tight">Custom</span>
+              <span class="text-4xl font-semibold tracking-tight">Custom</span>
             </div>
           </CardHeader>
           <CardContent>
             <ul class="space-y-3 text-sm">
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Everything in Team</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>SSO + SCIM provisioning</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Audit logs + role policies</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>Dedicated success manager</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <Check class="mt-0.5 size-4 shrink-0 text-[var(--success)]" />
-                <span>99.99% SLA</span>
+              <li
+                v-for="feature in enterpriseFeatures"
+                :key="feature"
+                class="flex items-start gap-2"
+              >
+                <Check
+                  class="text-success mt-0.5 size-4 shrink-0"
+                  aria-hidden="true"
+                />
+                <span>{{ feature }}</span>
               </li>
             </ul>
           </CardContent>

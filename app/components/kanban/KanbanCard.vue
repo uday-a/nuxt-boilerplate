@@ -4,6 +4,7 @@ import { type KanbanTask, type KanbanColumn, priorityConfig, getTaskColumn } fro
 import TagBadge from './TagBadge.vue'
 import SubtaskProgress from './SubtaskProgress.vue'
 import DueDateBadge from './DueDateBadge.vue'
+import PriorityBadge from './PriorityBadge.vue'
 import UserAvatar from './UserAvatar.vue'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { MoreHorizontal, MessageSquare, Paperclip, ExternalLink } from 'lucide-vue-next'
+import { MoreHorizontal, MessageSquare, Paperclip, ExternalLink } from '@/lib/icon-pack'
 
 const props = defineProps<{
   task: KanbanTask
@@ -28,6 +29,12 @@ const subtasksDone = computed(() => {
   return props.task.subtaskIds.filter(id => getTaskColumn(columns.value, id)?.id === 'done').length
 })
 
+// Screen-reader name: title first, then status + priority for context.
+const ariaLabel = computed(() => {
+  const status = columns.value ? getTaskColumn(columns.value, props.task.id)?.title : undefined
+  return [props.task.title, status, `${priorityConfig[props.task.priority].label} priority`].filter(Boolean).join(', ')
+})
+
 defineEmits<{
   'click': [task: KanbanTask]
   'quick-view': [task: KanbanTask]
@@ -35,33 +42,42 @@ defineEmits<{
 </script>
 
 <template>
+  <!-- Not a button itself: the title is the card's one button, stretched
+       over the card with `after:inset-0`; the menu and avatar sit above it. -->
   <div
     :class="[
-      'kanban-card group/card bg-card relative cursor-grab rounded-lg border p-3 transition-all duration-150',
+      'animate-in fade-in-0 slide-in-from-bottom-1.5 duration-200 group/card bg-card relative cursor-grab rounded-lg border p-3 transition-all duration-150',
       'hover:border-border hover:shadow-md active:scale-[0.97] active:cursor-grabbing',
-      isDone ? 'opacity-75 hover:opacity-100' : '',
     ]"
-    @click="$emit('click', task)"
   >
     <div
       :class="[
-        'kanban-accent absolute top-3 bottom-3 left-0 w-[1.5px] rounded-full transition-all duration-150',
+        'absolute top-3 bottom-3 left-0 w-[1.5px] rounded-full transition-all duration-150',
         priorityConfig[task.priority].bg,
         task.priority === 'low' ? 'opacity-40' : task.priority === 'medium' ? 'opacity-60' : 'opacity-90',
       ]"
     />
 
     <div class="mb-1 flex items-center justify-between pl-2">
-      <span class="text-muted-foreground/70 font-mono text-[11px]">{{ task.id }}</span>
+      <div class="flex items-center gap-2">
+        <span class="text-muted-foreground font-mono text-xs">{{ task.id }}</span>
+        <PriorityBadge
+          v-if="task.priority === 'urgent' || task.priority === 'high'"
+          :priority="task.priority"
+        />
+      </div>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button
             variant="ghost"
             size="icon"
-            class="text-muted-foreground -mr-1 size-6 opacity-0 transition-opacity group-hover/card:opacity-100"
-            @click.stop
+            :aria-label="`More actions for ${task.id}`"
+            class="text-muted-foreground relative z-10 -mr-1 size-6 opacity-0 transition-opacity group-focus-within/card:opacity-100 group-hover/card:opacity-100 data-[state=open]:opacity-100"
           >
-            <MoreHorizontal class="size-3.5" />
+            <MoreHorizontal
+              class="size-3.5"
+              aria-hidden="true"
+            />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -91,14 +107,19 @@ defineEmits<{
       </DropdownMenu>
     </div>
 
-    <p
+    <button
+      type="button"
+      data-card-title
+      :aria-label="ariaLabel"
       :class="[
-        'mb-2 pl-2 text-[13px] leading-snug font-medium',
+        'mb-2 block w-full cursor-[inherit] pl-2 text-left text-sm leading-snug font-medium outline-none',
+        'after:absolute after:inset-0 after:rounded-lg focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50',
         isDone ? 'decoration-muted-foreground/40 line-through' : '',
       ]"
+      @click="$emit('click', task)"
     >
       {{ task.title }}
-    </p>
+    </button>
 
     <div
       v-if="task.tags.length"
@@ -131,7 +152,7 @@ defineEmits<{
 
       <div
         v-if="task.commentItems.length"
-        class="text-muted-foreground/70 flex items-center gap-1 text-[11px]"
+        class="text-muted-foreground flex items-center gap-1 text-xs tabular-nums"
       >
         <MessageSquare class="size-3" />
         {{ task.commentItems.length }}
@@ -139,13 +160,13 @@ defineEmits<{
 
       <div
         v-if="task.fileItems.length"
-        class="text-muted-foreground/70 flex items-center gap-1 text-[11px]"
+        class="text-muted-foreground flex items-center gap-1 text-xs tabular-nums"
       >
         <Paperclip class="size-3" />
         {{ task.fileItems.length }}
       </div>
 
-      <div class="ml-auto">
+      <div class="relative z-10 ml-auto">
         <TooltipProvider :delay-duration="200">
           <Tooltip>
             <TooltipTrigger as-child>
@@ -167,18 +188,3 @@ defineEmits<{
     </div>
   </div>
 </template>
-
-<style scoped>
-.kanban-card {
-  animation: card-in 0.25s ease-out both;
-}
-@keyframes card-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-}
-.kanban-card:hover .kanban-accent {
-  box-shadow: 0 0 3px currentColor;
-}
-</style>

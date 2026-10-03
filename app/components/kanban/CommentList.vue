@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Send } from 'lucide-vue-next'
+import { Send } from '@/lib/icon-pack'
 import { Button } from '@/components/ui/button'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import UserAvatar from './UserAvatar.vue'
@@ -47,10 +47,10 @@ function submit() {
       />
       <div class="min-w-0 flex-1">
         <div class="flex items-baseline gap-2">
-          <span :class="compact ? 'text-[12px] font-semibold' : 'text-[13px] font-semibold'">
+          <span :class="compact ? 'text-xs font-semibold' : 'text-sm font-semibold'">
             {{ compact ? comment.author.split(' ')[0] : comment.author }}
           </span>
-          <span :class="compact ? 'text-muted-foreground text-[10px]' : 'text-muted-foreground text-[11px]'">
+          <span :class="compact ? 'text-muted-foreground text-xs' : 'text-muted-foreground text-xs'">
             {{ comment.time }}
           </span>
         </div>
@@ -58,8 +58,8 @@ function submit() {
           :class="[
             'rich-text-content prose prose-sm dark:prose-invert mt-0.5 max-w-none',
             compact
-              ? 'text-muted-foreground text-[12px] leading-relaxed'
-              : 'text-muted-foreground text-[13px] leading-relaxed',
+              ? 'text-muted-foreground text-xs leading-relaxed'
+              : 'text-muted-foreground text-sm leading-relaxed',
           ]"
           v-html="comment.text"
         />
@@ -68,7 +68,7 @@ function submit() {
   </div>
   <p
     v-else
-    :class="compact ? 'text-muted-foreground text-[12px]' : 'text-muted-foreground text-sm'"
+    :class="compact ? 'text-muted-foreground text-xs' : 'text-muted-foreground text-sm'"
   >
     No comments yet.
   </p>
@@ -77,7 +77,7 @@ function submit() {
     <div :class="compact ? 'mt-1' : 'mt-1.5'">
       <UserAvatar
         name="Admin User"
-        color="bg-indigo-500/15 text-indigo-600 dark:text-indigo-400"
+        color="bg-chart-1/15 text-chart-1"
         :size="compact ? 'xs' : 'sm'"
       />
     </div>
@@ -86,12 +86,12 @@ function submit() {
         v-model:model-value="newComment"
         placeholder="Write a comment..."
         :min-height="compact ? '60px' : '80px'"
-        :class="compact ? 'text-[12px]' : 'text-[13px]'"
+        :class="compact ? 'text-xs' : 'text-sm'"
       />
       <div class="flex justify-end">
         <Button
           size="sm"
-          :class="compact ? 'h-7 gap-1 text-[11px]' : 'h-8 gap-1.5 text-xs'"
+          :class="compact ? 'h-7 gap-1 text-xs' : 'h-8 gap-1.5 text-xs'"
           :disabled="!newComment.replace(/<[^>]*>/g, '').trim()"
           @click="submit"
         >

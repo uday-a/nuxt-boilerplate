@@ -17,6 +17,6 @@
   },
   "iconLibrary": "lucide",
   "registries": {
-    "@uipkge": "https://uipkge.dev/r/nuxt/{name}.json"
+    "@uipkge": "https://uipkge.dev/r/vue/{name}.json"
   }
 }

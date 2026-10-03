@@ -2,8 +2,8 @@
 // Edit teams + activeTeam below to match your tenant model. The dropdown
 // is the full team switcher pattern -- avatar tile, label, kbd shortcut,
 // and a "Add team" footer row. Wire setActive() to your tenant API.
-import { ref } from 'vue'
-import { AudioWaveform, Check, ChevronsUpDown, Command, Plus } from 'lucide-vue-next'
+import { markRaw, shallowRef } from 'vue'
+import { AudioWaveform, Check, ChevronsUpDown, Command, Plus } from '@/lib/icon-pack'
 import UipkgeLogo from '@/components/brand/UipkgeLogo.vue'
 import {
   DropdownMenu,
@@ -21,15 +21,18 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 
+// Component definitions are not state — markRaw keeps Vue from proxying
+// them (avoids "made reactive" perf warnings), and shallowRef keeps the
+// active entry a plain pointer instead of a deep-reactive tree.
 const teams = [
-  { name: 'UIPKGE', logo: UipkgeLogo, plan: 'Nuxt.js' },
-  { name: 'Acme Corp.', logo: AudioWaveform, plan: 'Startup' },
-  { name: 'Evil Corp.', logo: Command, plan: 'Free' },
+  { name: 'UIPKGE', logo: markRaw(UipkgeLogo), plan: 'Nuxt' },
+  { name: 'Globex', logo: markRaw(AudioWaveform), plan: 'Startup' },
+  { name: 'Initech', logo: markRaw(Command), plan: 'Free' },
 ]
 
 const { isMobile } = useSidebar()
 const { t } = useI18n()
-const activeTeam = ref(teams[0]!)
+const activeTeam = shallowRef(teams[0]!)
 function setActive(team: typeof teams[number]) {
   activeTeam.value = team
 }

@@ -8,10 +8,13 @@ import {
   LayoutDashboard,
   LayoutTemplate,
   LifeBuoy,
+  MapPin,
+  MessageSquare,
   Send,
   Settings2,
+  ShieldCheck,
   Table2,
-} from 'lucide-vue-next'
+} from '@/lib/icon-pack'
 
 import NavMain from './NavMain.vue'
 import NavProjects from './NavProjects.vue'
@@ -81,40 +84,62 @@ function withActiveNav<T extends { url: string, items?: { url: string }[] }>(
 }
 
 // Project + model names are tenant/brand data and stay verbatim.
+// The Admin section is role-gated client-side for navigation polish only;
+// the real enforcement is server-side (requireRole('admin')).
+const isAdmin = computed(() => sessionUser.value?.role === 'admin')
+
+// Icons are component definitions, not state — markRaw keeps the computed
+// nav arrays below from proxying them (same "made reactive" perf warning
+// as TeamSwitcher). Plain module-scope arrays (folders etc.) don't need it.
 const navMainStatic = computed(() => [
-  { title: t('nav.items.dashboard'), url: '/dashboard', icon: LayoutDashboard },
-  { title: t('nav.items.kanban'), url: '/dashboard/kanban', icon: KanbanSquare },
-  { title: t('nav.items.dataTable'), url: '/dashboard/data-table', icon: Table2 },
-  { title: t('nav.items.calendar'), url: '/dashboard/calendar', icon: CalendarDays },
-  { title: t('nav.items.activity'), url: '/dashboard/activity', icon: Activity },
-  { title: t('nav.items.uiKit'), url: '/dashboard/ui-kit', icon: LayoutTemplate },
-  { title: t('nav.items.forms'), url: '/dashboard/forms', icon: FileText },
+  { title: t('nav.items.dashboard'), url: '/dashboard', icon: markRaw(LayoutDashboard) },
+  { title: t('nav.items.messages'), url: '/dashboard/messages', icon: markRaw(MessageSquare) },
+  { title: t('nav.items.kanban'), url: '/dashboard/kanban', icon: markRaw(KanbanSquare) },
+  { title: t('nav.items.dataTable'), url: '/dashboard/data-table', icon: markRaw(Table2) },
+  { title: t('nav.items.calendar'), url: '/dashboard/calendar', icon: markRaw(CalendarDays) },
+  { title: t('nav.items.activity'), url: '/dashboard/activity', icon: markRaw(Activity) },
+  { title: t('nav.items.locations'), url: '/dashboard/locations', icon: markRaw(MapPin) },
+  { title: t('nav.items.uiKit'), url: '/dashboard/ui-kit', icon: markRaw(LayoutTemplate) },
+  { title: t('nav.items.forms'), url: '/dashboard/forms', icon: markRaw(FileText) },
   {
     title: t('nav.items.settings'),
     url: '/settings',
-    icon: Settings2,
+    icon: markRaw(Settings2),
     items: [
       { title: t('nav.items.general'), url: '/settings/general' },
       { title: t('nav.items.account'), url: '/settings/account' },
       { title: t('nav.items.security'), url: '/settings/security' },
+      { title: t('nav.items.apiKeys'), url: '/settings/api-keys' },
       { title: t('nav.items.notifications'), url: '/settings/notifications' },
       { title: t('nav.items.integrations'), url: '/settings/integrations' },
       { title: t('nav.items.team'), url: '/settings/team' },
+      { title: t('nav.items.activityLog'), url: '/settings/activity' },
       { title: t('nav.items.billing'), url: '/settings/billing' },
       { title: t('nav.items.limits'), url: '/settings/limits' },
     ],
   },
+  ...(isAdmin.value
+    ? [{
+        title: t('nav.items.admin'),
+        url: '/admin/users',
+        icon: markRaw(ShieldCheck),
+        items: [
+          { title: t('nav.items.users'), url: '/admin/users' },
+          { title: t('nav.items.roles'), url: '/admin/roles' },
+        ],
+      }]
+    : []),
 ])
 
 const navSecondaryStatic = computed(() => [
-  { title: t('nav.items.support'), url: '/support', icon: LifeBuoy },
-  { title: t('nav.items.feedback'), url: '/feedback', icon: Send },
+  { title: t('nav.items.support'), url: '/support', icon: markRaw(LifeBuoy) },
+  { title: t('nav.items.feedback'), url: '/feedback', icon: markRaw(Send) },
 ])
 
 const projectsStatic = computed(() => [
-  { name: 'Design Engineering', url: '/projects/design-engineering', icon: Folder },
-  { name: 'Sales & Marketing', url: '/projects/sales-marketing', icon: Folder },
-  { name: 'Travel', url: '/projects/travel', icon: Folder },
+  { name: 'Design Engineering', url: '/projects/design-engineering', icon: markRaw(Folder) },
+  { name: 'Sales & Marketing', url: '/projects/sales-marketing', icon: markRaw(Folder) },
+  { name: 'Travel', url: '/projects/travel', icon: markRaw(Folder) },
 ])
 
 const data = computed(() => ({
@@ -129,7 +154,10 @@ const data = computed(() => ({
     <SidebarHeader>
       <TeamSwitcher />
     </SidebarHeader>
-    <SidebarContent class="gap-1 overflow-visible group-data-[collapsible=icon]:overflow-hidden">
+    <SidebarContent
+      data-tour="sidebar-nav"
+      class="gap-1 overflow-visible group-data-[collapsible=icon]:overflow-hidden"
+    >
       <OverlayScroll class="min-h-0 flex-1">
         <div class="flex min-h-full flex-col gap-2">
           <NavMain :items="data.navMain" />
@@ -141,7 +169,7 @@ const data = computed(() => ({
         </div>
       </OverlayScroll>
     </SidebarContent>
-    <SidebarFooter>
+    <SidebarFooter data-tour="profile">
       <NavUser
         :user="navUser"
         @logout="onLogout"

@@ -4,7 +4,8 @@ import type { KanbanTask, KanbanColumn } from '@/composables/useKanban'
 import { priorityConfig, assignees, tagPresets } from '@/composables/useKanban'
 import {
   Dialog,
-  DialogScrollContent,
+  DialogBody,
+  DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
@@ -17,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
-import { Plus, X, CheckCircle2, CalendarIcon } from 'lucide-vue-next'
+import { Plus, X, CheckCircle2, CalendarIcon } from '@/lib/icon-pack'
 import { getLocalTimeZone, DateFormatter, type DateValue } from '@internationalized/date'
 
 const props = defineProps<{
@@ -134,7 +135,7 @@ function submit() {
     :open="open"
     @update:open="$emit('update:open', $event)"
   >
-    <DialogScrollContent class="sm:max-w-[680px]">
+    <DialogContent class="sm:max-w-[680px]">
       <DialogHeader>
         <DialogTitle>New Task</DialogTitle>
         <DialogDescription>
@@ -143,8 +144,8 @@ function submit() {
         </DialogDescription>
       </DialogHeader>
 
-      <div class="grid gap-4 py-2">
-        <div class="grid gap-1.5">
+      <DialogBody class="grid gap-4 py-2">
+        <div class="grid gap-2">
           <Label for="task-title">Title</Label>
           <Input
             id="task-title"
@@ -153,7 +154,7 @@ function submit() {
           />
         </div>
 
-        <div class="grid gap-1.5">
+        <div class="grid gap-2">
           <Label>
             Description
             <span class="text-muted-foreground text-xs">(optional)</span>
@@ -162,7 +163,7 @@ function submit() {
         </div>
 
         <div class="grid grid-cols-3 gap-4">
-          <div class="grid gap-1.5">
+          <div class="grid gap-2">
             <Label for="task-priority">Priority</Label>
             <Select v-model="form.priority">
               <SelectTrigger id="task-priority">
@@ -180,7 +181,7 @@ function submit() {
             </Select>
           </div>
 
-          <div class="grid gap-1.5">
+          <div class="grid gap-2">
             <Label for="task-assignee">Assignee</Label>
             <Select v-model="form.assigneeKey">
               <SelectTrigger id="task-assignee">
@@ -198,7 +199,7 @@ function submit() {
             </Select>
           </div>
 
-          <div class="grid gap-1.5">
+          <div class="grid gap-2">
             <Label for="task-column">Column</Label>
             <Select v-model="columnId">
               <SelectTrigger id="task-column">
@@ -217,7 +218,7 @@ function submit() {
           </div>
         </div>
 
-        <div class="grid gap-1.5">
+        <div class="grid gap-2">
           <Label>
             Due Date
             <span class="text-muted-foreground text-xs">(optional)</span>
@@ -241,7 +242,7 @@ function submit() {
           </Popover>
         </div>
 
-        <div class="grid gap-1.5">
+        <div class="grid gap-2">
           <Label>
             Tags
             <span class="text-muted-foreground text-xs">(optional)</span>
@@ -268,7 +269,7 @@ function submit() {
           </div>
         </div>
 
-        <div class="grid gap-1.5">
+        <div class="grid gap-2">
           <Label>
             Subtasks
             <span class="text-muted-foreground text-xs">(optional)</span>
@@ -308,7 +309,7 @@ function submit() {
             </Button>
           </div>
         </div>
-      </div>
+      </DialogBody>
 
       <DialogFooter>
         <Button
@@ -324,6 +325,6 @@ function submit() {
           Create Task
         </Button>
       </DialogFooter>
-    </DialogScrollContent>
+    </DialogContent>
   </Dialog>
 </template>

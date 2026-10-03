@@ -26,9 +26,9 @@ const statusBorderClass = computed(() => {
     case 'error':
       return 'border-destructive focus-within:border-destructive focus-within:ring-destructive/20'
     case 'warning':
-      return 'border-amber-500 focus-within:border-amber-500 focus-within:ring-amber-500/20'
+      return 'border-warning focus-within:border-warning focus-within:ring-warning/20'
     case 'success':
-      return 'border-emerald-500 focus-within:border-emerald-500 focus-within:ring-emerald-500/20'
+      return 'border-success focus-within:border-success focus-within:ring-success/20'
     default:
       return ''
   }
@@ -42,7 +42,7 @@ const isHorizontal = computed(() => props.layout === 'horizontal')
     data-uipkge
     data-slot="form-item"
     :class="cn(
-      'grid gap-1.5',
+      'grid gap-2',
       isHorizontal && 'grid-cols-[var(--label-width,140px)_1fr] items-start gap-x-4 gap-y-0',
       props.class,
     )"
@@ -78,8 +78,8 @@ const isHorizontal = computed(() => props.layout === 'horizontal')
         class="text-xs"
         :class="{
           'text-destructive': status === 'error',
-          'text-amber-600': status === 'warning',
-          'text-emerald-600': status === 'success',
+          'text-warning': status === 'warning',
+          'text-success': status === 'success',
           'text-muted-foreground': !status,
         }"
       >

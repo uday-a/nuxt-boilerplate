@@ -104,8 +104,10 @@ export function useMonthGrid(options: UseMonthGridOptions = {}) {
   function selectWeekOf(key: DateKey) {
     const d = dateFromKey(key)
     const dow = (d.getDay() - weekStartsOn + 7) % 7
-    const wkStart = new Date(d); wkStart.setDate(d.getDate() - dow)
-    const wkEnd = new Date(wkStart); wkEnd.setDate(wkStart.getDate() + 6)
+    const wkStart = new Date(d)
+    wkStart.setDate(d.getDate() - dow)
+    const wkEnd = new Date(wkStart)
+    wkEnd.setDate(wkStart.getDate() + 6)
     rangeAnchor.value = isoDate(wkStart)
     rangeStart.value = isoDate(wkStart)
     rangeEnd.value = isoDate(wkEnd)

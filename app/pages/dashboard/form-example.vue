@@ -14,9 +14,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { Page, PageHeader, PageHeaderHeading, PageBody } from '@/components/ui/page'
 
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
-useHead({ title: 'Validated form · Example' })
+const title = useRouteLabel()
+useHead({ title })
 
 // Canonical form pattern: zod schema defines shape + validation, TanStack
 // Form drives state, and the registry's <FormField> wires error messages
@@ -49,95 +51,108 @@ const form = useForm({
 </script>
 
 <template>
-  <div class="mx-auto max-w-xl space-y-6">
-    <header class="space-y-1">
-      <h1 class="text-2xl font-semibold tracking-tight">
-        Validated form
-      </h1>
-      <p class="text-muted-foreground text-sm">
-        Reference pattern. zod schema + TanStack Form + registry <code>&lt;Form&gt;</code> components.
-      </p>
-    </header>
+  <Page>
+    <PageHeader>
+      <PageHeaderHeading
+        :title="title"
+        description="A profile form that checks every field before it saves."
+      />
+    </PageHeader>
 
-    <Card>
-      <CardHeader>
-        <CardTitle class="text-base">
-          Profile
-        </CardTitle>
-        <CardDescription>Validates on submit. Edit and click Save.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form
-          :form="form"
-          class="space-y-4"
-        >
-          <FormField name="name">
-            <template #default="{ componentField, error }">
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    v-bind="(componentField as any)"
-                    :aria-invalid="!!error"
-                  />
-                </FormControl>
-                <FormDescription>Shown to other workspace members.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            </template>
-          </FormField>
+    <PageBody class="max-w-3xl space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle class="text-base">
+            Profile
+          </CardTitle>
+          <CardDescription>Validates on submit. Edit and click Save.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form
+            :form="form"
+            class="space-y-4"
+          >
+            <FormField name="name">
+              <template #default="{ componentField, error }">
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      v-bind="(componentField as any)"
+                      :aria-invalid="!!error"
+                    />
+                  </FormControl>
+                  <FormDescription>Shown to other workspace members.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </template>
+            </FormField>
 
-          <FormField name="email">
-            <template #default="{ componentField, error }">
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    v-bind="(componentField as any)"
-                    type="email"
-                    :aria-invalid="!!error"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </template>
-          </FormField>
+            <FormField name="email">
+              <template #default="{ componentField, error }">
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      v-bind="(componentField as any)"
+                      type="email"
+                      :aria-invalid="!!error"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </template>
+            </FormField>
 
-          <FormField name="bio">
-            <template #default="{ componentField, error }">
-              <FormItem>
-                <FormLabel>Bio</FormLabel>
-                <FormControl>
-                  <Textarea
-                    v-bind="(componentField as any)"
-                    rows="3"
-                    :aria-invalid="!!error"
-                  />
-                </FormControl>
-                <FormDescription>280 characters max.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            </template>
-          </FormField>
+            <FormField name="bio">
+              <template #default="{ componentField, error }">
+                <FormItem>
+                  <FormLabel>Bio</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      v-bind="(componentField as any)"
+                      rows="3"
+                      :aria-invalid="!!error"
+                    />
+                  </FormControl>
+                  <FormDescription>280 characters max.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </template>
+            </FormField>
 
-          <div class="flex justify-end">
-            <Button type="submit">
-              Save
-            </Button>
-          </div>
-        </Form>
-      </CardContent>
-    </Card>
+            <div class="flex justify-end">
+              <Button type="submit">
+                Save
+              </Button>
+            </div>
+          </Form>
+        </CardContent>
+      </Card>
 
-    <Card v-if="submitted">
-      <CardHeader>
-        <CardTitle class="text-base">
-          Submitted value
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <pre class="bg-muted rounded-md p-3 text-xs"><code>{{ JSON.stringify(submitted, null, 2) }}</code></pre>
-      </CardContent>
-    </Card>
-  </div>
+      <Card v-if="submitted">
+        <CardHeader>
+          <CardTitle class="text-base">
+            Saved profile
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+            <dt class="text-muted-foreground">
+              Name
+            </dt>
+            <dd>{{ submitted.name }}</dd>
+            <dt class="text-muted-foreground">
+              Email
+            </dt>
+            <dd>{{ submitted.email }}</dd>
+            <dt class="text-muted-foreground">
+              Bio
+            </dt>
+            <dd>{{ submitted.bio || '—' }}</dd>
+          </dl>
+        </CardContent>
+      </Card>
+    </PageBody>
+  </Page>
 </template>

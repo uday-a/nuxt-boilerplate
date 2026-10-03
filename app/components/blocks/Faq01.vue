@@ -9,9 +9,9 @@ import {
 
 <template>
   <section class="bg-background">
-    <div class="mx-auto max-w-3xl px-6 py-24">
+    <div class="mx-auto max-w-3xl px-4 py-4">
       <div class="text-center">
-        <p class="text-sm font-medium uppercase tracking-widest text-primary">
+        <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
           FAQ
         </p>
         <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -20,10 +20,10 @@ import {
         <p class="mx-auto mt-3 max-w-xl text-lg text-muted-foreground">
           Anything we missed? Email
           <a
-            href="mailto:hello@acme.test"
+            href="mailto:hello@uipkge.dev"
             class="underline underline-offset-4 hover:text-foreground"
           >
-            hello@acme.test
+            hello@uipkge.dev
           </a>
           and we'll reply within a day.
         </p>
@@ -32,7 +32,7 @@ import {
       <Accordion
         type="single"
         collapsible
-        class="mt-10 w-full"
+        class="mt-4 w-full"
       >
         <AccordionItem value="trial">
           <AccordionTrigger>How does the 14-day free trial work?</AccordionTrigger>
@@ -45,15 +45,15 @@ import {
         <AccordionItem value="migration">
           <AccordionTrigger>Can we migrate from our current tool?</AccordionTrigger>
           <AccordionContent>
-            Yes. Most teams import people, time off balances and org structure with one
-            CSV. We have prebuilt importers for BambooHR, Personio, Rippling and Gusto;
-            for everything else, our team will run the migration with you free of charge.
+            Yes. Most teams import projects, tasks and members with one CSV. We have
+            prebuilt importers for Jira, Asana, Linear and Trello; for everything else,
+            our team will run the migration with you free of charge.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="security">
-          <AccordionTrigger>Is our employee data secure?</AccordionTrigger>
+          <AccordionTrigger>Is our data secure?</AccordionTrigger>
           <AccordionContent>
-            SOC 2 Type II, ISO 27001, GDPR and HIPAA compliant. Data is encrypted at rest
+            SOC 2 Type II, ISO 27001 and GDPR compliant. Data is encrypted at rest
             (AES-256) and in transit (TLS 1.3). EU customers stay on EU-region
             infrastructure. Full audit trail is available on every plan.
           </AccordionContent>
@@ -61,8 +61,8 @@ import {
         <AccordionItem value="pricing">
           <AccordionTrigger>What does the per-user pricing include?</AccordionTrigger>
           <AccordionContent>
-            All core modules — directory, payroll, time off, performance, onboarding —
-            are included on the Team plan. SSO, SCIM, audit logs and a dedicated success
+            Projects, analytics, integrations, API access and priority support are
+            included on the Team plan. SSO, SCIM, audit logs and a dedicated success
             manager are Enterprise-only. There are no per-feature add-ons.
           </AccordionContent>
         </AccordionItem>

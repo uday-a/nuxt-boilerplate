@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { useDb, schema } from '~~/server/db'
 import { apiError, apiHandler } from '~~/server/utils/response'
 import { requireAuth } from '~~/server/utils/guards'
+import { recordAudit } from '~~/server/utils/audit'
 import { logger } from '~~/server/utils/logger'
 
 // H3-style flexible handler: one file, multiple HTTP methods. Nitro
@@ -83,6 +84,26 @@ export default apiHandler(async (event) => {
         })
         .returning()
       logger.info('projects.created', { ownerId: session.user.id, slug: parsed.data.slug })
+      // Audit attribution needs the numeric users.id — the session id is
+      // the OAuth provider id, so resolve via email (mirrors team/invites).
+      let auditUserId: number | null = null
+      const sessionEmail = (session.user.email ?? '').toLowerCase()
+      if (sessionEmail) {
+        const me = await db
+          .select({ id: schema.users.id })
+          .from(schema.users)
+          .where(eq(schema.users.email, sessionEmail))
+          .limit(1)
+        auditUserId = me[0]?.id ?? null
+      }
+      if (!project) throw apiError('INTERNAL', 'Project creation failed')
+      await recordAudit({
+        userId: auditUserId,
+        action: 'projects.create',
+        entity: 'project',
+        entityId: project.id,
+        metadata: { slug: parsed.data.slug },
+      })
       return { project }
     }
     catch (e) {
@@ -100,8 +121,8 @@ export default apiHandler(async (event) => {
 // Deterministic demo data so the UI looks populated in demo mode.
 function demoProjects() {
   return [
-    { id: 1, slug: 'design-engineering', name: 'Design Engineering', description: 'Frontend platform, design system, UX research.', ownerId: 0, createdAt: new Date('2026-01-12'), updatedAt: new Date('2026-04-30') },
-    { id: 2, slug: 'sales-marketing', name: 'Sales & Marketing', description: 'GTM ops, campaigns, pipeline analytics.', ownerId: 0, createdAt: new Date('2026-02-04'), updatedAt: new Date('2026-05-12') },
-    { id: 3, slug: 'travel', name: 'Travel', description: 'Trip planning, expense tracking, traveler ops.', ownerId: 0, createdAt: new Date('2026-03-19'), updatedAt: new Date('2026-05-15') },
+    { id: 1, slug: 'design-engineering', name: 'Design Engineering', description: 'Frontend platform, design system, UX research.', ownerId: 0, createdAt: new Date('2026-01-12'), updatedAt: new Date('2026-09-28') },
+    { id: 2, slug: 'sales-marketing', name: 'Sales & Marketing', description: 'GTM ops, campaigns, pipeline analytics.', ownerId: 0, createdAt: new Date('2026-02-04'), updatedAt: new Date('2026-09-24') },
+    { id: 3, slug: 'travel', name: 'Travel', description: 'Trip planning, expense tracking, traveler ops.', ownerId: 0, createdAt: new Date('2026-03-19'), updatedAt: new Date('2026-09-17') },
   ]
 }

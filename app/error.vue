@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 
 const props = defineProps<{ error: NuxtError }>()
 
-useHead(() => ({ title: `${props.error.statusCode ?? 'Error'} · Acme` }))
+useHead(() => ({ title: `${props.error.statusCode ?? 'Error'}` }))
 
 const is404 = computed(() => Number(props.error.statusCode) === 404)
 const title = computed(() => (is404.value ? 'Page not found' : 'Something broke'))

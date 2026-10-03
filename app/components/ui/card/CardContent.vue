@@ -11,7 +11,7 @@ const props = defineProps<{
   <div
     data-uipkge
     data-slot="card-content"
-    :class="cn('p-6 pt-0', props.class)"
+    :class="cn('p-4 pt-0', props.class)"
   >
     <slot />
   </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { CheckCircle2, Mail, MapPin, Phone, Send } from 'lucide-vue-next'
+import { CheckCircle2, Mail, MapPin, Phone, Send } from '@/lib/icon-pack'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -48,10 +48,10 @@ function submit() {
 
 <template>
   <section class="bg-background">
-    <div class="mx-auto max-w-6xl px-6 py-24">
-      <div class="grid gap-10 lg:grid-cols-2 lg:items-start">
-        <div class="space-y-6">
-          <p class="text-sm font-medium uppercase tracking-widest text-primary">
+    <div class="mx-auto max-w-6xl px-4 py-4">
+      <div class="grid gap-4 lg:grid-cols-2 lg:items-start">
+        <div class="space-y-4">
+          <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
             Contact
           </p>
           <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -62,29 +62,35 @@ function submit() {
             4 hours.
           </p>
 
-          <div class="space-y-3 pt-4">
+          <div class="space-y-4 pt-4">
             <div class="flex items-center gap-3">
               <div class="rounded-lg bg-primary/10 p-2 text-primary">
-                <Mail class="size-4" />
+                <Mail
+                  class="size-4"
+                  aria-hidden="true"
+                />
               </div>
               <div>
-                <p class="text-xs uppercase text-muted-foreground">
+                <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                   Email
                 </p>
                 <a
-                  href="mailto:hello@acme.test"
+                  href="mailto:hello@uipkge.dev"
                   class="text-sm font-medium hover:underline"
                 >
-                  hello@acme.test
+                  hello@uipkge.dev
                 </a>
               </div>
             </div>
             <div class="flex items-center gap-3">
               <div class="rounded-lg bg-primary/10 p-2 text-primary">
-                <Phone class="size-4" />
+                <Phone
+                  class="size-4"
+                  aria-hidden="true"
+                />
               </div>
               <div>
-                <p class="text-xs uppercase text-muted-foreground">
+                <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                   Phone
                 </p>
                 <p class="text-sm font-medium">
@@ -94,10 +100,13 @@ function submit() {
             </div>
             <div class="flex items-center gap-3">
               <div class="rounded-lg bg-primary/10 p-2 text-primary">
-                <MapPin class="size-4" />
+                <MapPin
+                  class="size-4"
+                  aria-hidden="true"
+                />
               </div>
               <div>
-                <p class="text-xs uppercase text-muted-foreground">
+                <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
                   Office
                 </p>
                 <p class="text-sm font-medium">
@@ -105,12 +114,6 @@ function submit() {
                 </p>
               </div>
             </div>
-          </div>
-
-          <div class="mt-6 flex h-48 items-center justify-center rounded-lg border border-dashed bg-muted/40">
-            <p class="text-sm text-muted-foreground">
-              Map placeholder
-            </p>
           </div>
         </div>
 
@@ -188,18 +191,24 @@ function submit() {
                   :disabled="!canSubmit"
                 >
                   Send message
-                  <Send class="ml-2 size-4" />
+                  <Send
+                    class="size-4"
+                    aria-hidden="true"
+                  />
                 </Button>
               </form>
             </CardContent>
           </template>
 
           <template v-else>
-            <CardContent class="space-y-4 pt-8 text-center">
+            <CardContent class="space-y-4 pt-4 text-center">
               <div
-                class="mx-auto flex size-12 items-center justify-center rounded-full bg-[var(--success)]/10 text-[var(--success)]"
+                class="mx-auto flex size-12 items-center justify-center rounded-full bg-success/10 text-success"
               >
-                <CheckCircle2 class="size-6" />
+                <CheckCircle2
+                  class="size-6"
+                  aria-hidden="true"
+                />
               </div>
               <div class="space-y-1">
                 <h3 class="text-lg font-semibold">

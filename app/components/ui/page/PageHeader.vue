@@ -11,6 +11,11 @@ defineProps<{
     <div class="flex-1">
       <slot />
     </div>
-    <slot name="actions" />
+    <div
+      v-if="$slots.actions"
+      class="flex flex-wrap items-center gap-2 self-start sm:self-auto"
+    >
+      <slot name="actions" />
+    </div>
   </div>
 </template>

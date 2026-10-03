@@ -2,8 +2,10 @@ import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { useDb, schema } from '~~/server/db'
 import { apiError, apiHandler } from '~~/server/utils/response'
+import { recordAudit } from '~~/server/utils/audit'
 import { env } from '~~/server/utils/env'
 import { logger } from '~~/server/utils/logger'
+import { requireRateLimit } from '~~/server/utils/rate-limit'
 import { sendEmail, magicLinkEmail } from '~~/server/utils/mailer'
 import { generateToken, hashToken } from '~~/server/utils/tokens'
 
@@ -28,6 +30,8 @@ const RequestSchema = z.object({
 // login) expect the JSON envelope. GET is left raw because it's a
 // redirect handler — no envelope.
 const postHandler = apiHandler(async (event) => {
+  // Token creation sends email — throttle per IP so a loop can't spam inboxes.
+  requireRateLimit(event, { key: 'auth:magic-link' })
   const body = await readBody(event)
   const parsed = RequestSchema.safeParse(body)
   if (!parsed.success) {
@@ -157,6 +161,36 @@ export default defineEventHandler(async (event) => {
     return sendRedirect(event, '/login?error=magic-link-failed')
   }
 
+  // Pending team invite for this email? Apply the invited role and
+  // consume the invite (single-use). Best-effort — an invite
+  // bookkeeping failure must never fail the signin itself.
+  try {
+    const pendingRows = await db
+      .select()
+      .from(schema.invites)
+      .where(eq(schema.invites.email, row.email))
+      .limit(1)
+    const pending = pendingRows[0]
+    if (pending && !pending.acceptedAt && pending.expiresAt.getTime() >= Date.now()) {
+      if (user.role !== pending.role) {
+        const [patched] = await db
+          .update(schema.users)
+          .set({ role: pending.role, updatedAt: new Date() })
+          .where(eq(schema.users.email, row.email))
+          .returning()
+        if (patched) user.role = patched.role
+      }
+      await db
+        .update(schema.invites)
+        .set({ acceptedAt: new Date() })
+        .where(eq(schema.invites.id, pending.id))
+      logger.info('auth.magic_link.invite_applied', { email: row.email, role: pending.role })
+    }
+  }
+  catch (e) {
+    logger.warn('auth.magic_link.invite_lookup_skipped', { email: row.email, error: (e as Error).message })
+  }
+
   await setUserSession(event, {
     user: {
       id: user.id,
@@ -170,5 +204,6 @@ export default defineEventHandler(async (event) => {
   })
 
   logger.info('auth.magic_link.signin', { userId: user.id, email: user.email })
+  await recordAudit({ userId: user.id, action: 'auth.signin', metadata: { provider: 'magic-link' } })
   return sendRedirect(event, '/dashboard')
 })

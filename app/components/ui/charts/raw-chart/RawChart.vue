@@ -40,6 +40,8 @@ withDefaults(
     height?: number | string
     /** Auto-resize on container width change. Default true. */
     autoresize?: boolean
+    /** Screen-reader name for the canvas. Sets role="img" + aria-label on the wrapper. */
+    label?: string
     class?: string
   }>(),
   { height: 300, autoresize: true },
@@ -50,6 +52,8 @@ withDefaults(
   <div
     :style="{ height: /^\d+$/.test(String(height)) ? `${height}px` : String(height) }"
     :class="cn('w-full', $props.class)"
+    :role="$props.label ? 'img' : undefined"
+    :aria-label="$props.label"
   >
     <VChart
       :option="option"

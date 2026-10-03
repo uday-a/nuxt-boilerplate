@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cn, safeRedirectPath } from './utils'
+import { cn, safeRedirectPath, formatMoney, formatNumber } from './utils'
 
 describe('cn (classNames merger)', () => {
   it('merges single and multiple classes', () => {
@@ -36,5 +36,18 @@ describe('safeRedirectPath', () => {
   it('supports custom fallback path', () => {
     expect(safeRedirectPath(null, '/login')).toBe('/login')
     expect(safeRedirectPath('https://evil.example/phish', '/login')).toBe('/login')
+  })
+})
+
+describe('formatMoney / formatNumber (Rule15 centralization)', () => {
+  it('formats USD with grouping and renders zero as $0 (never an em-dash)', () => {
+    expect(formatMoney(4800)).toBe('$4,800')
+    expect(formatMoney(0)).toBe('$0')
+    expect(formatMoney(115700)).toBe('$115,700')
+  })
+
+  it('formats plain counts with grouping', () => {
+    expect(formatNumber(1221)).toBe('1,221')
+    expect(formatNumber(0)).toBe('0')
   })
 })

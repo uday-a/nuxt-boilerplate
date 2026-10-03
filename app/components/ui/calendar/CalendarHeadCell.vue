@@ -16,7 +16,7 @@ const forwardedProps = useForwardProps(delegatedProps)
   <CalendarHeadCell
     data-uipkge
     data-slot="calendar-head-cell"
-    :class="cn('text-muted-foreground flex-1 rounded-md text-[0.8rem] font-normal', props.class)"
+    :class="cn('text-muted-foreground flex-1 rounded-md text-xs font-normal', props.class)"
     v-bind="forwardedProps"
   >
     <slot />

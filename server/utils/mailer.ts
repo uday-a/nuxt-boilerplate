@@ -17,6 +17,13 @@ import { logger } from './logger'
 //   import { sendEmail, welcomeEmail } from '~~/server/utils/mailer'
 //   await sendEmail(welcomeEmail({ name: 'Ada', email: 'ada@x.com' }))
 
+export interface EmailAttachment {
+  filename: string
+  // Base64-encoded file bytes (Resend `content` shape).
+  content: string
+  contentType?: string
+}
+
 export interface Email {
   to: string | string[]
   subject: string
@@ -25,6 +32,7 @@ export interface Email {
   replyTo?: string
   // Tags help filtering in the Resend dashboard.
   tags?: { name: string, value: string }[]
+  attachments?: EmailAttachment[]
 }
 
 // Loose type so unused-when-off imports stay out of the bundle.
@@ -49,11 +57,14 @@ export async function sendEmail(email: Email): Promise<{ id: string | null }> {
 
   if (!hasResend) {
     // Dev fallback: print to consola so devs can verify flows fire.
+    const attachmentNote = email.attachments?.length
+      ? `\nAttachments (${email.attachments.length}): ${email.attachments.map(a => a.filename).join(', ')} (not sent — dry run)`
+      : ''
     consola.box(
       `[mailer DRY RUN — set RESEND_API_KEY to send]\n`
       + `From:    ${from}\n`
       + `To:      ${Array.isArray(email.to) ? email.to.join(', ') : email.to}\n`
-      + `Subject: ${email.subject}\n\n`
+      + `Subject: ${email.subject}${attachmentNote}\n\n`
       + `${(email.text ?? email.html).slice(0, 200)}…`,
     )
     return { id: null }
@@ -70,6 +81,15 @@ export async function sendEmail(email: Email): Promise<{ id: string | null }> {
     ...(email.text ? { text: email.text } : {}),
     ...(email.replyTo ? { reply_to: email.replyTo } : {}),
     ...(email.tags ? { tags: email.tags } : {}),
+    ...(email.attachments?.length
+      ? {
+          attachments: email.attachments.map(a => ({
+            filename: a.filename,
+            content: a.content,
+            ...(a.contentType ? { contentType: a.contentType } : {}),
+          })),
+        }
+      : {}),
   })
 
   if (res.error) {
@@ -97,7 +117,7 @@ export async function sendEmail(email: Email): Promise<{ id: string | null }> {
 // either way.
 // ---------------------------------------------------------------------
 
-const APP_NAME = 'Acme'
+const APP_NAME = 'UIPKGE'
 
 function shell(title: string, body: string) {
   // Bare-minimum HTML that renders consistently in Gmail / Apple Mail /
@@ -164,19 +184,45 @@ export function magicLinkEmail(args: { email: string, link: string, expiresInMin
   }
 }
 
+export function inviteEmail(args: { email: string, link: string, role: string, inviter?: string }): Email {
+  const invitedBy = args.inviter ? ` invited by ${args.inviter}` : ''
+  const text = `You've been invited to join ${APP_NAME}${invitedBy} as ${args.role}.\n\nAccept the invite: ${args.link}\n\nThe link expires in 7 days and can only be used once. If you weren't expecting this, you can safely ignore this email.`
+  const html = shell(`You're invited to ${APP_NAME}`, `
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:600;line-height:1.3;">You're invited to ${APP_NAME}</h1>
+    <p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#374151;">You've been invited${invitedBy} as <strong>${args.role}</strong>. Click below to accept — the link expires in 7 days and can only be used once.</p>
+    <p style="margin:24px 0;"><a href="${args.link}" style="display:inline-block;background:#0a0a0a;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:600;font-size:14px;">Accept invite →</a></p>
+    <p style="margin:24px 0 0;font-size:13px;color:#6b7280;line-height:1.6;">Or copy and paste this URL into your browser:<br /><span style="word-break:break-all;color:#374151;">${args.link}</span></p>
+    <p style="margin:16px 0 0;font-size:13px;color:#9ca3af;">If you weren't expecting this, you can safely ignore this email.</p>
+  `)
+
+  return {
+    to: args.email,
+    subject: `You're invited to ${APP_NAME} as ${args.role}`,
+    html,
+    text,
+    tags: [{ name: 'kind', value: 'invite' }],
+  }
+}
+
 export function feedbackEmail(args: {
   to: string
   reporter: { name: string, email: string, login: string }
   category: string
   subject: string
   message: string
+  attachments?: EmailAttachment[]
 }): Email {
-  const text = `New feedback from ${args.reporter.name} (${args.reporter.login}, ${args.reporter.email})\n\nCategory: ${args.category}\nSubject: ${args.subject}\n\n${args.message}`
+  const attachmentNames = args.attachments?.map(a => a.filename) ?? []
+  const attachmentLine = attachmentNames.length
+    ? `\n\nAttachments (${attachmentNames.length}): ${attachmentNames.join(', ')}`
+    : ''
+  const text = `New feedback from ${args.reporter.name} (${args.reporter.login}, ${args.reporter.email})\n\nCategory: ${args.category}\nSubject: ${args.subject}\n\n${args.message}${attachmentLine}`
   const html = shell('Feedback', `
     <div style="font-size:12px;font-weight:600;letter-spacing:0.06em;color:#7c3aed;text-transform:uppercase;margin-bottom:8px;">Feedback · ${args.category}</div>
     <h1 style="margin:0 0 12px;font-size:20px;font-weight:600;line-height:1.3;">${args.subject}</h1>
     <div style="margin:0 0 24px;font-size:13px;color:#6b7280;">From ${args.reporter.name} (${args.reporter.login}) · <a href="mailto:${args.reporter.email}" style="color:#6b7280;">${args.reporter.email}</a></div>
     <div style="font-size:15px;line-height:1.6;color:#0a0a0a;white-space:pre-wrap;">${escapeHtml(args.message)}</div>
+    ${attachmentNames.length ? `<div style="margin:16px 0 0;font-size:13px;color:#6b7280;">Attachments (${attachmentNames.length}): ${attachmentNames.map(escapeHtml).join(', ')}</div>` : ''}
   `)
 
   return {
@@ -189,6 +235,7 @@ export function feedbackEmail(args: {
       { name: 'kind', value: 'feedback' },
       { name: 'category', value: args.category },
     ],
+    ...(attachmentNames.length ? { attachments: args.attachments } : {}),
   }
 }
 

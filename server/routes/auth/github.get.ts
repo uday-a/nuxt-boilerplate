@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm'
 import { useDb, schema } from '~~/server/db'
 import { ROLES, type Role } from '~~/server/db/schema'
+import { recordAudit } from '~~/server/utils/audit'
 import { env } from '~~/server/utils/env'
 import { logger } from '~~/server/utils/logger'
 import { sendEmail, welcomeEmail } from '~~/server/utils/mailer'
@@ -33,6 +34,10 @@ export default defineOAuthGitHubEventHandler({
     // https://www.postgresql.org/docs/current/ddl-system-columns.html.
     // We surface that as a system column via `.returning()`.
     let isFirstSignin = false
+    // Numeric users.id for audit attribution. The session id is the GitHub
+    // provider id, not the serial PK — resolve it here while we have the
+    // row in hand (mirrors the email lookup in team/invites).
+    let dbUserId: number | null = null
 
     // Email is NOT NULL on the users table (it's the unique identity).
     // GitHub usually returns it because `emailRequired: true` is set
@@ -80,10 +85,11 @@ export default defineOAuthGitHubEventHandler({
 
       // Fetch the user's role so the session reflects any DB-side changes.
       const dbUser = await db
-        .select({ role: schema.users.role })
+        .select({ id: schema.users.id, role: schema.users.role })
         .from(schema.users)
         .where(eq(schema.users.githubId, user.id))
         .limit(1)
+      dbUserId = dbUser[0]?.id ?? null
       // Defensive: the DB enum and the TS Role union can drift if the
       // app code is redeployed before the migration that adds a new role.
       // Fall back to 'user' rather than trusting an unknown string.
@@ -94,6 +100,39 @@ export default defineOAuthGitHubEventHandler({
     }
     catch (e) {
       logger.warn('auth.github.db_upsert_skipped', {
+        login: user.login,
+        error: (e as Error).message,
+      })
+    }
+
+    // Pending team invite for this email? Apply the invited role and
+    // consume the invite (single-use). Best-effort — an invite
+    // bookkeeping failure must never fail the OAuth signin itself.
+    try {
+      const db = useDb()
+      const pendingRows = await db
+        .select()
+        .from(schema.invites)
+        .where(eq(schema.invites.email, userEmail))
+        .limit(1)
+      const pending = pendingRows[0]
+      if (pending && !pending.acceptedAt && pending.expiresAt.getTime() >= Date.now()) {
+        if (role !== pending.role) {
+          await db
+            .update(schema.users)
+            .set({ role: pending.role, updatedAt: new Date() })
+            .where(eq(schema.users.email, userEmail))
+          role = pending.role
+        }
+        await db
+          .update(schema.invites)
+          .set({ acceptedAt: new Date() })
+          .where(eq(schema.invites.id, pending.id))
+        logger.info('auth.github.invite_applied', { login: user.login, role: pending.role })
+      }
+    }
+    catch (e) {
+      logger.warn('auth.github.invite_lookup_skipped', {
         login: user.login,
         error: (e as Error).message,
       })
@@ -128,6 +167,7 @@ export default defineOAuthGitHubEventHandler({
       loggedInAt: Date.now(),
     })
     logger.info('auth.github.signin', { login: user.login, role })
+    await recordAudit({ userId: dbUserId, action: 'auth.signin', metadata: { provider: 'github' } })
     return sendRedirect(event, '/dashboard')
   },
   onError(event, error) {

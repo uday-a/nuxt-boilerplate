@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Github, Chrome } from 'lucide-vue-next'
+import { Github, Chrome } from '@/lib/icon-pack'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -50,10 +50,10 @@ function onSubmit() {
 </script>
 
 <template>
-  <div class="bg-background flex min-h-svh items-center justify-center p-6">
+  <div class="bg-background flex min-h-svh items-center justify-center p-4">
     <Card class="w-full max-w-md">
       <CardHeader class="text-center">
-        <h1 class="text-2xl leading-none font-semibold tracking-tight">
+        <h1 class="text-2xl leading-tight font-semibold tracking-tight">
           {{ title ?? t('auth.signUp.title') }}
         </h1>
         <CardDescription>{{ description ?? t('auth.signUp.description') }}</CardDescription>
@@ -144,9 +144,9 @@ function onSubmit() {
         </form>
 
         <template v-if="oauthProviders.length > 0">
-          <div class="my-6 flex items-center gap-3">
+          <div class="my-4 flex items-center gap-3">
             <Separator class="flex-1" />
-            <span class="text-muted-foreground text-xs uppercase">{{ t('auth.signUp.orContinueWith') }}</span>
+            <span class="text-muted-foreground text-xs font-medium tracking-wider uppercase">{{ t('auth.signUp.orContinueWith') }}</span>
             <Separator class="flex-1" />
           </div>
           <div
@@ -159,7 +159,10 @@ function onSubmit() {
               type="button"
               @click="emit('oauth', 'github')"
             >
-              <Github class="mr-2 size-4" />GitHub
+              <Github
+                class="size-4"
+                aria-hidden="true"
+              />GitHub
             </Button>
             <Button
               v-if="oauthProviders.includes('google')"
@@ -167,7 +170,10 @@ function onSubmit() {
               type="button"
               @click="emit('oauth', 'google')"
             >
-              <Chrome class="mr-2 size-4" />Google
+              <Chrome
+                class="size-4"
+                aria-hidden="true"
+              />Google
             </Button>
           </div>
         </template>

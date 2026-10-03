@@ -41,7 +41,8 @@ function handleClick(event: MouseEvent) {
           cn(
             'bg-muted ring-background relative flex shrink-0 overflow-hidden rounded-full ring-2',
             size === 'xs'
-              ? 'size-4 text-[8px]'
+              // WHY (Rule4): 12px text floor -- xs chip is size-5 so it fits.
+              ? 'size-5 text-xs'
               : size === 'sm'
                 ? 'size-6 text-xs'
                 : size === 'default'

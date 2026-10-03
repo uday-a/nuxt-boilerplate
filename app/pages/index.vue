@@ -2,11 +2,11 @@
 definePageMeta({ auth: false, layout: false })
 
 useHead({
-  title: 'UIPKGE — Nuxt boilerplate',
+  title: 'The workspace your team will actually use',
   meta: [
     {
       name: 'description',
-      content: 'A 100% UIPKGE-registry-driven Nuxt 4 boilerplate. Every UI surface ships from the registry; you own every line.',
+      content: 'Plan projects, track work and ship releases in one workspace, with billing, permissions and audit logs built in.',
     },
   ],
 })
@@ -14,8 +14,16 @@ useHead({
 
 <template>
   <div class="bg-background text-foreground min-h-screen">
+    <a
+      href="#main-content"
+      class="bg-background text-foreground ring-ring sr-only z-50 rounded-md text-sm font-medium shadow-md ring-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:px-3 focus:py-2"
+    >Skip to content</a>
     <Header01 />
-    <main class="[&>section]:scroll-mt-20">
+    <main
+      id="main-content"
+      tabindex="-1"
+      class="outline-none [&>section]:scroll-mt-20"
+    >
       <section id="top">
         <Hero01 />
       </section>

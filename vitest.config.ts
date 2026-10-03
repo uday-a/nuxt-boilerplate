@@ -10,7 +10,10 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    include: ['app/**/*.{test,spec}.{ts,js}', '!**/e2e/**'],
+    // server/utils/env.ts validates at import; server tests need a throwaway
+    // session secret (same idea as the CI build env).
+    env: { NUXT_SESSION_PASSWORD: 'test-only-throwaway-32-character-secret' },
+    include: ['app/**/*.{test,spec}.{ts,js}', 'shared/**/*.{test,spec}.{ts,js}', 'server/**/*.{test,spec}.{ts,js}', '!**/e2e/**'],
   },
   resolve: {
     alias: {
