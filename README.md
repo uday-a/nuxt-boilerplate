@@ -11,6 +11,7 @@ A production-grade **Nuxt 4 SaaS boilerplate and starter kit** built with **Vue 
 - 🌟 **Live demo:** [nuxt-boilerplate.uipkge.dev](https://nuxt-boilerplate.uipkge.dev) — click *"Continue as demo user"* on `/login`
 - 🎨 **UI registry:** [uipkge.dev](https://uipkge.dev) — the components and blocks this app is built from
 - ⚛️ **Prefer React?** The sibling [Next.js boilerplate](https://github.com/uday-a/next-boilerplate) uses the same registry
+- 🧩 **Prefer Svelte or Angular?** Siblings: [SvelteKit boilerplate](https://github.com/uday-a/sveltekit-boilerplate) · [Angular boilerplate](https://github.com/uday-a/angular-boilerplate) — same registry, same feature set
 
 ![Nuxt 4 SaaS boilerplate dashboard preview](./.github/assets/dashboard.png)
 
@@ -607,6 +608,8 @@ See [Authentication](#-authentication) — one handler file + two env vars.
 
 - [**uipkge.dev**](https://uipkge.dev) — the UI registry this boilerplate is built on
 - [**next-boilerplate**](https://github.com/uday-a/next-boilerplate) — the Next.js / React sibling of this starter
+- [**sveltekit-boilerplate**](https://github.com/uday-a/sveltekit-boilerplate) — the SvelteKit / Svelte sibling
+- [**angular-boilerplate**](https://github.com/uday-a/angular-boilerplate) — the Angular (SSR) sibling
 
 ---
 
