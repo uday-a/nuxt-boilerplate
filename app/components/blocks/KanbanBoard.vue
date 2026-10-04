@@ -20,6 +20,8 @@ interface Props {
   hideHeader?: boolean
   hideToolbar?: boolean
   lockParentScroll?: boolean
+  /** Opens this task's sheet (deep link, e.g. /dashboard/kanban/APP-101). */
+  openTaskId?: string | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -29,10 +31,12 @@ const props = withDefaults(defineProps<Props>(), {
   hideHeader: false,
   hideToolbar: false,
   lockParentScroll: true,
+  openTaskId: null,
 })
 
 const emits = defineEmits<{
   'update:columns': [value: KanbanColumnType[]]
+  'update:openTaskId': [value: string | null]
 }>()
 
 const columnsRef = computed({
@@ -116,6 +120,19 @@ function openTaskDetail(task: KanbanTask) {
   detailTask.value = task
   detailOpen.value = true
 }
+
+function openTaskById(id: string | null) {
+  const task = id ? props.columns.flatMap(c => c.tasks).find(t => t.id === id) : undefined
+  if (task) openTaskDetail(task)
+}
+// Open after mount, not during SSR: a sheet rendered open on the server
+// doesn't survive hydration.
+onMounted(() => openTaskById(props.openTaskId))
+watch(() => props.openTaskId, openTaskById)
+// Closing a deep-linked sheet hands control back so the page can drop the id.
+watch(detailOpen, (open) => {
+  if (!open && props.openTaskId) emits('update:openTaskId', null)
+})
 
 const draggedTask = ref<string | null>(null)
 const dragOverColumn = ref<string | null>(null)

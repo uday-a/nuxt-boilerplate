@@ -12,7 +12,7 @@
       "/dashboard",
       "/dashboard/calendar",
       "/dashboard/data-table",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/messages",
       "/projects",
       "/settings/account",
@@ -24,7 +24,7 @@
       "/admin/users",
       "/dashboard",
       "/dashboard/data-table",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/locations",
       "/dashboard/messages",
       "/feedback",
@@ -54,7 +54,7 @@
       "/dashboard/data-table",
       "/dashboard/form-example",
       "/dashboard/forms",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/locations",
       "/dashboard/messages",
       "/feedback",
@@ -84,7 +84,7 @@
       "layout:dashboard"
     ],
     "calendar": [
-      "/dashboard/kanban"
+      "/dashboard/kanban/[[id]]"
     ],
     "calendar-heatmap": [
       "/dashboard"
@@ -151,7 +151,7 @@
     "dialog": [
       "/admin/users",
       "/dashboard/calendar",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/messages",
       "/projects",
       "/projects/[slug]",
@@ -160,7 +160,7 @@
     ],
     "dropdown-menu": [
       "/dashboard/data-table",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "layout:dashboard"
     ],
     "empty-state": [
@@ -199,7 +199,7 @@
       "/dashboard/data-table",
       "/dashboard/form-example",
       "/dashboard/forms",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/locations",
       "/dashboard/messages",
       "/feedback",
@@ -224,7 +224,7 @@
       "/admin/users",
       "/dashboard",
       "/dashboard/forms",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/feedback",
       "/forgot-password",
       "/login",
@@ -258,7 +258,7 @@
       "/dashboard/data-table",
       "/dashboard/form-example",
       "/dashboard/forms",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/locations",
       "/dashboard/messages",
       "/feedback",
@@ -285,7 +285,7 @@
       "/admin/users",
       "/dashboard",
       "/dashboard/data-table",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/messages",
       "/settings/team",
       "layout:dashboard"
@@ -308,7 +308,7 @@
       "/dashboard"
     ],
     "rich-text-editor": [
-      "/dashboard/kanban"
+      "/dashboard/kanban/[[id]]"
     ],
     "scatter-chart": [],
     "section-card": [
@@ -320,7 +320,7 @@
       "/dashboard/calendar",
       "/dashboard/data-table",
       "/dashboard/forms",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/locations",
       "/dashboard/messages",
       "/onboarding",
@@ -349,7 +349,7 @@
     "sheet": [
       "/",
       "/dashboard/data-table",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/pricing",
       "/privacy",
       "/terms"
@@ -406,7 +406,7 @@
     "toggle-group": [
       "/",
       "/dashboard/data-table",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/locations",
       "/pricing"
     ],
@@ -417,7 +417,7 @@
       "/dashboard/activity",
       "/dashboard/calendar",
       "/dashboard/data-table",
-      "/dashboard/kanban",
+      "/dashboard/kanban/[[id]]",
       "/dashboard/locations",
       "/dashboard/messages",
       "/settings/billing",
@@ -536,7 +536,7 @@
     "kanban-board": {
       "file": "KanbanBoard.vue",
       "routes": [
-        "/dashboard/kanban"
+        "/dashboard/kanban/[[id]]"
       ]
     },
     "locale-switcher": {
