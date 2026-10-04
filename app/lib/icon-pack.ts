@@ -66,6 +66,7 @@ import {
   Eye as LEye,
   EyeOff as LEyeOff,
   File as LFile,
+  FileCheck2 as LFileCheck2,
   FileIcon as LFileIcon,
   FileImage as LFileImage,
   FileSpreadsheet as LFileSpreadsheet,
@@ -103,7 +104,6 @@ import {
   LifeBuoy as LLifeBuoy,
   Lightbulb as LLightbulb,
   Link as LLink,
-  Linkedin as LLinkedin,
   List as LList,
   ListChecks as LListChecks,
   ListFilter as LListFilter,
@@ -163,7 +163,6 @@ import {
   TrendingUp as LTrendingUp,
   TriangleAlert as LTriangleAlert,
   TriangleAlertIcon as LTriangleAlertIcon,
-  Twitter as LTwitter,
   Underline as LUnderline,
   Undo2 as LUndo2,
   User as LUser,
@@ -172,6 +171,7 @@ import {
   UserX as LUserX,
   Users as LUsers,
   Video as LVideo,
+  Wallet as LWallet,
   Webhook as LWebhook,
   X as LX,
   XIcon as LXIcon,
@@ -232,6 +232,7 @@ import {
   ExternalLinkIcon as HExternalLinkIcon,
   EyeIcon as HEyeIcon,
   EyeOffIcon as HEyeOffIcon,
+  FileCheckIcon as HFileCheckIcon,
   FileIcon as HFileIcon,
   FileImageIcon as HFileImageIcon,
   FileSpreadsheetIcon as HFileSpreadsheetIcon,
@@ -268,7 +269,6 @@ import {
   LifebuoyIcon as HLifebuoyIcon,
   LightbulbIcon as HLightbulbIcon,
   LinkIcon as HLinkIcon,
-  LinkedinIcon as HLinkedinIcon,
   ListChecksIcon as HListChecksIcon,
   ListFilterIcon as HListFilterIcon,
   ListIcon as HListIcon,
@@ -326,7 +326,6 @@ import {
   TrendingDownIcon as HTrendingDownIcon,
   TrendingUpIcon as HTrendingUpIcon,
   TriangleAlertIcon as HTriangleAlertIcon,
-  TwitterIcon as HTwitterIcon,
   UnderlineIcon as HUnderlineIcon,
   Undo02Icon as HUndo02Icon,
   UserCircleIcon as HUserCircleIcon,
@@ -335,6 +334,7 @@ import {
   UserXIcon as HUserXIcon,
   UsersIcon as HUsersIcon,
   VideoIcon as HVideoIcon,
+  WalletIcon as HWalletIcon,
   WebhookIcon as HWebhookIcon,
   XIcon as HXIcon,
   ZapIcon as HZapIcon,
@@ -365,9 +365,7 @@ import {
   IconBook as TIconBook,
   IconBrandChrome as TIconBrandChrome,
   IconBrandGithub as TIconBrandGithub,
-  IconBrandLinkedin as TIconBrandLinkedin,
   IconBrandSlack as TIconBrandSlack,
-  IconBrandX as TIconBrandX,
   IconBriefcase as TIconBriefcase,
   IconBug as TIconBug,
   IconBuilding as TIconBuilding,
@@ -406,6 +404,7 @@ import {
   IconEye as TIconEye,
   IconEyeOff as TIconEyeOff,
   IconFile as TIconFile,
+  IconFileCheck as TIconFileCheck,
   IconFileSpreadsheet as TIconFileSpreadsheet,
   IconFileText as TIconFileText,
   IconFilter as TIconFilter,
@@ -489,6 +488,7 @@ import {
   IconUserX as TIconUserX,
   IconUsers as TIconUsers,
   IconVideo as TIconVideo,
+  IconWallet as TIconWallet,
   IconWaveSine as TIconWaveSine,
   IconWebhook as TIconWebhook,
   IconWorld as TIconWorld,
@@ -589,7 +589,6 @@ import {
   PhLightbulb,
   PhLightning,
   PhLink,
-  PhLinkedinLogo,
   PhList,
   PhListChecks,
   PhListNumbers,
@@ -647,12 +646,12 @@ import {
   PhUserPlus,
   PhUsers,
   PhVideo,
+  PhWallet,
   PhWarning,
   PhWarningCircle,
   PhWaveform,
   PhWebhooksLogo,
   PhX,
-  PhXLogo,
 } from '@phosphor-icons/vue'
 import { useIconPack } from '@/composables/useIconPack'
 
@@ -736,6 +735,7 @@ export const ExternalLink = packed('ExternalLink', LExternalLink, HExternalLinkI
 export const Eye = packed('Eye', LEye, HEyeIcon, TIconEye, PhEye)
 export const EyeOff = packed('EyeOff', LEyeOff, HEyeOffIcon, TIconEyeOff, PhEyeSlash)
 export const File = packed('File', LFile, HFileIcon, TIconFile, PhFile)
+export const FileCheck2 = packed('FileCheck2', LFileCheck2, HFileCheckIcon, TIconFileCheck, PhFileText)
 export const FileIcon = packed('FileIcon', LFileIcon, HFileIcon, TIconFile, PhFile)
 export const FileImage = packed('FileImage', LFileImage, HFileImageIcon, TIconPhoto, PhFileImage)
 export const FileSpreadsheet = packed('FileSpreadsheet', LFileSpreadsheet, HFileSpreadsheetIcon, TIconFileSpreadsheet, PhFileXls)
@@ -773,7 +773,6 @@ export const LayoutTemplate = packed('LayoutTemplate', LLayoutTemplate, HLayoutT
 export const LifeBuoy = packed('LifeBuoy', LLifeBuoy, HLifebuoyIcon, TIconLifebuoy, PhLifebuoy)
 export const Lightbulb = packed('Lightbulb', LLightbulb, HLightbulbIcon, TIconBulb, PhLightbulb)
 export const Link = packed('Link', LLink, HLinkIcon, TIconLink, PhLink)
-export const Linkedin = packed('Linkedin', LLinkedin, HLinkedinIcon, TIconBrandLinkedin, PhLinkedinLogo)
 export const List = packed('List', LList, HListIcon, TIconList, PhList)
 export const ListChecks = packed('ListChecks', LListChecks, HListChecksIcon, TIconListCheck, PhListChecks)
 export const ListFilter = packed('ListFilter', LListFilter, HListFilterIcon, TIconFilter, PhFunnelSimple)
@@ -833,7 +832,6 @@ export const TrendingDown = packed('TrendingDown', LTrendingDown, HTrendingDownI
 export const TrendingUp = packed('TrendingUp', LTrendingUp, HTrendingUpIcon, TIconTrendingUp, PhTrendUp)
 export const TriangleAlert = packed('TriangleAlert', LTriangleAlert, HTriangleAlertIcon, TIconAlertTriangle, PhWarning)
 export const TriangleAlertIcon = packed('TriangleAlertIcon', LTriangleAlertIcon, HTriangleAlertIcon, TIconAlertTriangle, PhWarning)
-export const Twitter = packed('Twitter', LTwitter, HTwitterIcon, TIconBrandX, PhXLogo)
 export const Underline = packed('Underline', LUnderline, HUnderlineIcon, TIconUnderline, PhTextUnderline)
 export const Undo2 = packed('Undo2', LUndo2, HUndo02Icon, TIconArrowBackUp, PhArrowUUpLeft)
 export const User = packed('User', LUser, HUserIcon, TIconUser, PhUser)
@@ -842,6 +840,7 @@ export const UserPlus = packed('UserPlus', LUserPlus, HUserPlusIcon, TIconUserPl
 export const UserX = packed('UserX', LUserX, HUserXIcon, TIconUserX, PhUserMinus)
 export const Users = packed('Users', LUsers, HUsersIcon, TIconUsers, PhUsers)
 export const Video = packed('Video', LVideo, HVideoIcon, TIconVideo, PhVideo)
+export const Wallet = packed('Wallet', LWallet, HWalletIcon, TIconWallet, PhWallet)
 export const Webhook = packed('Webhook', LWebhook, HWebhookIcon, TIconWebhook, PhWebhooksLogo)
 export const X = packed('X', LX, HXIcon, TIconX, PhX)
 export const XIcon = packed('XIcon', LXIcon, HXIcon, TIconX, PhX)

@@ -48,49 +48,48 @@ function submit() {
 
 <template>
   <section class="bg-background">
-    <div class="mx-auto max-w-6xl px-4 py-4">
-      <div class="grid gap-4 lg:grid-cols-2 lg:items-start">
-        <div class="space-y-4">
-          <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <div class="grid gap-10 lg:grid-cols-2 lg:items-start">
+        <div class="space-y-6">
+          <p class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
             Contact
           </p>
           <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
             Talk to a human
           </h2>
-          <p class="text-lg text-muted-foreground">
-            Tell us a bit about your team and we'll show you how we'd fit. Average reply:
-            4 hours.
+          <p class="text-muted-foreground text-lg">
+            Tell us a bit about your team and we'll show you how we'd fit. Average reply: 4 hours.
           </p>
 
-          <div class="space-y-4 pt-4">
+          <div class="space-y-3 pt-4">
             <div class="flex items-center gap-3">
-              <div class="rounded-lg bg-primary/10 p-2 text-primary">
+              <div class="bg-primary/10 text-primary rounded-lg p-2">
                 <Mail
                   class="size-4"
                   aria-hidden="true"
                 />
               </div>
               <div>
-                <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+                <p class="text-muted-foreground text-xs uppercase">
                   Email
                 </p>
                 <a
-                  href="mailto:hello@uipkge.dev"
+                  href="mailto:hello@acme.test"
                   class="text-sm font-medium hover:underline"
                 >
-                  hello@uipkge.dev
+                  hello@acme.test
                 </a>
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="rounded-lg bg-primary/10 p-2 text-primary">
+              <div class="bg-primary/10 text-primary rounded-lg p-2">
                 <Phone
                   class="size-4"
                   aria-hidden="true"
                 />
               </div>
               <div>
-                <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+                <p class="text-muted-foreground text-xs uppercase">
                   Phone
                 </p>
                 <p class="text-sm font-medium">
@@ -99,14 +98,14 @@ function submit() {
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="rounded-lg bg-primary/10 p-2 text-primary">
+              <div class="bg-primary/10 text-primary rounded-lg p-2">
                 <MapPin
                   class="size-4"
                   aria-hidden="true"
                 />
               </div>
               <div>
-                <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+                <p class="text-muted-foreground text-xs uppercase">
                   Office
                 </p>
                 <p class="text-sm font-medium">
@@ -114,6 +113,12 @@ function submit() {
                 </p>
               </div>
             </div>
+          </div>
+
+          <div class="bg-muted/40 mt-6 flex h-48 items-center justify-center rounded-lg border border-dashed">
+            <p class="text-muted-foreground text-sm">
+              Map placeholder
+            </p>
           </div>
         </div>
 
@@ -134,6 +139,7 @@ function submit() {
                     <Input
                       id="contact-name"
                       v-model="name"
+                      autocomplete="off"
                       required
                     />
                   </div>
@@ -143,6 +149,7 @@ function submit() {
                       id="contact-email"
                       v-model="email"
                       type="email"
+                      autocomplete="off"
                       required
                     />
                   </div>
@@ -191,19 +198,16 @@ function submit() {
                   :disabled="!canSubmit"
                 >
                   Send message
-                  <Send
-                    class="size-4"
-                    aria-hidden="true"
-                  />
+                  <Send class="ml-2 size-4" />
                 </Button>
               </form>
             </CardContent>
           </template>
 
           <template v-else>
-            <CardContent class="space-y-4 pt-4 text-center">
+            <CardContent class="space-y-4 pt-8 text-center">
               <div
-                class="mx-auto flex size-12 items-center justify-center rounded-full bg-success/10 text-success"
+                class="bg-success/10 text-success mx-auto flex size-12 items-center justify-center rounded-full"
               >
                 <CheckCircle2
                   class="size-6"
@@ -214,7 +218,7 @@ function submit() {
                 <h3 class="text-lg font-semibold">
                   Message sent
                 </h3>
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground text-sm">
                   Thanks {{ name }}, we'll be in touch within a few hours.
                 </p>
               </div>

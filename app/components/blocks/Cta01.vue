@@ -6,15 +6,15 @@ const { loggedIn } = useUserSession()
 </script>
 
 <template>
-  <section class="bg-muted/30 border-t">
-    <div class="mx-auto max-w-4xl px-4 py-4 text-center">
+  <section class="bg-background relative overflow-hidden">
+    <div class="mx-auto max-w-4xl px-6 py-24 text-center">
       <h2 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-        Ready to see what your team ships next?
+        Ready to give your team a Monday they'll actually look forward to?
       </h2>
-      <p class="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-        Setup takes 12 minutes. Bring your projects over from your current tool with one CSV upload.
+      <p class="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg">
+        Set up takes 12 minutes. Migrate from your current tool with one CSV upload.
       </p>
-      <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
         <Button
           v-if="loggedIn"
           as-child
@@ -22,10 +22,7 @@ const { loggedIn } = useUserSession()
         >
           <NuxtLink to="/dashboard">
             Go to dashboard
-            <ArrowRight
-              class="size-4"
-              aria-hidden="true"
-            />
+            <ArrowRight class="ml-2 size-4" />
           </NuxtLink>
         </Button>
         <Button
@@ -35,20 +32,18 @@ const { loggedIn } = useUserSession()
         >
           <NuxtLink to="/sign-up">
             Start free trial
-            <ArrowRight
-              class="size-4"
-              aria-hidden="true"
-            />
+            <ArrowRight class="ml-2 size-4" />
           </NuxtLink>
         </Button>
         <Button
+          as-child
           size="lg"
           variant="outline"
         >
-          Book a demo
+          <NuxtLink to="/login">Book a demo</NuxtLink>
         </Button>
       </div>
-      <p class="mt-4 text-xs text-muted-foreground">
+      <p class="text-muted-foreground mt-4 text-xs">
         14-day free trial · No credit card required · Cancel anytime
       </p>
     </div>

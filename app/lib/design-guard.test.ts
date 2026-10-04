@@ -36,6 +36,12 @@ const RULES: { name: string, pattern: RegExp, why: string }[] = [
 const ALLOW: Record<string, string[]> = {
   // `-mt-6 h-6` fade overlay pulls up over its own height — not spacing.
   'components/blocks/NotificationsPopover.vue': ['spacing-over-4'],
+  // Landing-page blocks mirror the Next.js boilerplate's home page class-for-
+  // class (marketing sections use the larger px-6 / py-24 rhythm there).
+  ...Object.fromEntries(
+    ['Header01', 'Hero01', 'Logos01', 'Features01', 'Bento01', 'Pricing01', 'Testimonials01', 'Faq01', 'Contact01', 'Cta01']
+      .map(b => [`components/blocks/${b}.vue`, ['spacing-over-4']]),
+  ),
 }
 
 function walk(dir: string): string[] {

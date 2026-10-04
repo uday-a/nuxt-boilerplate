@@ -18,7 +18,7 @@ const MANUAL = {
   Globe2: 'Globe02Icon', KanbanSquare: 'SquareKanbanIcon', BarChart3: 'BarChartIcon',
   TriangleAlert: 'TriangleAlertIcon', TriangleAlertIcon: 'TriangleAlertIcon', UserCircle: 'UserCircleIcon',
   PlayCircle: 'PlayCircleIcon', Gauge: 'GaugeIcon', FolderKanban: 'FolderKanbanIcon',
-  FileSpreadsheet: 'FileSpreadsheetIcon', AudioWaveform: 'AudioWaveformIcon', OctagonXIcon: 'OctagonXIcon',
+  FileSpreadsheet: 'FileSpreadsheetIcon', FileCheck2: 'FileCheckIcon', AudioWaveform: 'AudioWaveformIcon', OctagonXIcon: 'OctagonXIcon',
   // Semantic picks where the name match is the wrong glyph.
   Palette: 'PaintBoardIcon',
 }
@@ -39,6 +39,7 @@ const TABLER = {
   Chrome: 'BrandChrome',
   CircleAlert: 'AlertCircle',
   DollarSign: 'CurrencyDollar',
+  FileCheck2: 'FileCheck',
   FileImage: 'Photo',
   FolderKanban: 'Folder',
   Forward: 'ArrowForwardUp',
@@ -120,6 +121,7 @@ const PHOSPHOR = {
   DollarSign: 'CurrencyDollar',
   ExternalLink: 'ArrowSquareOut',
   EyeOff: 'EyeSlash',
+  FileCheck2: 'FileText',
   FileSpreadsheet: 'FileXls',
   Filter: 'Funnel',
   FolderKanban: 'FolderSimple',

@@ -7,27 +7,27 @@ import { Card, CardContent } from '@/components/ui/card'
 const testimonials = [
   {
     quote:
-      'We replaced four spreadsheets and two tools with this. Our weekly status meeting went from an hour to fifteen minutes.',
-    name: 'Sarah Mitchell',
-    role: 'VP of Engineering',
+      'We replaced four spreadsheets and two SaaS tools with this. Onboarding time dropped from 6 days to under 4 hours.',
+    name: 'Aisha Rahman',
+    role: 'Head of People',
     company: 'Northwind Logistics',
-    initials: 'SM',
+    initials: 'AR',
   },
   {
     quote:
       'The audit trail alone is worth it. SOC2 evidence collection went from a quarterly nightmare to a one-click export.',
-    name: 'Mark Davies',
+    name: 'Marco Vidal',
     role: 'Director of Compliance',
     company: 'Helio Health',
-    initials: 'MD',
+    initials: 'MV',
   },
   {
     quote:
-      'My favourite part is how fast it is. No spinners, no loading states. Search returns instantly across every project.',
-    name: 'Laura Bennett',
+      'My favourite part is how fast it is. No spinners, no loading states. Search returns instantly across the entire org.',
+    name: 'Tomoko Saito',
     role: 'IT Operations',
     company: 'Pixel & Co',
-    initials: 'LB',
+    initials: 'TS',
   },
 ]
 
@@ -40,9 +40,9 @@ const current = computed(() => testimonials[active.value] ?? testimonials[0]!)
 
 <template>
   <section class="bg-muted/30">
-    <div class="mx-auto max-w-4xl px-4 py-4">
+    <div class="mx-auto max-w-4xl px-6 py-24">
       <div class="text-center">
-        <p class="text-muted-foreground text-xs font-medium uppercase tracking-wider">
+        <p class="text-muted-foreground text-xs font-medium tracking-wider uppercase">
           Testimonials
         </p>
         <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -50,26 +50,21 @@ const current = computed(() => testimonials[active.value] ?? testimonials[0]!)
         </h2>
       </div>
 
-      <Card class="mt-4">
-        <CardContent class="space-y-4 p-4 text-center">
-          <Quote
-            class="text-primary mx-auto size-8"
-            aria-hidden="true"
-          />
-          <p class="text-xl leading-relaxed text-foreground sm:text-2xl">
+      <Card class="mt-10">
+        <CardContent class="space-y-6 p-8 text-center">
+          <Quote class="text-primary mx-auto size-8" />
+          <p class="text-foreground text-xl leading-relaxed sm:text-2xl">
             &ldquo;{{ current.quote }}&rdquo;
           </p>
           <div class="flex flex-col items-center gap-2">
             <Avatar class="size-12">
-              <AvatarFallback class="bg-muted text-muted-foreground">
-                {{ current.initials }}
-              </AvatarFallback>
+              <AvatarFallback>{{ current.initials }}</AvatarFallback>
             </Avatar>
             <div>
               <p class="text-sm font-semibold">
                 {{ current.name }}
               </p>
-              <p class="text-xs text-muted-foreground">
+              <p class="text-muted-foreground text-xs">
                 {{ current.role }} · {{ current.company }}
               </p>
             </div>
@@ -77,7 +72,7 @@ const current = computed(() => testimonials[active.value] ?? testimonials[0]!)
         </CardContent>
       </Card>
 
-      <div class="mt-4 flex justify-center gap-2">
+      <div class="mt-6 flex justify-center gap-2">
         <button
           v-for="(t, i) in testimonials"
           :key="t.name"
@@ -85,7 +80,7 @@ const current = computed(() => testimonials[active.value] ?? testimonials[0]!)
           :aria-label="`Show testimonial from ${t.name}`"
           :aria-current="i === active"
           class="size-2 rounded-full transition-all duration-200"
-          :class="i === active ? 'w-6 bg-primary' : 'bg-muted-foreground/30 hover:bg-muted-foreground'"
+          :class="i === active ? 'bg-primary w-6' : 'bg-muted-foreground/30 hover:bg-muted-foreground/60'"
           @click="active = i"
         />
       </div>

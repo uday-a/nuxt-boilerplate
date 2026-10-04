@@ -1,15 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ auth: false, layout: false })
 
-useHead({
-  title: 'The workspace your team will actually use',
-  meta: [
-    {
-      name: 'description',
-      content: 'Plan projects, track work and ship releases in one workspace, with billing, permissions and audit logs built in.',
-    },
-  ],
-})
+useHead({ title: 'The workspace your team will actually use' })
 </script>
 
 <template>

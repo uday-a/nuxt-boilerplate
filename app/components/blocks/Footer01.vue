@@ -18,20 +18,20 @@ function subscribe() {
 </script>
 
 <template>
-  <footer class="border-t bg-background">
+  <footer class="bg-background border-t">
     <div class="mx-auto max-w-6xl px-4 py-4">
       <div class="grid gap-4 lg:grid-cols-12">
         <div class="space-y-4 lg:col-span-4">
           <div class="flex items-center gap-2">
-            <div class="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <div class="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-md">
               <Boxes
                 class="size-4"
                 aria-hidden="true"
               />
             </div>
-            <span class="text-base font-semibold">UIPKGE</span>
+            <span class="text-base font-semibold">Acme</span>
           </div>
-          <p class="max-w-sm text-sm text-muted-foreground">
+          <p class="text-muted-foreground max-w-sm text-sm">
             Projects, billing and permissions for growing teams. Product updates once a month.
           </p>
           <form
@@ -51,7 +51,7 @@ function subscribe() {
           </form>
           <p
             v-if="subscribed"
-            class="text-xs text-success"
+            class="text-success text-xs"
           >
             Thanks — check your inbox to confirm.
           </p>
@@ -68,19 +68,19 @@ function subscribe() {
               <li>
                 <NuxtLink
                   to="/#features"
-                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
                 >Features</NuxtLink>
               </li>
               <li>
                 <NuxtLink
                   to="/pricing"
-                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
                 >Pricing</NuxtLink>
               </li>
               <li>
                 <NuxtLink
                   to="/login"
-                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
                 >Sign in</NuxtLink>
               </li>
             </ul>
@@ -95,19 +95,19 @@ function subscribe() {
                   :href="REPO_URL"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
                 >Documentation</a>
               </li>
               <li>
                 <NuxtLink
                   to="/support"
-                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
                 >Help center</NuxtLink>
               </li>
               <li>
                 <NuxtLink
                   to="/feedback"
-                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
                 >Feedback</NuxtLink>
               </li>
             </ul>
@@ -120,13 +120,13 @@ function subscribe() {
               <li>
                 <NuxtLink
                   to="/terms"
-                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
                 >Terms</NuxtLink>
               </li>
               <li>
                 <NuxtLink
                   to="/privacy"
-                  class="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
                 >Privacy</NuxtLink>
               </li>
             </ul>
@@ -137,8 +137,8 @@ function subscribe() {
       <Separator class="my-4" />
 
       <div class="flex flex-wrap items-center justify-between gap-4">
-        <p class="text-xs text-muted-foreground">
-          © 2026 UIPKGE. All rights reserved.
+        <p class="text-muted-foreground text-xs">
+          © 2026 Acme. All rights reserved.
         </p>
         <a
           :href="REPO_URL"

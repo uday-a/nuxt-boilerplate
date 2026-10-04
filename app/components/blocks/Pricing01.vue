@@ -18,32 +18,33 @@ type Plan = 'pro' | 'team' | 'enterprise'
 
 // `page` renders the section heading as the page's H1 (on /pricing) and
 // drops the eyebrow, so the page has one heading hierarchy.
-defineProps<{ page?: boolean }>()
+// Handlers are props (bound via `@subscribe` / `@contact-sales`) so the block
+// can tell whether a parent is listening: without one, the buttons fall back
+// to plain links. Plan keys match `Plan` in server/utils/polar.ts so the
+// parent page can pass them straight to /api/billing/checkout.
+defineProps<{
+  page?: boolean
+  onSubscribe?: (plan: Plan, cycle: Cycle) => void
+  onContactSales?: () => void
+}>()
 
 const cycle = ref<Cycle>('monthly')
 
-// Plan keys match `Plan` in server/utils/polar.ts so the parent page
-// can pass them straight to /api/billing/checkout.
-const emit = defineEmits<{
-  subscribe: [plan: Plan, cycle: Cycle]
-  contactSales: []
-}>()
-
-const starterFeatures = ['Up to 5 seats', '3 projects', '10,000 API calls / month', 'Email support']
-const teamFeatures = ['Up to 50 seats', 'Unlimited projects', '250,000 API calls / month', 'Integrations and webhooks', 'Priority support']
-const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', 'Audit logs and role policies', 'Custom API limits', 'Success manager and 99.99% SLA']
+const starterFeatures = ['Up to 10 employees', 'Core HR + directory', 'Time off + holidays', 'Email support']
+const teamFeatures = ['Unlimited employees', 'Payroll + tax filing', 'Onboarding workflows', 'Performance reviews', 'Slack + priority support']
+const enterpriseFeatures = ['Everything in Team', 'SSO + SCIM provisioning', 'Audit logs + role policies', 'Dedicated success manager', '99.99% SLA']
 </script>
 
 <template>
   <section class="bg-background">
     <div
-      class="mx-auto max-w-6xl px-4"
-      :class="page ? 'py-4' : 'py-4'"
+      class="mx-auto max-w-6xl px-6"
+      :class="page ? 'py-4' : 'py-24'"
     >
-      <div class="mb-4 text-center">
+      <div class="mb-10 text-center">
         <p
           v-if="!page"
-          class="text-muted-foreground text-xs font-medium uppercase tracking-wider"
+          class="text-muted-foreground text-xs font-medium tracking-wider uppercase"
         >
           Pricing
         </p>
@@ -53,11 +54,11 @@ const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', '
         >
           Plans for teams of every size
         </component>
-        <p class="mx-auto mt-3 max-w-xl text-lg text-muted-foreground">
+        <p class="text-muted-foreground mx-auto mt-3 max-w-xl text-lg">
           No hidden fees. Cancel anytime. Save 20% with annual billing.
         </p>
 
-        <div class="mt-4 inline-flex">
+        <div class="mt-6 inline-flex">
           <ToggleGroup
             type="single"
             :model-value="cycle"
@@ -68,7 +69,10 @@ const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', '
             </ToggleGroupItem>
             <ToggleGroupItem value="yearly">
               Yearly
-              <Badge variant="secondary">
+              <Badge
+                variant="secondary"
+                class="ml-2"
+              >
                 −20%
               </Badge>
             </ToggleGroupItem>
@@ -76,18 +80,16 @@ const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', '
         </div>
       </div>
 
-      <div class="grid gap-4 lg:grid-cols-3">
+      <div class="grid gap-6 lg:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">
+            <CardTitle class="text-xl">
               Starter
             </CardTitle>
             <CardDescription>For small teams trying things out.</CardDescription>
             <div class="mt-4 flex items-baseline gap-1">
-              <span class="text-4xl font-semibold tracking-tight tabular-nums">
-                ${{ cycle === 'monthly' ? 9 : 7 }}
-              </span>
-              <span class="text-sm text-muted-foreground">/ user / month</span>
+              <span class="text-4xl font-semibold tracking-tight tabular-nums">${{ cycle === 'monthly' ? 9 : 7 }}</span>
+              <span class="text-muted-foreground text-sm">/ user / month</span>
             </div>
           </CardHeader>
           <CardContent>
@@ -97,46 +99,46 @@ const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', '
                 :key="feature"
                 class="flex items-start gap-2"
               >
-                <Check
-                  class="text-success mt-0.5 size-4 shrink-0"
-                  aria-hidden="true"
-                />
+                <Check class="text-success mt-0.5 size-4 shrink-0" />
                 <span>{{ feature }}</span>
               </li>
             </ul>
           </CardContent>
           <CardFooter>
             <Button
+              v-if="onSubscribe"
               class="w-full"
               variant="outline"
-              @click="emit('subscribe', 'pro', cycle)"
+              @click="onSubscribe('pro', cycle)"
             >
               Start free
+            </Button>
+            <Button
+              v-else
+              as-child
+              class="w-full"
+              variant="outline"
+            >
+              <NuxtLink to="/sign-up">Start free</NuxtLink>
             </Button>
           </CardFooter>
         </Card>
 
         <div class="relative">
           <Badge class="absolute -top-3 left-1/2 z-10 -translate-x-1/2 gap-1 shadow-sm">
-            <Sparkles
-              class="size-3"
-              aria-hidden="true"
-            />
-            Most popular
+            <Sparkles class="size-3" /> Most popular
           </Badge>
-          <!-- WHY (Rule7): flat system -- shadow-sm only. The highlighted
+          <!-- WHY: flat system -- shadow-sm only. The highlighted
                plan keeps its ring; elevation doesn't carry the emphasis. -->
-          <Card class="border-primary shadow-sm ring-1 ring-primary/10">
+          <Card class="border-primary ring-primary/10 shadow-sm ring-1">
             <CardHeader>
-              <CardTitle class="text-base">
+              <CardTitle class="text-xl">
                 Team
               </CardTitle>
-              <CardDescription>For growing teams shipping every week.</CardDescription>
+              <CardDescription>For growing companies scaling people ops.</CardDescription>
               <div class="mt-4 flex items-baseline gap-1">
-                <span class="text-4xl font-semibold tracking-tight tabular-nums">
-                  ${{ cycle === 'monthly' ? 29 : 24 }}
-                </span>
-                <span class="text-sm text-muted-foreground">/ user / month</span>
+                <span class="text-4xl font-semibold tracking-tight tabular-nums">${{ cycle === 'monthly' ? 29 : 24 }}</span>
+                <span class="text-muted-foreground text-sm">/ user / month</span>
               </div>
             </CardHeader>
             <CardContent>
@@ -146,20 +148,25 @@ const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', '
                   :key="feature"
                   class="flex items-start gap-2"
                 >
-                  <Check
-                    class="text-success mt-0.5 size-4 shrink-0"
-                    aria-hidden="true"
-                  />
+                  <Check class="text-success mt-0.5 size-4 shrink-0" />
                   <span>{{ feature }}</span>
                 </li>
               </ul>
             </CardContent>
             <CardFooter>
               <Button
+                v-if="onSubscribe"
                 class="w-full"
-                @click="emit('subscribe', 'team', cycle)"
+                @click="onSubscribe('team', cycle)"
               >
                 Start 14-day trial
+              </Button>
+              <Button
+                v-else
+                as-child
+                class="w-full"
+              >
+                <NuxtLink to="/sign-up">Start 14-day trial</NuxtLink>
               </Button>
             </CardFooter>
           </Card>
@@ -167,12 +174,12 @@ const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', '
 
         <Card>
           <CardHeader>
-            <CardTitle class="text-base">
+            <CardTitle class="text-xl">
               Enterprise
             </CardTitle>
-            <CardDescription>Security and controls for large organisations.</CardDescription>
+            <CardDescription>Custom controls for regulated industries.</CardDescription>
             <div class="mt-4 flex items-baseline gap-1">
-              <span class="text-4xl font-semibold tracking-tight">Custom</span>
+              <span class="text-3xl font-semibold tracking-tight">Custom</span>
             </div>
           </CardHeader>
           <CardContent>
@@ -182,21 +189,27 @@ const enterpriseFeatures = ['Everything in Team', 'SSO and SCIM provisioning', '
                 :key="feature"
                 class="flex items-start gap-2"
               >
-                <Check
-                  class="text-success mt-0.5 size-4 shrink-0"
-                  aria-hidden="true"
-                />
+                <Check class="text-success mt-0.5 size-4 shrink-0" />
                 <span>{{ feature }}</span>
               </li>
             </ul>
           </CardContent>
           <CardFooter>
             <Button
+              v-if="onContactSales"
               class="w-full"
               variant="outline"
-              @click="emit('contactSales')"
+              @click="onContactSales()"
             >
               Talk to sales
+            </Button>
+            <Button
+              v-else
+              as-child
+              class="w-full"
+              variant="outline"
+            >
+              <NuxtLink to="/login">Talk to sales</NuxtLink>
             </Button>
           </CardFooter>
         </Card>
