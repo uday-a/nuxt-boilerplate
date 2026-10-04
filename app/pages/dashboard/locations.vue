@@ -250,8 +250,8 @@ function onMarkerClick(id: string) {
                 >
                   <span :class="['block size-2 shrink-0 rounded-full', kindDotBg(office.kind)]" />
                   <span class="min-w-0 flex-1">
-                    <span class="flex items-center gap-1.5">
-                      <span class="truncate text-sm font-medium">{{ office.city }}</span>
+                    <span class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                      <span class="text-sm font-medium break-words">{{ office.city }}</span>
                       <Badge :variant="kindBadgeVariant(office.kind)">
                         {{ t(`dashboard.locations.kind.${office.kind}`) }}
                       </Badge>
