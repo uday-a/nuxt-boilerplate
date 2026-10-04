@@ -15,10 +15,6 @@ const description = computed(() =>
     ? 'The page you were looking for doesn’t exist or was moved.'
     : props.error.statusMessage || 'An unexpected error occurred.',
 )
-
-function goHome() {
-  clearError({ redirect: '/' })
-}
 </script>
 
 <template>
@@ -34,14 +30,14 @@ function goHome() {
         {{ description }}
       </p>
       <div class="mt-8 flex gap-3">
+        <Button as-child>
+          <NuxtLink to="/">Go home</NuxtLink>
+        </Button>
         <Button
           as-child
           variant="outline"
         >
-          <NuxtLink to="/">Go home</NuxtLink>
-        </Button>
-        <Button @click="goHome">
-          Try again
+          <NuxtLink to="/dashboard">Dashboard</NuxtLink>
         </Button>
       </div>
     </main>
