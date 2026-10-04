@@ -196,7 +196,8 @@ function sendReply() {
               class="h-8 w-full lg:hidden"
               aria-label="Folder"
             >
-              <SelectValue />
+              <!-- Placeholder = current label so SSR / pre-open renders it. -->
+              <SelectValue :placeholder="folders.find(f => f.id === activeFolder)?.label" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem

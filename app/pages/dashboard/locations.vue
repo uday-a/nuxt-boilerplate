@@ -192,10 +192,11 @@ function onMarkerClick(id: string) {
         />
       </div>
 
-      <!-- List + map -->
-      <div class="grid gap-4 lg:grid-cols-3">
+      <!-- List + map: side by side only from xl, with a 2:3 split, so city
+           names never truncate in the list rail. -->
+      <div class="grid gap-4 xl:grid-cols-5">
         <!-- Location list -->
-        <Card>
+        <Card class="xl:col-span-2">
           <CardHeader>
             <div class="flex flex-col gap-2 sm:flex-row">
               <Input
@@ -293,7 +294,7 @@ function onMarkerClick(id: string) {
         </Card>
 
         <!-- Large map: fills its card (no inner frame) -->
-        <Card class="relative isolate p-0 lg:col-span-2">
+        <Card class="relative isolate p-0 xl:col-span-3">
           <LeafletMap
             ref="mapRef"
             variant="muted"

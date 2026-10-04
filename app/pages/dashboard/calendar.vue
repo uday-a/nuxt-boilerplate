@@ -232,7 +232,7 @@ function cellRangeClass(key: string, inMonth: boolean) {
         description="Schedule, meetings and deadlines. Drag or shift-click to select a range."
       />
       <template #actions>
-        <div class="flex shrink-0 flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           <div class="w-56">
             <Input
               v-model="search"

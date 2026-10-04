@@ -196,37 +196,39 @@ const mergedOption = computed(() => {
         {{ formatStepPill(s) }}
       </li>
     </ul>
-    <table class="sr-only">
-      <caption>Conversion funnel by stage</caption>
-      <thead>
-        <tr>
-          <th scope="col">
-            Stage
-          </th>
-          <th scope="col">
-            Count
-          </th>
-          <th scope="col">
-            Step rate
-          </th>
-          <th scope="col">
-            Cumulative
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(s, i) in stats.steps"
-          :key="`${s.name}-${i}`"
-        >
-          <th scope="row">
-            {{ s.name }}
-          </th>
-          <td>{{ s.value.toLocaleString() }}</td>
-          <td>{{ s.stepRate === null ? '100% baseline' : `${formatPct(s.stepRate)} from ${s.prevName}` }}</td>
-          <td>{{ formatPct(s.cumulative) }} of top</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="sr-only">
+      <table>
+        <caption>Conversion funnel by stage</caption>
+        <thead>
+          <tr>
+            <th scope="col">
+              Stage
+            </th>
+            <th scope="col">
+              Count
+            </th>
+            <th scope="col">
+              Step rate
+            </th>
+            <th scope="col">
+              Cumulative
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(s, i) in stats.steps"
+            :key="`${s.name}-${i}`"
+          >
+            <th scope="row">
+              {{ s.name }}
+            </th>
+            <td>{{ s.value.toLocaleString() }}</td>
+            <td>{{ s.stepRate === null ? '100% baseline' : `${formatPct(s.stepRate)} from ${s.prevName}` }}</td>
+            <td>{{ formatPct(s.cumulative) }} of top</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>

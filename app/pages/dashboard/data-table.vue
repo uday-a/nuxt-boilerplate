@@ -346,7 +346,8 @@ const activeFilterCount = computed(() => {
   if (search.value.trim()) n++
   if (statusFilter.value.size) n++
   if (planFilter.value.size) n++
-  if (dateRange.value !== 'all') n++
+  // The default 30-day window isn't an active filter.
+  if (dateRange.value !== '30d') n++
   return n
 })
 
@@ -550,11 +551,11 @@ function timelineFor(c: Customer): TimelineEvent[] {
                   aria-hidden="true"
                 />Filters
                 <Badge
-                  v-if="statusFilter.size + planFilter.size + (dateRange !== 'all' ? 1 : 0)"
+                  v-if="statusFilter.size + planFilter.size + (dateRange !== '30d' ? 1 : 0)"
                   variant="secondary"
                   class="ml-1 h-4 px-1.5 text-xs tabular-nums"
                 >
-                  {{ statusFilter.size + planFilter.size + (dateRange !== 'all' ? 1 : 0) }}
+                  {{ statusFilter.size + planFilter.size + (dateRange !== '30d' ? 1 : 0) }}
                 </Badge>
               </Button>
 
