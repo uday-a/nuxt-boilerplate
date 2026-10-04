@@ -21,6 +21,8 @@ function onOAuth(provider: 'github' | 'google') {
 <template>
   <AuthSignUp
     sign-in-href="/login"
+    terms-href="/terms"
+    privacy-href="/privacy"
     :oauth-providers="['github']"
     @submit="onSubmit"
     @oauth="onOAuth"

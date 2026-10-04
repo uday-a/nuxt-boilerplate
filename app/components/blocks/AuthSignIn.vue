@@ -54,6 +54,7 @@ function onSubmit() {
       </CardHeader>
       <CardContent>
         <form
+          method="post"
           class="space-y-4"
           @submit.prevent="onSubmit"
         >

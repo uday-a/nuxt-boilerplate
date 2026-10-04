@@ -89,7 +89,10 @@ async function onSubmit(e: Event) {
 </script>
 
 <template>
-  <form @submit="onSubmit">
+  <form
+    method="post"
+    @submit="onSubmit"
+  >
     <Page>
       <PageHeader>
         <PageHeaderHeading
