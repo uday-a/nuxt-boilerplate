@@ -6,7 +6,20 @@
 import { createInitialColumns } from '@/composables/kanbanData'
 import type { KanbanColumn } from '@/composables/useKanban'
 
-definePageMeta({ layout: 'dashboard', middleware: 'auth', key: 'dashboard-kanban' })
+definePageMeta({
+  layout: 'dashboard',
+  key: 'dashboard-kanban',
+  middleware: [
+    'auth',
+    // Last breadcrumb = task title on the detail URL. Set in middleware so
+    // it lands before the layout renders (SSR and client agree).
+    (to) => {
+      const columns = useState<KanbanColumn[]>('kanban-columns', () => createInitialColumns())
+      const id = to.params.id ? String(to.params.id) : null
+      useState<string | null>('page-crumb').value = id ? (columns.value.flatMap(c => c.tasks).find(x => x.id === id)?.title ?? null) : null
+    },
+  ],
+})
 
 const route = useRoute()
 const { t } = useI18n()
@@ -22,6 +35,11 @@ watch(taskId, (id) => {
 
 const boardTitle = computed(() => t('nav.items.kanban'))
 useHead({ title: () => task.value?.title ?? boardTitle.value })
+// Leaving the board: drop the task crumb (set by the middleware above).
+const pageCrumb = useState<string | null>('page-crumb', () => null)
+onUnmounted(() => {
+  pageCrumb.value = null
+})
 </script>
 
 <template>

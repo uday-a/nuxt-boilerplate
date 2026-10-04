@@ -8,12 +8,16 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 
+// Detail pages (e.g. a kanban task) put their record's title here so the
+// last crumb reads "Write the migration guide…", not the humanized id.
+const pageCrumb = useState<string | null>('page-crumb', () => null)
 const breadcrumbs = computed(() => {
   const parts = (route?.path ?? '').split('/').filter(Boolean)
   if (parts.length === 0) return [{ label: t('nav.items.dashboard') }]
   return parts.map((_, i) => {
     const path = '/' + parts.slice(0, i + 1).join('/')
-    return { label: routeLabel(path, t), href: i < parts.length - 1 ? path : undefined }
+    const last = i === parts.length - 1
+    return { label: (last && pageCrumb.value) || routeLabel(path, t), href: last ? undefined : path }
   })
 })
 
