@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button'
 
 const props = defineProps<{ error: NuxtError }>()
 
-useHead(() => ({ title: `${props.error.statusCode ?? 'Error'}` }))
-
 const is404 = computed(() => Number(props.error.statusCode) === 404)
 const title = computed(() => (is404.value ? 'Page not found' : 'Something broke'))
+// The error page renders outside the app layout, so the site title template
+// isn't applied here — set it explicitly.
+const siteName = useSiteConfig().name
+useHead(() => ({ title: title.value, titleTemplate: `%s | ${siteName}` }))
 const description = computed(() =>
   is404.value
     ? 'The page you were looking for doesn’t exist or was moved.'
