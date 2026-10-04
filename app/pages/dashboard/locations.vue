@@ -256,16 +256,19 @@ function onMarkerClick(id: string) {
                         {{ t(`dashboard.locations.kind.${office.kind}`) }}
                       </Badge>
                     </span>
-                    <span class="text-muted-foreground flex items-center gap-1.5 truncate text-xs">
+                    <span class="text-muted-foreground flex flex-wrap items-center gap-x-1.5 text-xs">
                       {{ office.country }}
-                      <template v-if="localTime(office.timezone)">
+                      <span
+                        v-if="localTime(office.timezone)"
+                        class="inline-flex items-center gap-1.5"
+                      >
                         <span aria-hidden="true">·</span>
                         <Clock
                           class="size-3.5 shrink-0"
                           aria-hidden="true"
                         />
                         <span class="tabular-nums">{{ localTime(office.timezone) }}</span>
-                      </template>
+                      </span>
                     </span>
                   </span>
                   <span class="shrink-0 text-right">
