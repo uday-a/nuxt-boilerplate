@@ -41,8 +41,8 @@ const priorityLabel = computed(() =>
 
 <template>
   <div>
-    <div class="mb-3 flex shrink-0 items-center gap-2">
-      <div class="relative w-56">
+    <div class="mb-3 flex shrink-0 flex-wrap items-center gap-2">
+      <div class="relative w-full sm:w-56">
         <Search class="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2" />
         <Input
           :model-value="searchQuery"
