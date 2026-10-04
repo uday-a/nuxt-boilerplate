@@ -311,13 +311,13 @@ async function resendInvite(invite: PendingInvite) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="user">
-                      user
+                      {{ t('admin.roleNames.user') }}
                     </SelectItem>
                     <SelectItem value="editor">
-                      editor
+                      {{ t('admin.roleNames.editor') }}
                     </SelectItem>
                     <SelectItem value="admin">
-                      admin
+                      {{ t('admin.roleNames.admin') }}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -620,14 +620,14 @@ async function resendInvite(invite: PendingInvite) {
             <div
               v-for="p in pendingInvites"
               :key="p.id"
-              class="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"
+              class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3 first:pt-0 last:pb-0"
             >
-              <div class="space-y-0.5">
-                <p class="text-sm font-medium">
+              <div class="min-w-0 space-y-0.5">
+                <p class="text-sm font-medium break-words">
                   {{ p.email }}
                 </p>
                 <p class="text-muted-foreground text-xs tabular-nums">
-                  {{ t('settings.team.invitedAs', { role: p.role }) }} · {{ t('settings.team.expires', { date: formatDate(p.expiresAt) }) }}
+                  {{ t('settings.team.invitedAs', { role: t(`admin.roleNames.${p.role}`) }) }} · {{ t('settings.team.expires', { date: formatDate(p.expiresAt) }) }}
                 </p>
               </div>
               <div class="flex items-center gap-2">

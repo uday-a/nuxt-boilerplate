@@ -48,16 +48,16 @@ const integrations: Integration[] = [
             v-for="(i, idx) in integrations"
             :key="i.id"
           >
-            <div class="flex items-start justify-between gap-4 py-2">
-              <div class="flex items-start gap-3">
-                <div class="bg-muted text-muted-foreground flex size-10 items-center justify-center rounded-md">
+            <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 py-2">
+              <div class="flex min-w-0 flex-1 basis-64 items-start gap-3">
+                <div class="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-md">
                   <component
                     :is="i.icon"
                     class="size-5"
                   />
                 </div>
-                <div class="space-y-0.5">
-                  <div class="flex items-center gap-2">
+                <div class="min-w-0 space-y-0.5">
+                  <div class="flex flex-wrap items-center gap-2">
                     <p class="text-sm font-medium">
                       {{ i.name }}
                     </p>
