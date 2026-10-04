@@ -49,7 +49,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     session: {
       name: 'nuxt-session',
+      // 7 days: seals the session TTL (expired seals are rejected server-side)
+      // and sets the cookie's Max-Age to match.
+      maxAge: 60 * 60 * 24 * 7,
       cookie: {
+        maxAge: 60 * 60 * 24 * 7,
         // Secure unless explicitly in development — an unset NODE_ENV is prod.
         secure: process.env.NODE_ENV !== 'development',
         sameSite: 'lax',
@@ -72,6 +76,18 @@ export default defineNuxtConfig({
       posthog: {
         key: process.env.NUXT_PUBLIC_POSTHOG_KEY ?? '',
         host: process.env.NUXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com',
+      },
+    },
+  },
+  // Baseline security headers on every response (shared across the sibling
+  // boilerplates). HSTS is left to the host (Vercel sets it); no CSP.
+  routeRules: {
+    '/**': {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
       },
     },
   },
@@ -99,9 +115,11 @@ export default defineNuxtConfig({
   },
   i18n: {
     defaultLocale: 'en',
+    // `language` drives <html lang> (nuxt-seo-utils reads it via site
+    // config); without it the attribute is pinned to the default locale.
     locales: [
-      { code: 'en', file: 'en.json', name: 'English' },
-      { code: 'es', file: 'es.json', name: 'Español' },
+      { code: 'en', language: 'en', file: 'en.json', name: 'English' },
+      { code: 'es', language: 'es', file: 'es.json', name: 'Español' },
     ],
     strategy: 'no_prefix',
   },
@@ -119,6 +137,6 @@ export default defineNuxtConfig({
     : {}),
   // Sitemap auto-discovers pages — keep authenticated surfaces out.
   sitemap: {
-    exclude: ['/dashboard/**', '/settings/**', '/projects/**', '/onboarding/**', '/admin/**', '/invite/**', '/mfa'],
+    exclude: ['/dashboard/**', '/settings/**', '/projects/**', '/onboarding/**', '/admin/**', '/invite/**', '/mfa', '/feedback', '/feedback/**', '/support', '/support/**'],
   },
 })
