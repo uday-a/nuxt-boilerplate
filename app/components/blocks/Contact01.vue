@@ -19,6 +19,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { LeafletMap, LeafletMarker, LeafletPopup } from '@/components/ui/leaflet-map'
+
+/** Apple Park, Cupertino — [lng, lat], the LeafletMap coordinate order. */
+const APPLE_PARK: [number, number] = [-122.0090, 37.3349]
 
 const name = ref('')
 const email = ref('')
@@ -109,16 +113,41 @@ function submit() {
                   Office
                 </p>
                 <p class="text-sm font-medium">
-                  120 Howard St, San Francisco
+                  One Apple Park Way, Cupertino, CA 95014
                 </p>
               </div>
             </div>
           </div>
 
           <div class="bg-muted/40 mt-6 flex h-48 items-center justify-center rounded-lg border border-dashed">
-            <p class="text-muted-foreground text-sm">
-              Map placeholder
-            </p>
+            <!-- Client-only inside LeafletMap (SSR renders the bg-muted shell). -->
+            <LeafletMap
+              variant="muted"
+              :center="APPLE_PARK"
+              :zoom="14"
+              :scroll-wheel-zoom="false"
+              role="region"
+              aria-label="Map showing Apple Park in Cupertino"
+              class="size-full rounded-[inherit]"
+            >
+              <LeafletMarker
+                :lng-lat="APPLE_PARK"
+                anchor="center"
+              >
+                <!-- Same HQ marker as the dashboard Locations page. -->
+                <span class="relative flex items-center justify-center">
+                  <span
+                    class="bg-primary absolute inset-0 rounded-full opacity-40 motion-safe:animate-ping"
+                    aria-hidden="true"
+                  />
+                  <span class="bg-primary ring-primary/25 outline-background relative block size-5 rounded-full ring-4 outline-2" />
+                </span>
+                <LeafletPopup :offset="[0, -10]">
+                  <span class="block text-sm font-medium">Apple Park</span>
+                  <span class="text-muted-foreground block text-xs">One Apple Park Way, Cupertino, CA</span>
+                </LeafletPopup>
+              </LeafletMarker>
+            </LeafletMap>
           </div>
         </div>
 

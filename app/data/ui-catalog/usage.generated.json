@@ -240,6 +240,7 @@
       "/sign-up"
     ],
     "leaflet-map": [
+      "/",
       "/dashboard",
       "/dashboard/locations"
     ],
