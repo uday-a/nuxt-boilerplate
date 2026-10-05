@@ -38,6 +38,7 @@ const mergedOption = computed(() => {
     symbolSize: props.variant === 'dots' ? 5 : 0,
     showSymbol: props.variant === 'dots',
     lineStyle: { width: 2, color: props.color },
+    itemStyle: { color: props.color },
     // WHY (Rule51): flat area fill at low opacity -- no linear-gradient
     // wash. Gradients read as decoration, not data.
     areaStyle: props.variant === 'line' || props.variant === 'dots' ? undefined : { opacity: 0.12, color: props.color },
